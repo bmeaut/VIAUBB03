@@ -14,18 +14,18 @@ A labor során egy tömegközlekedési vállalat számára megálmodott alkalmaz
 ## Értékelés
 
 Vezetett rész (1 pont)
-- [Projekt létrehozása](#projekt-l-trehoz-sa)
-- [Splash képernyő](#splash-k-perny-)
-- [Login](#login)
-- [Lehetőségek listája](#lehet-s-gek-list-ja)
-- [Részletes nézet](#r-szletes-n-zet)
-- [A bérlet](#a-b-rlet)
+- Projekt létrehozása](#projekt-létrehozása)
+- Splash képernyő](#splash-képernyő)
+- Login](#login)
+- Lehetőségek listája](#lehetőségek-listája)
+- Részletes nézet](#részletes-nézet)
+- A bérlet](#a-bérlet)
 
 Önálló feladat (1 pont)
-- [Hajók](#haj-k)
+- [Hajók](#hajók)
 
 Bónusz feladatok
-- [Ár kiszámolása](#-r-kisz-mol-sa)
+- [Ár kiszámolása](#ár-kiszámolása)
 
 ## Android, Java, Kotlin
 
@@ -414,7 +414,7 @@ Még egy beállítás van hátra, az árkategória kiválasztása - nyugdíjasok
 
 Mivel ezek közül az opciók közül egyszerre csak egynek akarjuk megengedni a kiválasztását, ezért `RadioButton`-öket fogunk használni, amelyeket Androidon egy `RadioGroup`-pal kell összefognunk, hogy jelezzük, melyikek tartoznak össze.
 
-```
+```xml
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -453,7 +453,7 @@ Fontos, hogy adjunk ID-t a teljes csoportnak, és a benne lévő minden opcióna
 
 Végül az oldal alján kiírjuk a kiválasztott bérlet árát, illetve ide kerül a megvásárláshoz használható gomb is. Az árnak egyelőre csak egy fix értéket írunk ki.
 
-```
+```xml
 <TextView
     android:id="@+id/tvPrice"
     android:layout_width="wrap_content"
@@ -605,7 +605,7 @@ Most már elkészíthetjük a `PassActivity`-t. Kezdjük a layout-jával (`activ
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="hu.bme.aut.publictransport.PassActivity">
+    tools:context=".PassActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
