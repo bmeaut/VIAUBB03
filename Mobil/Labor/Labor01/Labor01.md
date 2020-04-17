@@ -14,12 +14,12 @@ A labor során egy tömegközlekedési vállalat számára megálmodott alkalmaz
 ## Értékelés
 
 Vezetett rész (1 pont)
-- Projekt létrehozása](#projekt-létrehozása)
-- Splash képernyő](#splash-képernyő)
-- Login](#login)
-- Lehetőségek listája](#lehetőségek-listája)
-- Részletes nézet](#részletes-nézet)
-- A bérlet](#a-bérlet)
+- [Projekt létrehozása](#projekt-létrehozása)
+- [Splash képernyő](#splash-képernyő)
+- [Login](#login)
+- [Lehetőségek listája](#lehetőségek-listája)
+- [Részletes nézet](#részletes-nézet)
+- [A bérlet](#a-bérlet)
 
 Önálló feladat (1 pont)
 - [Hajók](#hajók)
