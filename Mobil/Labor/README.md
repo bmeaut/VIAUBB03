@@ -5,7 +5,7 @@
 
 [1. labor - Felhasználói felület készítés](./Labor01/Labor01.md)
 
-[2. labor - Felhasználói felület készítése - Fragmentek, Chartok](./LAbor02/Labor02.md)
+[2. labor - Felhasználói felület készítése - Fragmentek, Chartok](./Labor02/Labor02.md)
 
 [3. labor - Perzisztencia - Bevásárló alkalmazás készítése](./Labor03/Labor03.md)
 
