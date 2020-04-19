@@ -15,6 +15,7 @@ A labor során egy HR alkalmazást készítünk el, amelybe belépve a felhaszn�
 ## Értékelés
 
 Vezetett rész (1 pont)
+- [Projekt létrehozása](#projekt-létrehozása)
 - [Főmenü képernyő](#főmenü-képrenyő)
 - [Profil képernyő](#profil-képernyő)
 - [Szabadság képernyő](#szabadság-képernyő)
@@ -42,7 +43,7 @@ Az első Activity-nk legyen egy Empty Activity, és nevezzük el `MenuActivity`-
 
 Előzetesen töltsük le az alkalmazás képeit tartalmazó [tömörített fájlt](./downloads/res.zip) és bontsuk ki. A benne lévő drawable könyvtárat másoljuk be az app/src/main/res mappába (Studio-ban res mappán állva `Ctrl+V`).
 
-## Főmenü képernyő
+### Főmenü képernyő
 Az első Activity amit elkészítünk a navigációért lesz felelős. A labor során 2 funkciót fogunk megvalósítani, ezek a Profil és a Szabadság.
 
 A projekt készítésekor már létrejött `activity_menu.xml` tartalmát cseréljük ki az alábbira:
@@ -161,7 +162,7 @@ Mivel az Activityt kézzel hoztuk létre, így az első futtatás előtt meg kel
 
 Próbáljuk ki az alkalmazást! 4 gombnak kell megjelennie és a felső kettőn működnie kell a navigációnak a (még) üres Activity-kbe.
 
-### Profil képernyő elkészítése
+### Profil képernyő
 
 A Profil képernyő két lapozható oldalból fog állni, ezen a név, email, lakcím (első oldal), illetve a személyigazolvány szám, TAJ szám, adószám és törzsszám (második oldal) fognak megjelenni.
 
