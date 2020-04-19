@@ -180,7 +180,7 @@ class Person(
 )
 ```
 
-A Person osztály példányának elérésére hozzunk létre egy `DataManager` osztályt (szintén a `data` package-en belül), ezzel fogjuk szimulálni a valós adatelérést. Ehhez a Singleton mintát használunk, hogy az alkalmazás minden részéből egyszerűen elérhető legyen. 
+A Person osztály példányának elérésére hozzunk létre egy `DataManager` osztályt (szintén a `data` package-en belül), ezzel fogjuk szimulálni a valós adatelérést. Ehhez a Singleton mintát használunk, hogy az alkalmazás minden részéből egyszerűen elérhető legyen. A Person példányt rögtön létre is hozzuk benne.
 
 > Kotlinban nyelvi szintű támogatás van a singletonok létrehozására. Ahelyett, hogy nekünk kéne egyetlen statikus példányt felvennünk, elég csak a `class` kulcsszó helyett az [`object`](https://kotlinlang.org/docs/reference/object-declarations.html#object-declarations) kulcsszóval létrehoznunk az osztályt hogy egy singletont kapjunk.
 
@@ -382,8 +382,59 @@ Készítsük el a megfelelő layout-okat a Fragmentekhez (`R.layout.profile_main
 
 (Szervezzük ki a szövegeket erőforrásba)
 
+Már csak a lapozás megvalósítása maradt hátra, ezt a ViewPager osztállyal fogjuk megvalósítani.
+
+Az `activity_profile.xml` fájlba hozzunk létre egy `ViewPager`-t:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="aut.bme.hu.workplaceapp.ProfileActivity">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vpProfile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
+```
+
+A ViewPager osztály egy PagerAdapter osztály segítségével tudja az oldalakat létrehozni. Hozzunk létre egy új `adapter` package-be egy ProfilePagerAdaptert a két Fragmentünkhöz. 
+
+`ProfilePagerAdapter.kt`:
+```kotlin
+class ProfilePagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+
+    companion object {
+        private const val NUM_PAGES = 2
+    }
+    
+    override fun getItem(position: Int): Fragment {
+        return when (position) {
+            0 -> MainProfileFragment()
+            1 -> DetailsProfileFragment()
+            else -> MainProfileFragment()
+        }
+    }
+
+    override fun getCount(): Int = NUM_PAGES
+}
+```
+
+A ProfileActivity-ben rendeljük hozzá a ViewPagerhez a most elkészített adaptert (onCreate metódus): 
+```kotlin
+vpProfile.adapter = ProfilePagerAdapter(supportFragmentManager)
+```
+
+Próbáljuk ki az alkalmazást. A Profile gombra kattinva megjelennek a felhasználó adatai és lehet lapozni is.
 
 ### Szabadság képernyő
+
+A Szabadság képernyőn egy kördiagramot fogunk megjeleníteni, ami mutatja, hogy mennyi szabadságot vettünk már ki és mennyi maradt. Ezen kívül egy gomb segítségével új szabadnap kivételét is megengedjük a felhasználónak.
+
+Először egészítsük ki a DataManager osztályunkat, hogy kezelje a szabadsághoz kapcsolódó adatokat is:
+
 
 ### Dátumválasztó, napok csökkentése
 
