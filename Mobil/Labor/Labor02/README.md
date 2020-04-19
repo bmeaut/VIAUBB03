@@ -166,7 +166,7 @@ Próbáljuk ki az alkalmazást! 4 gombnak kell megjelennie és a felső kettőn 
 
 A Profil képernyő két lapozható oldalból fog állni, ezen a név, email, lakcím (első oldal), illetve a személyigazolvány szám, TAJ szám, adószám és törzsszám (második oldal) fognak megjelenni.
 
-Hozzunk létre egy `data` package-et, azon belül egy `Person` osztályt, ebben fogjuk tárolni az oldalakon megjelenő adatokat:
+Hozzunk létre egy `data` package-et (jobb egérgomb hu.bme.aut.workplaceapp -> New -> Package), azon belül egy `Person` osztályt (New -> Kotlin File/Class -> Kind: Class), ebben fogjuk tárolni az oldalakon megjelenő adatokat:
 
 ```kotlin
 class Person(
@@ -209,7 +209,7 @@ class MainProfileFragment: Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(aut.bme.hu.workplaceapp.R.layout.profile_main, container, false)
+        return inflater.inflate(hu.bme.aut.workplaceapp.R.layout.profile_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -220,7 +220,6 @@ class MainProfileFragment: Fragment() {
         tvName.text = person.name
         tvEmail.text = person.email
         tvAddress.text = person.address
-
     }
 }
 ```
@@ -391,7 +390,7 @@ Az `activity_profile.xml` fájlba hozzunk létre egy `ViewPager`-t:
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="aut.bme.hu.workplaceapp.ProfileActivity">
+    tools:context="hu.bme.aut.workplaceapp.ProfileActivity">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpProfile"
@@ -434,12 +433,187 @@ Próbáljuk ki az alkalmazást. A Profile gombra kattinva megjelennek a felhaszn
 A Szabadság képernyőn egy kördiagramot fogunk megjeleníteni, ami mutatja, hogy mennyi szabadságot vettünk már ki és mennyi maradt. Ezen kívül egy gomb segítségével új szabadnap kivételét is megengedjük a felhasználónak.
 
 Először egészítsük ki a DataManager osztályunkat, hogy kezelje a szabadsághoz kapcsolódó adatokat is:
+```kotlin
+private const val HOLIDAY_MAX_VALUE = 20
+private const val HOLIDAY_DEFAULT_VALUE = 15
 
+var holidays = HOLIDAY_DEFAULT_VALUE
+…
+fun getRemainingHolidays(): Int = HOLIDAY_MAX_VALUE - holidays
+```
+
+A PieChart kirajzolásához az [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) library-t fogjuk használni.
+
+Projekt szintű build.gradle:
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+
+App szintű build.gradle:
+```groovy
+dependencies {
+    ...
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+}
+```
+
+Ezután kattinsunk az Android Studioban jobb fent megjelenő `Sync Now` feliratra vagy a fejlécen szereplő mérges gradle elefánt gombra, hogy a library fájljai letöltődjenek.
+
+Ha a library fájljai letöltődtek, akkor írjuk meg az Activity layout-ját (`activity_holiday.xml`):
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="hu.bme.aut.workplaceapp.HolidayActivity">
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/chartHoliday"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/btnTakeHoliday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Take Holiday"
+        android:layout_gravity="center" />
+
+</LinearLayout>
+```
+
+Írjuk meg az Activity kódját (`HolidayActivity.kt`):
+```kotlin
+class HolidayActivity : AppCompatActivity() {
+
+override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_holiday)
+
+        btnTakeHoliday.setOnClickListener {
+                // TODO: DatePickerDialogFragment megjelenítése
+        }
+
+        loadHolidays()
+    }
+
+private fun loadHolidays() {
+        var entries: ArrayList<PieEntry> = ArrayList()
+
+        entries.add(PieEntry(DataManager.holidays.toFloat(), "Taken"))
+        entries.add(PieEntry(DataManager.getRemainingHolidays().toFloat(), "Remaining"))
+
+        val dataSet = PieDataSet(entries, "Holidays")
+        dataSet.setColors(*ColorTemplate.MATERIAL_COLORS)
+
+        val data = PieData(dataSet)
+        chartHoliday.data = data
+        chartHoliday.invalidate()
+
+    }
+}
+```
+
+Próbáljuk ki az alkalmazást! A PieChart most már megjelenik, de a gomb még nem kell, hogy működjön.
 
 ### Dátumválasztó, napok csökkentése
+
+A következő lépésben a Take Holiday gombra megjelenő dátumválasztó működését fogjuk megvalósítani. A gomb lenyomására megjelenik egy dátumválasztó és a dátum kiválasztása után a szabad napok eggyel csökkennek.
+
+Hozzunk létre egy DatePickerDialogFragment osztályt:
+```kotlin
+class DatePickerDialogFragment: DialogFragment(), DatePickerDialog.OnDateSetListener {
+
+    private lateinit var onDateSelectedListener: OnDateSelectedListener
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        try{
+            onDateSelectedListener = if (targetFragment != null){
+                targetFragment as OnDateSelectedListener
+            } else {
+                activity as OnDateSelectedListener
+            }
+        } catch ( e: ClassCastException){
+            throw java.lang.RuntimeException(e)
+        }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        var c = Calendar.getInstance()
+        var year = c.get(Calendar.YEAR)
+        var month = c.get(Calendar.MONTH)
+        var day = c.get(Calendar.DAY_OF_MONTH)
+
+            return DatePickerDialog(
+            activity!!, this,
+            year, month, day
+        )
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, day: Int) {
+        onDateSelectedListener.onDateSelected(year, month, day)
+    }
+
+    interface OnDateSelectedListener {
+        fun onDateSelected(year: Int, month: Int, day: Int)
+    }
+}
+```
+
+Az importoknál a `java.util`-t válasszuk a Calendarhoz, a Fragment-hez pedig az `androidx`-es verziót.
+
+A laborvezetővel vizsgáljuk meg az `OnDateSelectedListener` interface működését. Az osztályt használóknak ezt az interface-t kell implementálnia és a megvalósított `onDateSelected` metódus kapja meg a dátumot.
+
+Állítsuk be a gomb eseménykezelőjét a HolidayActivity-ben, hogy lenyomáskor jelenítse meg a dátumválasztót:
+```kotlin
+btnTakeHoliday.setOnClickListener {
+            DatePickerDialogFragment().show(supportFragmentManager, "DATE_TAG")
+        }
+```
+
+A kiválasztott dátum feldolgozásához implementáljuk az OnDateSelectedListener-t a HolidayActivity-ben:
+```kotlin
+class HolidayActivity: AppCompatActivity(), 
+DatePickerDialogFragment.OnDateSelectedListener {
+...
+
+override fun onDateSelected(year: Int, month: Int, day: Int) {
+        var numHolidays = DataManager.holidays()
+
+        if (DataManager.getRemainingHolidays() > 0) {
+            DataManager.holidays = numHolidays + 1
+        }
+        
+        // Update chart
+        loadHolidays()
+    }
+```
+
+Próbáljuk ki az alkalmazást! Most már a gomb is jól kell, hogy működjön, a napok számának is csökkennie kell a diagramon.
+
 
 ## Önálló feladat
 ### Szabadság továbbfejlesztése
 
-## Bónusz feladatok
+- Csak akkor engedjünk új szabadságot kivenni, ha a kiválasztott nap a mai napnál későbbi. (Érdemes a DatePickerDialog osztálynak utánanézni)
+- Ha elfogyott a szabadságkeretünk, akkor a Take Holiday gomb legyen letiltva.
+
+
+## Bónusz feladat
 ### Fizetés menüpont megvalósítása
+
+A Payment menüpontra kattintva jelenjen meg egy PaymentActivity rajta egy ViewPager-rel és 2 Fragment-tel (A Profile menüponthoz hasonlóan):
+- `PaymentTaxesFragment`: kördiagram, aminek a közepébe van írva az aktuális fizetés és mutatja a nettó jövedelmet illetve a levont adókat (adónként külön)
+- `MonthlyPaymentFragment`: egy oszlopdiagramot mutasson 12 oszloppal, a havi szinten lebontott fizetéseket mutatva - érdemes az adatokat itt is a DataManager osztályban tárolni
+
+[Segítség](https://github.com/PhilJay/MPAndroidChart/wiki)
