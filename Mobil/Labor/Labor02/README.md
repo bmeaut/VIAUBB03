@@ -545,7 +545,7 @@ class DatePickerDialogFragment: DialogFragment(), DatePickerDialog.OnDateSetList
                 activity as OnDateSelectedListener
             }
         } catch ( e: ClassCastException){
-            throw java.lang.RuntimeException(e)
+            throw RuntimeException(e)
         }
     }
 
