@@ -16,7 +16,7 @@ A labor során egy HR alkalmazást készítünk el, amelybe belépve a felhaszn�
 
 Vezetett rész (1 pont)
 - [Projekt létrehozása](#projekt-létrehozása)
-- [Főmenü képernyő](#főmenü-képrenyő)
+- [Főmenü képernyő](#főmenü-képernyő)
 - [Profil képernyő](#profil-képernyő)
 - [Szabadság képernyő](#szabadság-képernyő)
 - [Dátumválasztó, napok csökkentése](#dátumválasztó-napok-csökkentése)
@@ -44,6 +44,7 @@ Az első Activity-nk legyen egy Empty Activity, és nevezzük el `MenuActivity`-
 Előzetesen töltsük le az alkalmazás képeit tartalmazó [tömörített fájlt](./downloads/res.zip) és bontsuk ki. A benne lévő drawable könyvtárat másoljuk be az app/src/main/res mappába (Studio-ban res mappán állva `Ctrl+V`).
 
 ### Főmenü képernyő
+
 Az első Activity amit elkészítünk a navigációért lesz felelős. A labor során 2 funkciót fogunk megvalósítani, ezek a Profil és a Szabadság.
 
 A projekt készítésekor már létrejött `activity_menu.xml` tartalmát cseréljük ki az alábbira:
@@ -168,3 +169,12 @@ A Profil képernyő két lapozható oldalból fog állni, ezen a név, email, la
 
 Hozzunk létre egy `data` package-et, azon belül egy `Person` osztályt, ebben fogjuk tárolni az oldalakon megjelenő adatokat:
 
+### Szabadság képernyő
+
+### Dátumválasztó, napok csökkentése
+
+## Önálló feladat
+### Szabadság továbbfejlesztése
+
+## Bónusz feladatok
+### Fizetés menüpont megvalósítása
