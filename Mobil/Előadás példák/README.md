@@ -1,1 +1,1 @@
-# Repository for the materials of the class VIAUBB03 at BME.
+# Kliensalkalmazások - Mobil előadás példák
