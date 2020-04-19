@@ -135,7 +135,7 @@ Ne felejtsük el a szövegeket kiszervezni erőforrásba! (a szövegen állva `A
 
 Hozzunk létre a két új Empty Activity-t (`ProfileActivity` és `HolidayActivity`)
 
-A MenuActivity Java fájljában (`MenuActivity.kt`) keressük ki a gombokat és rendeljünk a lenyomásukhoz eseménykezelőt az onCreate metódusban:
+A MenuActivity fájljában (`MenuActivity.kt`) rendeljünk a gombok lenyomásához eseménykezelőt az onCreate metódusban:
 
 ```kotlin
 btnProfile.setOnClickListener {
@@ -160,7 +160,6 @@ Mivel az Activityt kézzel hoztuk létre, így az első futtatás előtt meg kel
 </activity>
 ```
 
-
 Próbáljuk ki az alkalmazást! 4 gombnak kell megjelennie és a felső kettőn működnie kell a navigációnak a (még) üres Activity-kbe.
 
 ### Profil képernyő
@@ -168,6 +167,218 @@ Próbáljuk ki az alkalmazást! 4 gombnak kell megjelennie és a felső kettőn 
 A Profil képernyő két lapozható oldalból fog állni, ezen a név, email, lakcím (első oldal), illetve a személyigazolvány szám, TAJ szám, adószám és törzsszám (második oldal) fognak megjelenni.
 
 Hozzunk létre egy `data` package-et, azon belül egy `Person` osztályt, ebben fogjuk tárolni az oldalakon megjelenő adatokat:
+
+```kotlin
+class Person(
+    val name: String,
+    val email: String,
+    val address: String,
+    val id: String,
+    val socialSecurityNumber: String,
+    val taxId: String,
+    val registrationId: String
+)
+```
+
+A Person osztály példányának elérésére hozzunk létre egy `DataManager` osztályt (szintén a `data` package-en belül), ezzel fogjuk szimulálni a valós adatelérést. Ehhez a Singleton mintát használunk, hogy az alkalmazás minden részéből egyszerűen elérhető legyen. 
+
+> Kotlinban nyelvi szintű támogatás van a singletonok létrehozására. Ahelyett, hogy nekünk kéne egyetlen statikus példányt felvennünk, elég csak a `class` kulcsszó helyett az [`object`](https://kotlinlang.org/docs/reference/object-declarations.html#object-declarations) kulcsszóval létrehoznunk az osztályt hogy egy singletont kapjunk.
+
+```kotlin
+object DataManager {
+    val person: Person = Person(
+        "Test User", "testuser@domain.com",
+        "1234 Test, Random Street 1.",
+        "123456AB",
+        "123456789",
+        "1234567890",
+        "0123456789"
+    )
+}
+```
+
+Ezután elkészíthetjük a két oldalt, Fragmentekkel. Hozzuk létre egy új `fragments` package-ben a két Fragmentet (New -> Kotlin File/Class -> Kind: Class), ezek neve legyen `MainProfileFragment` és `DetailsProfileFragment`.
+
+A két Fragmentben származzunk le a Fragment osztályból (androidx-es verziót válasszuk) és definiáljuk felül az onCreateView metódust. Ebben betöltjük a layout-ot és a Person objektum adatait kiírjuk a TextView-kra.
+
+`MainProfileFragment.kt`:
+```kotlin
+class MainProfileFragment: Fragment() {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(aut.bme.hu.workplaceapp.R.layout.profile_main, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val person: Person = DataManager.person
+
+        tvName.text = person.name
+        tvEmail.text = person.email
+        tvAddress.text = person.address
+
+    }
+}
+```
+
+`DetailsProfileFragment.kt`:
+```kotlin
+class DetailsProfileFragment: Fragment() {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.profile_detail, container, false)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val person: Person = DataManager.person
+
+        tvId.text = person.id
+        tvSSN.text = person.socialSecurityNumber
+        tvTaxId.text = person.taxId
+        tvRegistrationId.text = person.registrationId
+    }
+}
+```
+
+Készítsük el a megfelelő layout-okat a Fragmentekhez (`R.layout.profile_main` és `R.layout.profile_detail`-en állva `Alt+Enter`).
+
+`profile_main.xml`:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textColor="#000000"
+        android:textSize="34sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email:"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textColor="#000000"
+        android:textSize="34sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address:"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textColor="#000000"
+        android:textSize="34sp" />
+
+</LinearLayout>
+```
+
+`profile_detail.xml`:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ID:"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textColor="#000000"
+        android:textSize="34sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Social Security ID:"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvSSN"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textColor="#000000"
+        android:textSize="34sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tax ID:"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvTaxId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textColor="#000000"
+        android:textSize="34sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registration ID:"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvRegistrationId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textColor="#000000"
+        android:textSize="34sp" />
+
+</LinearLayout>
+```
+
+(Szervezzük ki a szövegeket erőforrásba)
+
 
 ### Szabadság képernyő
 
