@@ -204,6 +204,7 @@ A két Fragmentben származzunk le a Fragment osztályból (androidx-es verziót
 `MainProfileFragment.kt`:
 ```kotlin
 class MainProfileFragment: Fragment() {
+
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?
@@ -227,12 +228,14 @@ class MainProfileFragment: Fragment() {
 `DetailsProfileFragment.kt`:
 ```kotlin
 class DetailsProfileFragment: Fragment() {
+
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.profile_detail, container, false)
     }
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
