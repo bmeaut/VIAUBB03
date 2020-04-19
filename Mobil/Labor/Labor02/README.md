@@ -24,7 +24,7 @@ Vezetett rész (1 pont)
 Önálló feladat (1 pont)
 - [Szabadság továbbfejlesztése](#szabadság-továbbfejlesztése)
 
-Bónusz feladatok
+Bónusz feladat
 - [Fizetés menüpont megvalósítása](#Fizetés-menüpont-megvalósítása)
 
 ## Vezetett rész
