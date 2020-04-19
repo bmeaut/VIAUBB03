@@ -142,6 +142,7 @@ btnProfile.setOnClickListener {
             val profileIntent = Intent(this@MenuActivity, ProfileActivity::class.java)
             startActivity(profileIntent)
         }
+        
 btnHoliday.setOnClickListener {
             val holidayIntent = Intent(this@MenuActivity, HolidayActivity::class.java)
             startActivity(holidayIntent)
@@ -180,7 +181,7 @@ class Person(
 )
 ```
 
-A Person osztály példányának elérésére hozzunk létre egy `DataManager` osztályt (szintén a `data` package-en belül), ezzel fogjuk szimulálni a valós adatelérést. Ehhez a Singleton mintát használunk, hogy az alkalmazás minden részéből egyszerűen elérhető legyen. A Person példányt rögtön létre is hozzuk benne.
+A Person osztály példányának elérésére hozzunk létre egy `DataManager` osztályt (szintén a `data` package-en belül), ezzel fogjuk szimulálni a valós adatelérést. Ehhez a Singleton mintát használunk, hogy az alkalmazás minden részéből egyszerűen elérhető legyen. A Person példányt rögtön létre is hozzuk.
 
 > Kotlinban nyelvi szintű támogatás van a singletonok létrehozására. Ahelyett, hogy nekünk kéne egyetlen statikus példányt felvennünk, elég csak a `class` kulcsszó helyett az [`object`](https://kotlinlang.org/docs/reference/object-declarations.html#object-declarations) kulcsszóval létrehoznunk az osztályt hogy egy singletont kapjunk.
 
