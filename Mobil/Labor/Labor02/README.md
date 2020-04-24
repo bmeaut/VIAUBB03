@@ -139,12 +139,12 @@ A MenuActivity fájljában (`MenuActivity.kt`) rendeljünk a gombok lenyomásáh
 
 ```kotlin
 btnProfile.setOnClickListener {
-            val profileIntent = Intent(this@MenuActivity, ProfileActivity::class.java)
+            val profileIntent = Intent(this, ProfileActivity::class.java)
             startActivity(profileIntent)
         }
         
 btnHoliday.setOnClickListener {
-            val holidayIntent = Intent(this@MenuActivity, HolidayActivity::class.java)
+            val holidayIntent = Intent(this, HolidayActivity::class.java)
             startActivity(holidayIntent)
         } });
 ```
@@ -589,7 +589,7 @@ DatePickerDialogFragment.OnDateSelectedListener {
 ...
 
 override fun onDateSelected(year: Int, month: Int, day: Int) {
-        var numHolidays = DataManager.holidays()
+        var numHolidays = DataManager.holidays
 
         if (DataManager.getRemainingHolidays() > 0) {
             DataManager.holidays = numHolidays + 1
