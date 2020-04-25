@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ListDemo</string>
+    <string name="todo">todo</string>
+    <string name="button">Button</string>
+    <string name="new_todo">Új todo</string>
+    <string name="done">kész</string>
+</resources>
