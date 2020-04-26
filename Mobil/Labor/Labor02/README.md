@@ -393,6 +393,8 @@ dependencies {
 }
 ```
 
+Ezután kattinsunk az Android Studioban jobb fent megjelenő `Sync Now` feliratra vagy a fejlécen szereplő mérges gradle elefánt gombra, hogy a library fájljai letöltődjenek.
+
 Az `activity_profile.xml` fájlba hozzunk létre egy `ViewPager`-t:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -472,7 +474,7 @@ dependencies {
 }
 ```
 
-Ezután kattinsunk az Android Studioban jobb fent megjelenő `Sync Now` feliratra vagy a fejlécen szereplő mérges gradle elefánt gombra, hogy a library fájljai letöltődjenek.
+Ezután kattinsunk a `Sync Now` feliratra.
 
 Ha a library fájljai letöltődtek, akkor írjuk meg az Activity layout-ját (`activity_holiday.xml`):
 ```xml
