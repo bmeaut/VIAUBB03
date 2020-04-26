@@ -200,7 +200,7 @@ object DataManager {
 
 Ezután elkészíthetjük a két oldalt, Fragmentekkel. Hozzuk létre egy új `fragments` package-ben a két Fragmentet (New -> Kotlin File/Class -> Kind: Class), ezek neve legyen `MainProfileFragment` és `DetailsProfileFragment`.
 
-A két Fragmentben származzunk le a Fragment osztályból (androidx-es verziót válasszuk) és definiáljuk felül az onCreateView metódust. Ebben betöltjük a layout-ot és a Person objektum adatait kiírjuk a TextView-kra.
+A két Fragmentben származzunk le a Fragment osztályból (androidx-es verziót válasszuk) és definiáljuk felül az onCreateView metódust. Ebben töltsük be a layout-ot, majd az onViewCreated metódusban a Person objektum adatait írjuk ki a TextView-kra.
 
 `MainProfileFragment.kt`:
 ```kotlin
@@ -384,6 +384,15 @@ Készítsük el a megfelelő layout-okat a Fragmentekhez (`R.layout.profile_main
 
 Már csak a lapozás megvalósítása maradt hátra, ezt a ViewPager osztállyal fogjuk megvalósítani.
 
+A korábban használt ViewPager elavult. Azóta ezt egy új ViewPager2-vel helyettesítették. Ennek a használatához szükségünk van a hozzá tartozó könyvtárakra. Ehhez az app szintű build.gradle-t módosítsuk:
+
+```groovy
+dependencies {
+    ...
+    implementation "com.google.android.material:material:1.1.0-beta01"
+}
+```
+
 Az `activity_profile.xml` fájlba hozzunk létre egy `ViewPager`-t:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -393,38 +402,38 @@ Az `activity_profile.xml` fájlba hozzunk létre egy `ViewPager`-t:
     android:layout_height="match_parent"
     tools:context="hu.bme.aut.workplaceapp.ProfileActivity">
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/vpProfile"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
 ```
 
-A ViewPager osztály egy PagerAdapter osztály segítségével tudja az oldalakat létrehozni. Hozzunk létre egy új `adapter` package-be egy ProfilePagerAdaptert a két Fragmentünkhöz. 
+A ViewPager osztály egy FragmentStateAdapter osztály segítségével tudja az oldalakat létrehozni. Hozzunk létre egy új `adapter` package-be egy ProfilePagerAdaptert a két Fragmentünkhöz. 
 
 `ProfilePagerAdapter.kt`:
 ```kotlin
-class ProfilePagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-
+class ProfilePagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
     companion object {
         private const val NUM_PAGES = 2
     }
-    
-    override fun getItem(position: Int): Fragment {
-        return when (position) {
+
+    override fun createFragment(position: Int): Fragment {
+        return when(position){
             0 -> MainProfileFragment()
             1 -> DetailsProfileFragment()
-            else -> MainProfileFragment()
+            else -> MainProfileFragment ()
         }
     }
 
-    override fun getCount(): Int = NUM_PAGES
+    override fun getItemCount(): Int = NUM_PAGES
 }
 ```
 
 A ProfileActivity-ben rendeljük hozzá a ViewPagerhez a most elkészített adaptert (onCreate metódus): 
 ```kotlin
-vpProfile.adapter = ProfilePagerAdapter(supportFragmentManager)
+vpProfile.adapter = ProfilePagerAdapter(this)
 ```
 
 Próbáljuk ki az alkalmazást. A Profile gombra kattinva megjelennek a felhasználó adatai és lehet lapozni is.
