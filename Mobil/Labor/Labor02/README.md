@@ -400,10 +400,10 @@ Az `activity_profile.xml` fájlba hozzunk létre egy `ViewPager`-t:
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="hu.bme.aut.workplaceapp.ProfileActivity">
 
     <androidx.viewpager2.widget.ViewPager2
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/vpProfile"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
