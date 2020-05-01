@@ -35,10 +35,10 @@ Vezetett rész (1 pont)
 
 Bónusz feladatok
 - [Megerősítő dialógus](#megerősítő-dialógus)
-- [Elemek szerkesztése](#elemek-szerkeszése)
+- [Elemek szerkesztése](#elemek-szerkesztése)
 
 Függelék
-- [A `build.gradle` fájl tartalma](#a-build.gradle-fájl-tartalma)
+- [A `build.gradle` fájl tartalma](#a-buildgradle-fájl-tartalma)
 
 ## Vezetett rész
 
