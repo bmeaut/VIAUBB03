@@ -69,7 +69,7 @@ dependencies{
 
 Ezután kattintsunk a jobb felső sarokban megjelenő **Sync now** gombra.
 
->  A `Retrofit` a fejlesztő által leírt egyszerű, megfelelően annotált interfészek alapján kódgenerálással állít elő HTTP hivásokat lebonyolító implementációt. Kezeli az URL-ben inline módon adott paramétereket, az URL queryket, stb. Támogatja a legnépszerűbb szerializáló/deszerializáló megoldásokat is (pl.: [`Gson`](https://github.com/google/gson), [`Moshi`](https://github.com/square/moshi), [`Simple XML`](simple.sourceforge.net), stb.), amikkel Java objektumok, és JSON vagy XML formátumú adatok közötti kétirányú átalakítás valósítható meg. A laboron ezek közül a Gsont fogjuk használni a JSON-ban érkező időjárás adatok konvertálására.
+>  A `Retrofit` a fejlesztő által leírt egyszerű, megfelelően annotált interfészek alapján kódgenerálással állít elő HTTP hívásokat lebonyolító implementációt. Kezeli az URL-ben inline módon adott paramétereket, az URL queryket, stb. Támogatja a legnépszerűbb szerializáló/deszerializáló megoldásokat is (pl.: [`Gson`](https://github.com/google/gson), [`Moshi`](https://github.com/square/moshi), [`Simple XML`](simple.sourceforge.net), stb.), amikkel Java objektumok, és JSON vagy XML formátumú adatok közötti kétirányú átalakítás valósítható meg. A laboron ezek közül a Gsont fogjuk használni a JSON-ban érkező időjárás adatok konvertálására.
 
 > A `Glide`  egy hatékny képbetöltést és -cahce-elést megvalósító library Androidra. Egyszerű interfésze és hatékonysága miatt használjuk.
 
@@ -93,7 +93,7 @@ Vegyük fel az alábbi szöveges erőforrásokat a `res/values/strings.xml`-be:
     <string name="remove">Remove</string>
     
     <string name="new_city">New city</string>
-   	<string name="new_city_hint">City</string>
+    <string name="new_city_hint">City</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     
@@ -188,11 +188,11 @@ class CityActivity: AppCompatActivity(), CityAdapter.OnCitySelectedListener,
         MainRecyclerView.adapter = adapter
     }
 
-override fun onCitySelected(city: String?) {
-        // Todo: Start DetailsActivity with the selected city
+    override fun onCitySelected(city: String?) {
+        //Todo: Start DetailsActivity with the selected city
     }
 
-override fun onCityAdded(city: String?) {
+    override fun onCityAdded(city: String?) {
         adapter.addCity(city!!)
     }
 }
@@ -201,19 +201,19 @@ override fun onCityAdded(city: String?) {
 A `city` package-ben hozzuk létre a `CityAdapter` osztályt:
 
 ```kotlin
-class CityAdapter internal constructor(private val listener: OnCitySelectedListener) : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
+class CityAdapter (private val listener: OnCitySelectedListener) : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
 
-private var cities: MutableList<String> = ArrayList()
-override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): CityViewHolder {
-        val view: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_city, parent, false)
-        return CityViewHolder(view)
+    private var cities: MutableList<String> = ArrayList()
+	override fun onCreateViewHolder(
+     	   parent: ViewGroup,
+           viewType: Int
+    	): CityViewHolder {
+       	   val view: View =
+           LayoutInflater.from(parent.context).inflate(R.layout.item_city, parent, false)
+           return CityViewHolder(view)
     }
 
-override fun onBindViewHolder(
+    override fun onBindViewHolder(
         holder: CityViewHolder,
         position: Int
     ) {
@@ -229,7 +229,7 @@ override fun onBindViewHolder(
         notifyItemInserted(cities.size - 1)
     }
 
-   fun removeCity(position: Int) {
+    fun removeCity(position: Int) {
         cities.removeAt(position)
         notifyItemRemoved(position)
         if (position < cities.size) {
@@ -251,7 +251,7 @@ override fun onBindViewHolder(
                 }
             }
         }
-interface OnCitySelectedListener {
+    interface OnCitySelectedListener {
         fun onCitySelected(city: String?)
     }
 }
@@ -330,7 +330,7 @@ class AddCityDialogFragment : AppCompatDialogFragment() {
             throw RuntimeException(e)
         }
     }
- override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(requireContext())
             .setTitle(R.string.new_city)
             .setView(getContentView ())
@@ -345,11 +345,11 @@ class AddCityDialogFragment : AppCompatDialogFragment() {
             .create()
     }
 
-   private fun getContentView(): View{
+    private fun getContentView(): View{
         return LayoutInflater.from(context).inflate(R.layout.dialog_new_city, null)
         }
 
-interface AddCityDialogListener {
+    interface AddCityDialogListener {
         fun onCityAdded(city: String?)
     }
 }
