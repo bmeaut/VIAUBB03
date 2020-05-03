@@ -648,7 +648,7 @@ class DetailsPagerAdapter(fa: FragmentActivity, val context: Context): FragmentS
 
 Implementáljuk a hiányzó `Fragment`-eket a hozzájuk tartozó néztekkel együtt:
 
-##DetailsMainFragment.kt
+## DetailsMainFragment.kt
 
 
 `res/layout/fragment_details_main.xml`:
@@ -737,7 +737,7 @@ Figyeljük meg, hogy hogy használjuk a kódban a `Glide` libraryt!
 
 > Az *OpenWeatherMap* API-tól a képek lekérhetők a visszakapott adatok alapján, pl: [https://openweathermap.org/img/w/10d.png](http://openweathermap.org/img/w/10d.png) 
 
-##DetailsMoreFragment.kt
+## DetailsMoreFragment.kt
 
 `res/layout/fragment_details_more.xml`:
 
@@ -814,6 +814,7 @@ A `details` package-ben a `DetailsMoreFragment`:
 class DetailsMoreFragment : Fragment() {
 
     private var weatherDataHolder: WeatherDataHolder? = null
+    
     override fun onCreate( savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         weatherDataHolder = if (activity is WeatherDataHolder) {
@@ -859,10 +860,12 @@ Ideiglenesen a `DetailsActivity` `onResume()` függvénye legyen az alábbi:
 ```kotlin
 override fun onResume() {
         super.onResume()
+	
         val detailsPagerAdapter =
             DetailsPagerAdapter(this, this)
         mainViewPager.adapter = detailsPagerAdapter 
-TabLayoutMediator(tab_layout, mainViewPager) { tab, position ->
+	
+	TabLayoutMediator(tab_layout, mainViewPager) { tab, position ->
             tab.text = when(position) {
                 0 -> getString(R.string.main)
                 1 -> getString(R.string.details)
@@ -883,6 +886,7 @@ Az időjárás adatok lekérdezésének bekötéséhez implementáljunk egy `loa
 ```kotlin
 private fun loadWeatherData(){
         NetworkManager.instance!!.getWeather(city)!!.enqueue(object : Callback<WeatherData?> {
+	
                 override fun onResponse(
                     call: Call<WeatherData?>,
                     response: Response<WeatherData?>
@@ -918,8 +922,10 @@ Implementáljuk a hiányzó `displayWeatherData(...)` függvényt, ami sikeres A
 
 ```kotlin
 private fun displayWeatherData(receivedWeatherData: WeatherData?) {
+
         weatherData = receivedWeatherData
-        val detailsPagerAdapter =
+        
+	val detailsPagerAdapter =
             DetailsPagerAdapter(this, this)
         mainViewPager.adapter = detailsPagerAdapter
     } 
@@ -930,9 +936,9 @@ A `DetailsActivity` `onResume()` függvényében hívjuk meg a `loadWeatherData(
 ```kotlin
 override fun onResume() {
         super.onResume() 
-…
-loadWeatherData()
-}
+	…
+	loadWeatherData()
+	}
 ```
 
 Futtassuk az alkalmazást és figyeljük meg a működését! Próbáljuk ki azt is, hogy mi történik akkor, ha megszakítjuk a futtató eszköz internet kapcsolatát és megpróbáljuk megnyitni a részletező nézetet!
@@ -940,4 +946,4 @@ Futtassuk az alkalmazást és figyeljük meg a működését! Próbáljuk ki azt
 ## Önálló feladat
 ### Város listából törlés megvalósítása
 
-Valósítsuk meg a városok törlését a *Remove* gomb megynomásának hatására.
+Valósítsuk meg a városok törlését a *Remove* gomb megnyomásának hatására.
