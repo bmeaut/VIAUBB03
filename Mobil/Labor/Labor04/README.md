@@ -648,7 +648,7 @@ class DetailsPagerAdapter(fa: FragmentActivity, val context: Context): FragmentS
 
 Implementáljuk a hiányzó `Fragment`-eket a hozzájuk tartozó néztekkel együtt:
 
-## DetailsMainFragment.kt
+DetailsMainFragment.kt
 
 
 `res/layout/fragment_details_main.xml`:
@@ -737,7 +737,7 @@ Figyeljük meg, hogy hogy használjuk a kódban a `Glide` libraryt!
 
 > Az *OpenWeatherMap* API-tól a képek lekérhetők a visszakapott adatok alapján, pl: [https://openweathermap.org/img/w/10d.png](http://openweathermap.org/img/w/10d.png) 
 
-## DetailsMoreFragment.kt
+DetailsMoreFragment.kt
 
 `res/layout/fragment_details_more.xml`:
 
