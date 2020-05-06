@@ -45,13 +45,18 @@ Vezetett rész (1 pont)
 - [Város listából törlés megvalósítása](#város-listából-törlés-megvalósítása)
 
 ## Vezetett rész
-A labor során egy kompelx időjárás alkalmazás készül el. A labor szűkös időkerete miatt szükség lesz nagyobb kódblokkok másolására, azonban minden esetben figyeljünk a laborvezető magyarázatára, hogy a kódrészek érthetőek legyenek. A cél a bemutatott kódok megértése és a felhasznált libraryk használatának elsajátítása.
-
-*Elnézést kérünk  az eddigieknél nagyobb kód blokkokért, de egy ilyen, bemutató jellegű feladat kisebb méretben nem oldható meg, illetve a labor elveszítené a lényegét, ha csak egy „hello world” hálózati kommunikációs lekérést valósítanánk meg. Köszönjük a megértést.*
 
 ### Projekt létrehozása
 
-Hozzunk létre egy `WeatherInfo` nevű projektet Android Studioban, `Add no activity` opcióval ! A *Company domain* legyen `aut.bme.hu`! Az alkalmazást telefonra és tabletre készítjük, tehát válasszuk ki a **Phone and Tablet** lehetőséget, minimum SDK-nak pedig válasszuk az **API 15**-öt! Első `Activity`-ként hozzunk létre egy *Basic Activity*, `Fragment` használata **nélkül** és nevezzük el `CityActivity`-nek, legyen ez a **Launcher Activity**-nk majd kattintsunk a *Finish* gombra!
+Első lépésként indítsuk el az Android Studio-t, majd:
+
+1. Hozzunk létre egy új projektet, válasszuk az *Empty Activity* lehetőséget.
+2. A projekt neve legyen `WeatherInfo`, a kezdő package pedig `hu.bme.aut.weatherinfo`
+3. Nyelvnek válasszuk a *Kotlin*-t.
+4. A minimum API szint legyen API21: Android 5.0.
+5. Az instant app támogatást, valamint a *Use legacy android.support libraries* pontot **ne** pipáljuk be.
+
+Első `Activity`-ként hozzunk létre egy *Basic Activity*, `Fragment` használata **nélkül** és nevezzük el `CityActivity`-nek, legyen ez a **Launcher Activity**-nk majd kattintsunk a *Finish* gombra!
 
 Töltsük le és tömörítsük ki [az alkalmazáshoz szükséges erőforrásokat](./downloads/drawables.zip) , majd másoljuk be őket a projekt *app/src/main/res* mappájába (Studio-ban a *res* mappa kijelölése után *Ctrl+V*)!
 
@@ -189,7 +194,7 @@ class CityActivity: AppCompatActivity(), CityAdapter.OnCitySelectedListener,
     }
 
     override fun onCitySelected(city: String?) {
-        //Todo: Start DetailsActivity with the selected city
+        //TODO Start DetailsActivity with the selected city
     }
 
     override fun onCityAdded(city: String?) {
@@ -204,19 +209,13 @@ A `city` package-ben hozzuk létre a `CityAdapter` osztályt:
 class CityAdapter (private val listener: OnCitySelectedListener) : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
 
     private var cities: MutableList<String> = ArrayList()
-	override fun onCreateViewHolder(
-     	   parent: ViewGroup,
-           viewType: Int
-    	): CityViewHolder {
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
        	   val view: View =
-           LayoutInflater.from(parent.context).inflate(R.layout.item_city, parent, false)
+           	LayoutInflater.from(parent.context).inflate(R.layout.item_city, parent, false)
            return CityViewHolder(view)
     }
 
-    override fun onBindViewHolder(
-        holder: CityViewHolder,
-        position: Int
-    ) {
+    override fun onBindViewHolder(holder: CityViewHolder, position: Int) {
         val item = cities[position]
         holder.nameTextView.text = cities[position]
         holder.item = item
@@ -936,7 +935,7 @@ A `DetailsActivity` `onResume()` függvényében hívjuk meg a `loadWeatherData(
 ```kotlin
 override fun onResume() {
         super.onResume() 
-	…
+	... 
 	loadWeatherData()
 	}
 ```
