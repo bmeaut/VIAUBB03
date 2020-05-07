@@ -625,7 +625,7 @@ A részletező nézetek továbbfejlesztése
 A `ViewPager` megfelelő működéséhez létre kell hoznunk egy `FragmentPagerAdapter`-ből származó osztályt a `details` package-ben, ami az eddig látott adapterekhez hasonlóan azt határozza meg, hogy milyen elemek jelenjenek meg a hozzájuk tartozó nézeten (jelen esetben az elemek `Fragment`-ek lesznek):
 
 ```kotlin
-class DetailsPagerAdapter(fa: FragmentActivity, val context: Context): FragmentStateAdapter(fa) {
+class DetailsPagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
 
     companion object{
         private const val NUM_PAGES: Int = 2
@@ -859,7 +859,7 @@ override fun onResume() {
         super.onResume()
 	
         val detailsPagerAdapter =
-            DetailsPagerAdapter(this, this)
+            DetailsPagerAdapter(this)
         mainViewPager.adapter = detailsPagerAdapter 
 	
 	TabLayoutMediator(tab_layout, mainViewPager) { tab, position ->
