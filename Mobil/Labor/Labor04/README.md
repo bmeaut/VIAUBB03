@@ -218,8 +218,7 @@ class CityAdapter (private val listener: OnCitySelectedListener) : RecyclerView.
 
     override fun onBindViewHolder(holder: CityViewHolder, position: Int) {
         val item = cities[position]
-        holder.nameTextView.text = cities[position]
-        holder.item = item
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int = cities.size
@@ -239,18 +238,18 @@ class CityAdapter (private val listener: OnCitySelectedListener) : RecyclerView.
 
     inner class CityViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        var nameTextView: TextView
-        var removeButton: Button
         var item: String? = null
 
         init {
-            nameTextView = itemView.findViewById(R.id.CityItemNameTextView)
-            removeButton = itemView.findViewById(R.id.CityItemRemoveButton)
             itemView.setOnClickListener{
-                    listener.onCitySelected(item)
-                }
+                listener.onCitySelected(item)
             }
         }
+        fun bind(newCity: String?) {
+            item = newCity
+            itemView.CityItemNameTextView.text = item
+        }
+    }
     interface OnCitySelectedListener {
         fun onCitySelected(city: String?)
     }
