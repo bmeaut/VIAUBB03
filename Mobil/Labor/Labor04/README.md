@@ -923,7 +923,7 @@ private fun displayWeatherData(receivedWeatherData: WeatherData?) {
         weatherData = receivedWeatherData
         
 	val detailsPagerAdapter =
-            DetailsPagerAdapter(this, this)
+            DetailsPagerAdapter(this)
         mainViewPager.adapter = detailsPagerAdapter
     } 
 ```
