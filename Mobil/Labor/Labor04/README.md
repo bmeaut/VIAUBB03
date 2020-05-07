@@ -582,22 +582,12 @@ A hálózati hívást jelölő interfész függvény visszatérési értéke egy
 Hozzunk létre a `network` package-ben egy `NetworkManager` osztályt:
 
 ```kotlin
-class NetworkManager {
+object NetworkManager {
     private val retrofit: Retrofit
     private val weatherApi: WeatherApi
 
-    companion object {
-        private const val SERVICE_URL = "https://api.openweathermap.org"
-        private const val APP_ID = "bb251b14d946dd3d456c67626e5df869"
-        var instance: NetworkManager? = null
-            get() {
-                if (field == null) {
-                    field = NetworkManager()
-                }
-                return field
-            }
-            private set
-    }
+    private const val SERVICE_URL = "https://api.openweathermap.org" 
+    private const val APP_ID = "bb251b14d946dd3d456c67626e5df869"
 
     init {
         retrofit = Retrofit.Builder()
