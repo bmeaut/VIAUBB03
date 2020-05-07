@@ -372,6 +372,15 @@ A következő lépésben a `hu.bme.aut.weatherinfo.feature`  package-en belül h
 
 A `details` package-ben hozzunk létre egy *Empty Activity* típusú `Activity`-t  `DetailsActivity` néven.
 
+A ViewPager2 fogjuk használni, ehhez módosítsuk az app szintű build.gradle-t:
+
+```groovy
+dependencies {
+    ...
+    implementation "com.google.android.material:material:1.1.0-beta01"
+}
+```
+
 A hozzá tartozó `activity_details.xml` layout kódja:
 
 ```xml
@@ -407,7 +416,7 @@ A felület gyakorlatilag egy `ViewPager`-t tartalmaz, melyben két `Fragment`-et
 A `DetailsActivity.kt`  kódja legyen a következő:
 
 ```kotlin
-class DetailsActivity : AppCompatActivity(), WeatherDataHolder {
+class DetailsActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "DetailsActivity"
@@ -437,6 +446,7 @@ class DetailsActivity : AppCompatActivity(), WeatherDataHolder {
         }
         return super.onOptionsItemSelected(item)
     }
+}
 ```
 
 Cseréljük le a `strings.xml`-ben a *weather* szöveges erőforrást:
