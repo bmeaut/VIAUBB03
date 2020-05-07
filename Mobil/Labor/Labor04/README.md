@@ -209,10 +209,11 @@ A `city` package-ben hozzuk létre a `CityAdapter` osztályt:
 class CityAdapter (private val listener: OnCitySelectedListener) : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
 
     private var cities: MutableList<String> = ArrayList()
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
-       	   val view: View =
-           	LayoutInflater.from(parent.context).inflate(R.layout.item_city, parent, false)
-           return CityViewHolder(view)
+    
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
+       	val view: View =
+    	   	LayoutInflater.from(parent.context).inflate(R.layout.item_city, parent, false)
+        return CityViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CityViewHolder, position: Int) {
@@ -316,6 +317,7 @@ A `city` package-ben hozzuk létre az `AddCityDialogFragment` osztályt:
 class AddCityDialogFragment : AppCompatDialogFragment() {
 
     private lateinit var listener: AddCityDialogListener
+    private lateinit var contentView: View
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -330,16 +332,13 @@ class AddCityDialogFragment : AppCompatDialogFragment() {
         }
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    	contentView = getContentView()
         return AlertDialog.Builder(requireContext())
             .setTitle(R.string.new_city)
-            .setView(getContentView ())
-            .setPositiveButton(
-                R.string.ok,
-                DialogInterface.OnClickListener { dialogInterface, i ->
-                    listener!!.onCityAdded(
-                        NewCityDialogEditText!!.text.toString()
-                    )
-                })
+            .setView(contentView)
+            .setPositiveButton(R.string.ok) { dialogInterface, i ->
+                    listener!!.onCityAdded(contentView.NewCityDialogEditText!!.text.toString())
+                }
             .setNegativeButton(R.string.cancel, null)
             .create()
     }
