@@ -686,8 +686,8 @@ A `details` package-ben a `DetailsMainFragment`:
 
 ```kotlin
 class DetailsMainFragment : Fragment() {
-    private var weatherDataHolder: WeatherDataHolder? = null
 
+    private var weatherDataHolder: WeatherDataHolder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -922,8 +922,7 @@ private fun displayWeatherData(receivedWeatherData: WeatherData?) {
 
         weatherData = receivedWeatherData
         
-	val detailsPagerAdapter =
-            DetailsPagerAdapter(this)
+	val detailsPagerAdapter = DetailsPagerAdapter(this)
         mainViewPager.adapter = detailsPagerAdapter
     } 
 ```
