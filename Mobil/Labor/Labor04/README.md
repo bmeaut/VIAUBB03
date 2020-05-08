@@ -882,7 +882,7 @@ Az időjárás adatok lekérdezésének bekötéséhez implementáljunk egy `loa
 
 ```kotlin
 private fun loadWeatherData(){
-        NetworkManager.instance!!.getWeather(city)!!.enqueue(object : Callback<WeatherData?> {
+        NetworkManager.getWeather(city)!!.enqueue(object : Callback<WeatherData?> {
 	
                 override fun onResponse(
                     call: Call<WeatherData?>,
