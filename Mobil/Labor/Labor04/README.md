@@ -622,7 +622,7 @@ A modell elemek és a hálózati réteg megvalósítása után a részletező n�
 
 A részletező nézetek továbbfejlesztése
 
-A `ViewPager` megfelelő működéséhez létre kell hoznunk egy `FragmentPagerAdapter`-ből származó osztályt a `details` package-ben, ami az eddig látott adapterekhez hasonlóan azt határozza meg, hogy milyen elemek jelenjenek meg a hozzájuk tartozó nézeten (jelen esetben az elemek `Fragment`-ek lesznek):
+A `ViewPager` megfelelő működéséhez létre kell hoznunk egy `FragmentStateAdapter`-ből származó osztályt a `details` package-ben, ami az eddig látott adapterekhez hasonlóan azt határozza meg, hogy milyen elemek jelenjenek meg a hozzájuk tartozó nézeten (jelen esetben az elemek `Fragment`-ek lesznek):
 
 ```kotlin
 class DetailsPagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
