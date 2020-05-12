@@ -9,4 +9,4 @@
 
 [3. labor - Perzisztencia - Bevásárló alkalmazás készítése](./Labor03/Labor03.md)
 
-[4. labor - Hálózatkezelés - Weather Info alkalmazás készítése](./Labor04/Labor04.md)
+[4. labor - Hálózatkezelés - Weather Info alkalmazás készítése](./Labor04/README.md)
