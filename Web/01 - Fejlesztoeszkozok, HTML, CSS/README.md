@@ -162,7 +162,7 @@ A böngészők Inspector nézetét a böngészőben általában az **F12** bille
 
 Vizsgáljuk meg, mit kínálnak a böngészőkbe épített hibakereső eszközök!
 
-A laborvezető által kijelölt böngészőn navigáljunk a [www.aut.bme.hu](https://www.aut.bme.hu) oldalra és vizsgáljuk meg az
+A laborvezető által kijelölt böngészőn (pl. Chrome) navigáljunk a [www.aut.bme.hu](https://www.aut.bme.hu) oldalra és vizsgáljuk meg az
 oldal felépítését! Nyissuk meg a hibakeresési eszköztárat az F12-vel, nézzük meg, milyen lehetőségeink vannak! 
 
 ![A BME AUT kezdőlapja](aut-bme-hu.png)
