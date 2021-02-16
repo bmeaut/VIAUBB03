@@ -51,7 +51,7 @@ Ne zárjuk be a Fiddler alkalmazást! Indítsuk el a Windows beépített proxy b
 
 Ha a proxybeállításokat a Fiddler indítása után nyitjuk meg, úgy láthatjuk, hogy a proxy értéke kitöltésre került:
 
-![Proxy beállítások Fiddlerrel](proxy-fiddler.png)
+![Proxy beállítások Fiddlerrel](proxy-fiddler_.png)
 
 Ha bezárjuk a proxy beállításokat, aztán a Fiddlert, majd újra megnyitjuk a proxybeállításokat, úgy láthatjuk, hogy a Fiddler indítása állítja be a proxy szerver címét:
 
