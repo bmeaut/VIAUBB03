@@ -123,7 +123,7 @@ Módosítsuk az oldal megjelenését futási időben!
 
 - Rejtsük el a böngésző beépített stílusait, és láthatjuk, hogy kizárólag az üres inline stílus illeszkedik így az elemre. Itt hozzá tudunk adni új inline stílust az elemhez.
 - Ha új szabályt akarunk felvenni, akkor a kapcsoszárójelek közé kattintva tehetjük ezt meg, ezután az automatikus kiegészítés funkcióval láthatjuk az összes, a böngésző által ismert CSS tulajdonságot (Firefox Developerben ezt az üres kurzoron a **fel-le nyilak**kal tehetjük meg, Edge-ben és Chrome-ban a **Ctrl+szóköz**zel).
-- Vegyük fel a `<h1>` elemhez az alábbi CSS tulajdonságot:
+- Vegyünk fel a `<h1>` elemhez az alábbihoz hasonló CSS tulajdonságot, csak válasszunk ehhez egy egyedi színt!
     ``` CSS
     color: red;
     ```
