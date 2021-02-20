@@ -1,0 +1,30 @@
+ul.menu {
+    list-style: none;
+    padding: 0;
+}
+
+ul.menu > li {
+    float: left;
+    padding: 10px;
+    min-width: 200px;
+    border: 1px solid grey;
+}
+
+ul.menu > li:focus {
+    font-weight: bold;
+    color: #44AA44;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.medium-only {
+    display: none;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .medium-only {
+        display: block;
+    }
+}

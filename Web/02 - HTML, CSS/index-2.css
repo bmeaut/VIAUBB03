@@ -1,0 +1,40 @@
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    color: #666;
+}
+
+
+/* Linkek színei */
+
+a {
+    color: #9c3;
+}
+
+a:hover {
+    color: #769e26;
+    text-decoration: none;
+}
+
+
+/* Címsorok */
+
+h1, h2 {
+    font-family: 'Muli', sans-serif;
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 34px;
+    color: #404040;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-size: 18px;
+}
