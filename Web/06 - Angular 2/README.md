@@ -1,6 +1,7 @@
 # Labor 06 - Egyszerű Angular alkalmazás fejlesztése
 
 <details>
+
 <summary>Ez a dokumentum egyedi stíluslapot tartalmaz.</summary>
 
 GitHubon az alábbi CSS nyers szövegként jelenik meg, GitHub Pages oldalakon viszont értelmezésre kerül (tehát kiértékelődik), ezért a nyers szöveg nem látható.
@@ -55,10 +56,12 @@ Az első lépés, hogy az egyes színekre kattintva a palettában az aktuális t
 Ehhez az Angular beépített eseménykezelési lehetőségét fogjuk használni. Az [`@Output`](https://angular.io/guide/component-interaction#parent-listens-for-child-event) dekorátorral ellátott `EventEmitter` példányunk képes eseményeket elsütni, amire a szülő komponens feliratkozhat.
 
 <details>
+
 <summary>A PegComponent forráskódját egészítsük ki egy eseménykezelő függvénnyel (onPegClicked) és egy pegClick nevű Output tulajdonsággal!</summary>
 
-`src\app\peg\peg.component.ts`
-``` TS
+`src\app\peg\peg.component.ts`:
+
+```TS
 @Output() // import { Output } from '@angular/core';
 pegClick: EventEmitter<void> = new EventEmitter(); // import { EventEmitter } from '@angular/core';
 // Fontos, hogy a jó csomagból importáljuk ezt az osztályt, mert több helyen is megtalálható!
@@ -72,43 +75,52 @@ onPegClicked() {
 A komponensünk tehát tud értesítést küldeni arról, ha valaki őt megnyomta. Az esemény tetszőleges paramétereket átadhat elsütéskor, nekünk erre nincs szükségünk, ezért egy `<void>` típusparaméterű `EventEmitter`t hozunk létre (ez tehát nem küld semmilyen objektumot paraméterül, amikor elsütjük). Az `onPegClicked()` függvény fogja magát a `pegClick` eseményt elsütni, ezt viszont még nem hívjuk meg sehonnan.
 
 <details>
+
 <summary>Módosítsuk a PegComponent kódját, hogy a div-en történő click esemény hatására lefusson az eseménykezelő!</summary>
 
-`src\app\peg\peg.component.html`
-``` HTML
+`src\app\peg\peg.component.html`:
+
+```HTML
 <div class="peg peg-{{colorLower}} peg-{{type}}" 
     (click)="onPegClicked()">
 </div>
 ```
 
 A fenti `(click)="eventHandler"` szintaxis ekvivelens az alábbival.
-``` HTML 
+
+```HTML 
 on-click="onPegClicked()"
 ```
 
 Ezt ritkábban használják, de megfelel a HTML szabványnak, ami szerint az attribútumok csak alfanumerikus értékeket tartalmazhatnak (szemben a `()[]` zárójel karakterekkel). A `[property]`-nek a megfelelője ugyanígy a `bind-property`.
+
 </details>
 
 A normál DOM elemeken elérhető nagyon sok beépített DOM esemény, mint pl. a `click`, ezeket az Angular alapételmezetten rendelkezésünkre bocsátja. A komponenseken (pl. az `mm-peg` elemen) ilyen nem érhető el, ugyanis ezek nem DOM elemekként, hanem komponensekként kezelendők. A komponensek viszont `@Output` dekorátorral ellátott eseménykezelő változókkal rendelkezhetnek, amelyek ezzel megegyező funkciót biztosítanak, ahogyan az alábbiakban is látható lesz.
 
 <details>
+
 <summary>Módosítsuk az AppComponent kódját, hogy kezelje a PegComponenten elérhető új eseményünket a saját addColorToCurrentGuess függvényével!</summary>
 
-`src\app\app.component.ts`
-``` TS
+`src\app\app.component.ts`:
+
+```TS
 addColorToCurrentGuess(color: PegColor) {
   console.log(color);
 }
 ```
 
-`src\app\app.component.html`
-``` HTML
+`src\app\app.component.html`:
+
+```HTML
 <div class="colorpicker">
     <mm-peg *ngFor="let color of possibleValues" [type]="'code'" [color]="color"
             (pegClick)="addColorToCurrentGuess(color)"></mm-peg>
 </div>
 ```
+
 ![Peg Click!](peg-click.png)
+
 </details>
 
 Foglaljuk össze, hogy mi történt eddig!
@@ -122,10 +134,12 @@ Nem minden `<mm-peg>` elemre fogunk feliratkoztatni eseménykezelőt, most is cs
 Az `EventEmitter` ad lehetőséget nekünk arra, hogy lekérdezzük, hány feliratkozó van az elemre. A DOM-ban elérhető `style` tulajdonság bármely értékére tudunk kötni a speciális [`NgStyle`](https://angular.io/api/common/NgStyle) direktívával.
 
 <details>
+
 <summary>Csak azok az &lt;mm-peg&gt; elemek, amikre van beregisztrálva legalább egy eseménykezelő, pointer típusú egérkurzort kapjanak!</summary>
 
-`src\app\peg\peg.component.html`
-``` HTML
+`src\app\peg\peg.component.html`:
+
+```HTML
 <div class="peg peg-{{colorLower}} peg-{{type}}" 
     (click)="onPegClicked()"
     [style.cursor]="pegClick.observers.length > 0 ? 'pointer' : 'initial'">
@@ -138,10 +152,12 @@ Ezután csak azoknak az `<mm-peg>` komponenseknek a `<div>`-jeire fog felkerüln
 Már csak az "üzleti logika" megírása van hátra, tehát a megfelelő színt be kell tenni az első üres helyre.
 
 <details>
+
 <summary>Valósítsuk meg helyesen az addColorToCurrentGuess() függvényt!</summary>
 
-`src\app\app.component`
-``` TS
+`src\app\app.component`:
+
+```TS
 addColorToCurrentGuess(color: PegColor) {
   for (let i = 0; i < 4; i++) {
     if (this.currentGuess[i] == 'unset'){
@@ -156,7 +172,7 @@ Fontos a `return`, ugyanis ha nem lépünk ki, miután találtunk egy üres hely
 
 A fentitől kicsit "egyszerűbben" (rövidebben, de funkcionális megközelítést alkalmazva) is megírhatjuk a keresést és beszúrást a `splice` univerzális tömbmanipuláló függvénnyel:
 
-``` TS
+```TS
 addColorToCurrentGuess(color: PegColor) {
   this.currentGuess.splice(this.currentGuess.indexOf('unset'), 1, color);
 }
@@ -165,6 +181,7 @@ addColorToCurrentGuess(color: PegColor) {
 Ez annyiban működik másképpen, hogy ha az `indexOf('unset')` `-1`-gyel tér vissza, akkor a tömb végéről vesszük ki az utolsó elemet és cseréljük le. Ez nekünk így pont meg is felel.
 
 ![Tippelés](guessing.gif)
+
 </details>
 
 ## Tipp javítása
@@ -174,10 +191,12 @@ Ezek után az aktuális tippünk javítására azáltal van lehetőségünk, hog
 A legegyszerűbb megoldás az `NgFor` direktívában elkérni az aktuális elemünk indexét. Erre azért van szükség, mert több ugyanolyan színű golyónk is lehet, és ha csak a szín alapján próbálnánk meg kivenni az aktuális tippből az elemet, akkor rossz elemet is kivehetnénk (nem eldönthető, melyiket akartuk kivenni a 2 piros közül).
 
 <details>
+
 <summary>Implementáljuk értelemszerűen a removeColorFromCurrentGuess függvényt!</summary>
 
-`src\app\app.component.ts`
-``` TS
+`src\app\app.component.ts`:
+
+```TS
 removeColorFromCurrentGuess(index: number) {
   this.currentGuess.splice(index, 1);
   this.currentGuess.push('unset');
@@ -185,15 +204,18 @@ removeColorFromCurrentGuess(index: number) {
 ```
 
 Ez a függvény kiveszi az aktuális tippünkből az adott indexű elemet, a tömb végére pedig beszúr egy `unset` elemet. Így minden elem balra csúszik eggyel, de mivel 4 helyett csak 3 elem marad, ezért egy új üres elemet kell beszúrni a tömb végére.
+
 </details>
 
 A függvényt a megfelelő index-szel kell meghívnunk, ehhez használjuk az Angular [NgFor](https://angular.io/api/common/NgForOf) index szintaxisát!
 
 <details>
+
 <summary>Adjuk át az aktuális elem indexét az eseménykezelőnek az AppComponent .current-guess-row elemben!</summary>
 
-`src\app\app.component.html`
-``` HTML
+`src\app\app.component.html`:
+
+```HTML
 <div class="current-guess-row">
     <mm-peg *ngFor="let color of currentGuess; index as i" [type]="'code'" [color]="color" 
         (pegClick)="removeColorFromCurrentGuess(i)"></mm-peg>
@@ -203,6 +225,7 @@ A függvényt a megfelelő index-szel kell meghívnunk, ehhez használjuk az Ang
 Láthatjuk, hogy az `NgFor` segítségével kivettük az aktuális elem indexét az `i` változóba, amit átadunk a `pegClick` eseménykezelőben a függvényünknek.
 
 ![Tipp eltávolítása](guess-remove.gif)
+
 </details>
 
 ## Tipp elküldése
@@ -212,17 +235,20 @@ A `Guess!` feliratú gombot csak akkor engedélyezzük, ha már 4 színes golyó
 A problémát többféleképpen megközelíthetjük, a legcélravezetőbb szintén adatkötést használni. Az `[attribútum]="érték"` szintaxissal adott DOM elem tulajdonságát adatköthetjük. Mi a gombunk `disabled` attribútumát szeretnék akkor és csak akkor engedélyezni, ha nincsen az aktuális tippben `unset` érték. Megtehetnénk, hogy minden alkalommal, amikor módosítjuk a tömböt (elemet veszünk fel vagy törlünk), újra kiszámoljuk, hogy van-e ilyen érték. Ez viszont törékeny, ugyanis minden helyen, ahol a tömböt manipuláljuk, meg kell hívnunk ezt a logikát is. Célszerűbb ahhoz a logikai értékhez kötni, ami el tudja dönteni, hogy van-e üres elem a tömbben.
 
 <details>
+
 <summary>Módosítsuk a gombhoz tartozó HTML részletet az `app\src\app.component.html`-ben, egyúttal vegyük fel a majdani tippelési logikát tartalmazó eseménykezelőt guess néven az `app\src\app.component.ts`-be!</summary>
 
-`src\app\app.component.ts`
-``` TS
+`src\app\app.component.ts`:
+
+```TS
 guess() {
   console.log("Guess works!");
 }
 ```
 
-`src\app\app.component.html`
-``` HTML
+`src\app\app.component.html`:
+
+```HTML
 <button class="btn btn-primary" 
     [disabled]="currentGuess.indexOf('unset') !== -1"
     (click)="guess()">
@@ -233,16 +259,18 @@ guess() {
 Láthatjuk, hogy a `disabled` attribútum értéke azzal egyezik meg (*minden adott időpillanatban!*), hogy a `currentGuess` tömb tartalmaz-e `unset` értéket. Nem kellett tehát felvennünk egy külön erre a célra szolgáló tulajdonságot/mezőt/változót, amit nekünk kell kézzel karbantartani, egyszerűen csak megadtuk az adatkötött kritériumot, hogy mikor legyen letiltva a gomb.
 
 ![Tipp gomb](guess-button.gif)
-<hr/>
+
 </details>
 
 Láthatjuk, hogy a gomb `hover`-re továbbra is a `pointer`-t mutatja. Használhatnánk ismét a `[style]` adatkötést, de fontos, hogy csak azért, mert van egy kalapács a kezünkben, nem szabad mindent szögnek nézni. Ezért egyszerűsítsük le a dolgunkat.
 
 <details>
+
 <summary>Az AppComponent stíluslapjához vegyünk fel egy újabb CSS szabályt, ami a letiltott gombokat megfelelő kurzorral látja el!</summary>
 
-`src\app\app.component.scss`
-``` SCSS
+`src\app\app.component.scss`:
+
+```SCSS
 button:disabled, .btn:disabled {
   cursor: not-allowed !important;
 }
@@ -256,10 +284,12 @@ A tippünk összeállítását követően el is küldhetjük azt.
 Ehhez kezelnünk kell a játék indulásakor, hogy sorsoljon ki nekünk a gép 4 véletlenszerű színt.
 
 <details>
+
 <summary>Egészítsük ki az AppComponent kódját egy új tulajdonsággal, ami a tippet fogja tartalmazni, valamint az initGame() függvényét, ami véletlenszerűen fog sorsolni a lehetséges értékek közül 4-et!</summary>
 
-`src\app\app.component.ts`
-``` TS
+`src\app\app.component.ts`:
+
+```TS
 private secretColors: PegColor[];
 
 initGame() {
@@ -267,6 +297,7 @@ initGame() {
   this.secretColors = Array.from(Array(4)).map(_ => this.possibleValues[Math.floor(Math.random() * this.possibleValues.length)]);
 }
 ```
+
 A fenti feltöltési logika a `secretColors` tömböt tölti fel:
 - veszünk egy 4 üres elemet tartalmazó tömböt,
 - minden elemet transzformálunk egy véletlen értékre az alábbi módon:
@@ -286,10 +317,12 @@ A tipp beküldéséhez kezeljük, amikor a felhasználó megnyomja a tippelésre
 A tipp beküldésekor vizsgáljuk, hogy eltalálta-e mind a 4 színt a játékos, mert ekkor nyer, illetve hogy ez volt-e az utolsó tippje, amivel még mindig nem találta el a színeket, mert ekkor veszít. Egyelőre egy `alert()` ablakot feldobhatunk erre az esetre. Ezt követően egyszerűen meghívjuk az `initGame()` függvényt, amivel új játékot indítunk.
 
 <details>
+
 <summary>Valósítsd meg a teljes tippelési logikát a guess() függvényben a leírtaknak megfelelően (nehéz)!</summary>
 
-`src\app\app.component.ts`
-``` TS
+`src\app\app.component.ts`:
+
+```TS
 guess() {
   // Készítünk egy másolatot a tippből és a sorsolt titkos sorrendből
   const current = this.currentGuess.slice();
@@ -333,6 +366,7 @@ guess() {
 ```
 
 Az adatkötés segítségével a felületre automatikusan bekerül a megfelelő tipp, ugyanis az adatkötés automatikusan újrarajzolja az elemeket a felületen.
+
 </details>
 
 ## Játék végét jelző modális ablak
@@ -346,8 +380,9 @@ Ezt követően a játék végállapotát kell figyeljük. A játéknak csak akko
 
 A modális ablak kezeléséhez a komponensünknek konstruktorban kell várnia az NgbModal objektumot az `@ng-bootstrap\ng-bootstrap` modulból:
 
-`src\app\app-component.ts`
-``` TS
+`src\app\app-component.ts`:
+
+```TS
 constructor(private modalService: NgbModal) { // import { NgbModal } from '@ng-bootstrap\ng-bootstrap';
 ```
 
@@ -358,14 +393,16 @@ Ezután a komponens kódjában a `modalService` tulajdonság segítségével meg
 - átadható egy [TemplateRef](https://angular.io/api/core/TemplateRef), azaz egy komponens template-jének része (beágyazott nézet).
 
 <details>
+
 <summary>Készítsük el és jelenítsük meg a modális ablakot (nehéz)!</summary>
 
 A fent felsorolt két lehetőség közül az elsőt valósítjuk meg. Ehhez létrehozunk egy önálló komponenst, ami ki fogja rajzolni a végeredményt.
 
 > `ng generate component game-over`
 
-`src\app\game-over\game-over.component.ts`
-``` TS
+`src\app\game-over\game-over.component.ts`:
+
+```TS
 export class GameOverComponent implements OnInit {
 
   @Input()
@@ -409,8 +446,9 @@ A második lépés ezzel majdnem megegyezik, itt viszont nem adhatjuk a paramét
 
 > A fenti konstrukció a konkrét típusok ismeretének hiányában alkalmazható például (*reflection*-höz hasonló elvet követve). Önállóan ilyen kódot ritkán szükséges írni, a legtöbb fejlesztőnek nincsen szüksége a keretrendszer-jellegű funkciók megírására, csak felhasználására.
 
-`src\app\game-over\game-over.component.html`
-``` HTML
+`src\app\game-over\game-over.component.html`:
+
+```HTML
 <div class="text-center" [class.won]="won">
     <h1 *ngIf="won">Congratulations! You won!</h1>
     <h2 *ngIf="!won">You lost. Better luck next time!</h2>
@@ -431,8 +469,9 @@ Itt kettő újdonságot láthatunk:
 - a `[class.won]` ekvivalensen működik, mint a [style.cursor], csak itt nem stílus értékét adjuk meg, hanem azt, hogy az adott nevű osztály rákerüljön-e az elemre vagy sem,
 - az [`NgIf`](https://angular.io/api/common/NgIf) strukturális direktíva csak akkor helyezi a DOM-ba az adott elemet, ha az átadott feltétel igaz.
 
-`src\app\game-over\game-over.component.scss`
-``` SCSS
+`src\app\game-over\game-over.component.scss`:
+
+```SCSS
 .guesses {
     color: red;
 }
@@ -445,8 +484,9 @@ Ebben a CSS-ben kihasználjuk a CSS szabályok specificitását. A `.guesses` sz
 
 A modális ablak feldobásakor igazából egyetlen paramétert kell átadnunk egy közösen kezelhető függvénynek:
 
-`src\app\app.component.ts`
-``` TS
+`src\app\app.component.ts`:
+
+```TS
 openGameOverModal(won: boolean) {
   let modal = this.modalService.open(GameOverComponent, { backdrop: 'static', centered: true });
   (modal.componentInstance as GameOverComponent) // import { GameOverComponent } from './game-over/game-over.component';
@@ -468,8 +508,9 @@ A korábbiak ismeretében a fenti kódrészlet már viszonylag egyértelmű. Az 
 
 Még az `AppComponent` `guess()` függvényében fel kell dobnunk a modális ablakot (az `alert()`ek helyett).
 
-`src\app\app.component.ts`
-``` TS
+`src\app\app.component.ts`:
+
+```TS
 guess() {
   // ...
   if (matches === 4) // Ha mind talált, nyertünk.

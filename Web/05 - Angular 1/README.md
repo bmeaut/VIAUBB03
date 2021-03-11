@@ -11,7 +11,7 @@ Mivel a labor önállóan elvégzendő, ezért a kódrészletek, feladatok egy r
 
 `spoiler.ts`
 
-``` TS
+```TS
 export class Spoiler {
   text = "spoiler!";
 }
@@ -87,7 +87,7 @@ Az [Angular](https://angular.io/) egy komplett alkalmazásfejlesztési keretrend
 - [Angular CLI](https://angular.io/cli): az Angular Command Line Interface (CLI) egy [npm](https://www.npmjs.com/get-npm)-ből telepíthető parancssori eszköz, aminek segítségével összeállíthatjuk a kiinduló projektünket, új fájlokat, komponenseket hozhatunk létre előre összeállított formában.
 - Dekorátorok: a TypeScript [dekorátorai](https://www.typescriptlang.org/docs/handbook/decorators.html#class-decorators) segítségével az Angular osztályainkhoz, tulajdonságokhoz metaadatokat rendelünk az alábbi formában:
 
-``` TS
+```TS
 import { Component } from '@angular/core';
 
 @Component({
@@ -238,13 +238,13 @@ A parancs 3 fájlt hoz nekünk létre a `mastermind\src\app\peg` mappában:
 - a komponens stíluslapját (.scss) - ez jelenleg üres,
 - a komponens template-jét (.html):
 
-``` HTML
+```HTML
 <p>peg works!</p>
 ```
 
 - a komponens kódját (.ts):
 
-``` TS
+```TS
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -267,7 +267,7 @@ export class PegComponent implements OnInit {
 
 <summary>Az 'app.component.html' kódját cseréljük le úgy, hogy az példányosítson 4 db PegComponentet!</summary>
 
-``` HTML
+```HTML
 <mm-peg></mm-peg>
 <mm-peg></mm-peg>
 <mm-peg></mm-peg>
@@ -288,7 +288,7 @@ Vegyük észre továbbá, hogy a komponensünk megvalósítja az ún. OnInit int
 
 <summary>Hozzuk létre a színeket reprezentáló típust az `src\app\models\peg-color.ts` fájlba (a mappát és fájlt is hozzuk létre). A típus egy TypeScript uniótípus legyen a 'red', 'purple', 'blue', 'green', 'yellow', 'orange', 'black', 'white', és 'unset' string értékekkel!</summary>
 
-``` TS
+```TS
 export type PegColor = 'red' | 'purple' | 'blue' | 'green' | 'yellow' | 'orange' | 'black' | 'white' | 'unset';
 ```
 
@@ -300,7 +300,7 @@ export type PegColor = 'red' | 'purple' | 'blue' | 'green' | 'yellow' | 'orange'
 
 <summary>A Peg kétféle lehet: 'code' vagy 'key', ennek is hozzunk létre egy típust az 'src\app\models\peg-type.ts' fájlba PegType néven!</summary>
 
-``` TS
+```TS
 export type PegType = 'code' | 'key';
 ```
 
@@ -312,7 +312,7 @@ export type PegType = 'code' | 'key';
 
 <summary>A PegComponent-be vegyünk fel egy adatkötött 'color' és 'type' tulajdonságot (komponens paraméter)! Vegyünk fel két számított, csak lekérdezhető értéket (getter): colorChar (a szín első karakterét adja vissza nagybetűsítve, vagy az "X" értéket, ha nincs szín) és colorLower (a szín nevét adja vissza, vagy az "unset" értéket, ha nincs szín).</summary>
 
-``` TS
+```TS
 export class PegComponent implements OnInit {
 
   @Input() // Az Input dekorátort importálnunk kell a jelenlegi scope-ba. Ehhez használhatjuk a VS Code segítségét (Ctrl+. a kurzort a hibára helyezve) vagy fentre beírhatjuk: import { Input } from '@angular/core';
@@ -344,7 +344,7 @@ Szóval a komponensünknek, ami egy golyót fog reprezentálni, lesz egy színe 
 
 Módosítsuk a `peg.component.html` tartalmát az alábbira:
 
-``` HTML
+```HTML
 <div class="{{colorLower}}">{{colorChar}}</div>
 ```
 
@@ -352,7 +352,7 @@ A fenti szintaxis az egyirányú adatkötést jelenti. A `color` és `colorChar`
 
 A fentivel teljes mértékben ekvivalens az alábbi szintaxis is, amit később fogunk használni:
 
-``` HTML
+```HTML
 <div [class]="colorLower">{{colorChar}}</div>
 ```
 
@@ -360,13 +360,13 @@ Ezzel a szintaxissal szokás attribútum értékeket kötni, ill. ugyanezzel a m
 
 Cseréljük le a HTML-t az alábbira:
 
-``` HTML
+```HTML
 <div class="peg peg-{{colorLower}} peg-{{type}}">{{colorChar}}</div>
 ```
 
 Stílusozzuk meg az elemet! A komponenshez tartozó stíluslap csak a komponens hatáskörében fog érvényre jutni, tehát azon kívül a megfelelő selectorral rendelkező elemekre sem. Az `src\app\peg\peg.component.scss` tartalma legyen az alábbi:
 
-``` SCSS
+```SCSS
 .peg {
     border: 1 px solid grey;
     margin: 8px;
@@ -442,11 +442,11 @@ A DOM Explorerben láthatjuk, hogy nem jutott érvényre sem a `.peg-key`, sem a
 
 Alakul, most már látjuk, mit szeretnénk elérni. Néhány apróságot tegyünk rendbe:
 
-``` HTML
+```HTML
 <div class="peg peg-{{colorLower}} peg-{{type}}"></div>
 ```
 
-``` SCSS
+```SCSS
 .peg {
     // ...
     box-shadow: 2px 2px;
@@ -655,13 +655,13 @@ Alkalmazd az alábbi logikát, hogy megjelenítsd **a saját Neptun kódodnak me
 
 A Neptun kódod minden karakterének vedd a karakterkódjának számértékét a `string.charCodeAt()` függvénnyel! Pl: 
 
-``` JS
+```JS
 let x = `XYZ012`.charCodeAt(0); // == 88
 ```
 
 Vedd az így keletkező karakter 6-os modulusát!
 
-``` JS
+```JS
 > let m = x % 6; // == 4
 ```
 

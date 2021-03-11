@@ -1,6 +1,7 @@
 # Labor 07 - Angular Haladó
 
 <details>
+
 <summary>Ez a dokumentum egyedi stíluslapot tartalmaz.</summary>
 
 GitHubon az alábbi CSS nyers szövegként jelenik meg, GitHub Pages oldalakon viszont értelmezésre kerül (tehát kiértékelődik), ezért a nyers szöveg nem látható.
@@ -51,7 +52,8 @@ Az alkalmazást fel kell készítenünk arra, hogy kezeljen URL-eket.
 
 Nevezzük át az `app.component.*` fájlokat `game.component.*`-ra (F2 vagy jobb klikk -> Rename), helyezzük őket az `src\app\game` mappába (javítsuk az importok elcsúszását tehát `./` helyett `../` legyen), nevezzük át az `AppComponent`-et `GameComponent`-re és a `game.component.ts` fájl `@Component` dekorátorát módosítsuk az alábbira:
 
-`src\app\game\game.component.ts`
+`src\app\game\game.component.ts`:
+
 ``` TS
 @Component({
   selector: 'mm-game',
@@ -69,6 +71,7 @@ Ezután hozzuk újra létre az AppComponent-et:
 Az alkalmazásunk mostantól routing-ot fog használni (alapértelmezetten a CLI routing-engedélyezett alkalmazást készít, mi ezt eredetileg kikapcsoltuk), ehhez importáljuk a `RouterModule`-t az `@angular/router` csomagból, majd vegyük fel a saját alkalmazásunk függőségei (`imports`) közé a RouterModule egy paraméterezett verzióját az alábbi módon:
 
 `app.module.ts`:
+
 ``` TS
 RouterModule.forRoot([ // import { RouterModule } from '@angular/router';
   { path: 'game', component: GameComponent } // import { GameComponent } from './game/game.component';
@@ -76,6 +79,7 @@ RouterModule.forRoot([ // import { RouterModule } from '@angular/router';
 ```
 
 Ez az útvonal a `/game` URL-re a `GameComponent`-et fogja betölteni arra a helyre, ahol az alkalmazásunk template-jében a `<router-outlet>` nevű elem szerepel. Ha visszaemlékszünk, ezt töröltük az első alkalommal, így most az `app.component.html` kódja legyen ismét az alábbi:
+
 ``` HTML
 <router-outlet>
   <!-- Ide fog kerülni tehát az URL által meghatározott komponens.-->
@@ -85,9 +89,8 @@ Ez az útvonal a `/game` URL-re a `GameComponent`-et fogja betölteni arra a hel
 Az AppModule-ban a most hibásan GameComponentnek gondolt bootstrap elemet, tehát az alkalmazás belépési pontját, le kell cserélni ismét az AppComponentre (ha refaktorálta a VS Code nekünk).
 
 <details>
-<summary>
-Ha mindent jól csináltunk, az `src\app\app.module.ts` fájl tartalma az alábbi lesz.
-</summary>
+
+<summary>Ha mindent jól csináltunk, az `src\app\app.module.ts` fájl tartalma az alábbi lesz.</summary>
 
 ``` TS
 import { BrowserModule } from '@angular/platform-browser';
@@ -118,7 +121,6 @@ import { AppComponent } from './app.component';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
 ``` 
 
 </details>
@@ -136,9 +138,8 @@ Vegyünk fel egy új komponenst LoginComponent néven!
 > `ng g c login`
 
 <details>
-<summary>
-A LoginComponent-et regisztráljuk be a `login` és `register` útvonalakra! Mindkét esetben ugyanazt a komponenst fogjuk használni.
-</summary>
+
+<summary>A LoginComponent-et regisztráljuk be a `login` és `register` útvonalakra! Mindkét esetben ugyanazt a komponenst fogjuk használni.</summary>
 
 ``` TS
 RouterModule.forRoot([
@@ -153,9 +154,8 @@ RouterModule.forRoot([
 Angular segítségével a komponenseink [konstruktor injektálás](https://angular.io/guide/architecture-services) segítségével használhatják az Angular által adott, illetve a magunk által definiált szolgáltatásokat. 
 
 <details>
-<summary>
-Injektáljuk be az ActivatedRoute szolgáltatást a LoginComponentbe, és ennek segítségével frissítsünk egy 'register' nevű tulajdonságot, ha az aktuális útvonal a 'register'-re mutat!
-</summary>
+
+<summary>Injektáljuk be az ActivatedRoute szolgáltatást a LoginComponentbe, és ennek segítségével frissítsünk egy 'register' nevű tulajdonságot, ha az aktuális útvonal a 'register'-re mutat!</summary>
 
 ``` TS
 register: boolean;
@@ -188,9 +188,11 @@ Az űrlap alján legyen egy link, ami `/login` esetén a `/register`-re mutat, `
 Az űrlap `(submit)` eseményére iratkoztassunk fel egy eseménykezelőt submitForm néven, ami a konzolra írja a `username`, `password` és `passwordAgain` értékét!
 
 <details>
+
 <summary>Készítsük el a fentieknek megfelelően az űrlapot!</summary>
 
-`src\app\login\login.component.ts`
+`src\app\login\login.component.ts`:
+
 ``` TS
 username = '';
 password = '';
@@ -201,7 +203,8 @@ submitForm() {
 }
 ```
 
-`src\app\login\login.component.html`
+`src\app\login\login.component.html`:
+
 ``` HTML
 <main class="container-fluid text-center my-5">
     <form (submit)="submitForm()" class="co l-xl-3 col-lg-4 col-md-6 col-sm-8 m-auto">
@@ -245,9 +248,11 @@ Teszteljük a működést! Az oldal gyökér útvonala még nincsen komponenshez
 ```
 
 Ebben az esetben az Angular fog a navigációban közreműködni (a böngésző beépített működése helyett), így nem fog újraindulni a teljes alkalmazásunk a navigáció során. Fontos, hogy a fenti megegyezik az alábbi szintaxissal:
+
 ``` HTML
 <a *ngIf="register" [routerLink]="'/login'">Have an account?</a>
 ```
+
 Észre is vehetjük, hogy konstans érték "adatkötésekor" nincsen szükség a *valódi* adatkötésre, egyszerűen csak konstans értéket adunk át. Másik esetben a string értéket stringként kell jeleznük, ugyanis az nem stringként, hanem kódként értékelődik ki. Ez a működés gyakorlatilag megegyezik a HTML elemek attribútum értékének beállításával, azok ugyanis az átadott stringet beállítják az elemen, tekinthetők konstansnak.
 
 A routerLink egy Angular [direktíva](https://angular.io/guide/attribute-directives), melynek segítségével az Angular alkalmazásunk routingjának megfelelő, akár paraméterezett linkeket tudunk generálni. A direktívák (a legtöbbször adatkötés segítségével) funkcióval bővítik ki az adott DOM elemet, amin elhelyezésre kerülnek.
@@ -323,7 +328,8 @@ Nagyobb alkalmazások esetén érdemes a kódot a leíró alapján generálni, v
 
 Az API néhány modellobjektumot fog várni, illetve ezekkel fog visszatérni (ezeket részletesen láthatjuk a Swagger UI felületén). A `models\api` mappát hozzuk létre, ebbe vegyük fel az alábbi fájlokat:
 
-`src\app\models\api\game-options.dto.ts`
+`src\app\models\api\game-options.dto.ts`:
+
 ``` TS
 export interface GameOptionsDto {
   maximumKeyValue: number;
@@ -333,7 +339,8 @@ export interface GameOptionsDto {
 }
 ```
 
-`src\app\models\api\guess.dto.ts`
+`src\app\models\api\guess.dto.ts`:
+
 ``` TS
 export interface GuessDto {
   numbers: number[];
@@ -341,7 +348,9 @@ export interface GuessDto {
   numbersAtWrongPlace: number;
 }
 ```
-`src\app\models\api\high-score.dto.ts`
+
+`src\app\models\api\high-score.dto.ts`:
+
 ``` TS
 export interface HighScoreDto {
   user: string;
@@ -353,18 +362,24 @@ export interface HighScoreDto {
   allowDuplicates: boolean;
 }
 ```
-`src\app\models\api\play-state.ts`
+
+`src\app\models\api\play-state.ts`:
+
 ``` TS
 export type PlayState = 'InProgress' | 'Lost' | 'Won';
 ```
-`src\app\models\api\user-auth.dto.ts`
+
+`src\app\models\api\user-auth.dto.ts`:
+
 ``` TS
 export interface UserAuthDto {
   username: string;
   password: string;
 }
 ```
-`src\app\models\api\index.ts`
+
+`src\app\models\api\index.ts`:
+
 ``` TS
 import { GameOptionsDto } from './game-options.dto';
 import { GameDto } from './game.dto';
@@ -375,7 +390,9 @@ import { UserAuthDto } from './user-auth.dto';
 
 export { GameOptionsDto, GameDto, GuessDto, HighScoreDto, PlayState, UserAuthDto };
 ```
-`src\app\models\api\game.dto.ts`
+
+`src\app\models\api\game.dto.ts`:
+
 ``` TS
 import { GuessDto, GameOptionsDto, PlayState } from '.';
 
@@ -394,7 +411,8 @@ export interface GameDto {
 
 Ezek után az `ApiService`-ünkben az Angular [`HttpClient`](https://angular.io/api/common/http/HttpClient) szolgáltatását használva hívjuk a megfelelő végpontokat. A `HttpClient` használatához a modulunkba importálni kell a `HttpClientModule`-t, ami a `HttpClient`-et tartalmazza.
 
-`src\app\app.module.ts`
+`src\app\app.module.ts`:
+
 ``` TS
   imports: [
     // ...
@@ -405,7 +423,8 @@ Ezek után az `ApiService`-ünkben az Angular [`HttpClient`](https://angular.io/
 
 Az ApiService pedig használja a szükséges DTO-kat és a HttpClient megfelelő metódusat (`get`, `post`) ahhoz, hogy meghívja a szerver végpontokat:
 
-`src\app\api.service.ts`
+`src\app\api.service.ts`:
+
 ``` TS
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -460,9 +479,8 @@ A belépést a szerver süti alapú jogosultságkezeléssel kezeli, a `login` é
 Lehetőségünk van arra is, hogy a flag-et minden kérésünkhöz, vagy rendszerezetten adott kérésekhez fűzzük hozzá, vagy a 401-es hívások hatására átirányítsuk a felhasználót a login oldalra. Ehhez Angularben [HTTP Interceptorokat](https://angular.io/api/common/http/HttpInterceptor) használhatunk.
 
 <details>
-<summary>
-Valósítsuk meg, hogy sikeres belépést/regisztrációt követően a /menu URL-re kerüljünk a Router (https://angular.io/guide/router) szolgáltatás segítségével, valamint az alkalmazás alapértelmezetten irányítson át a /login URL-re.
-</summary>
+
+<summary>Valósítsuk meg, hogy sikeres belépést/regisztrációt követően a /menu URL-re kerüljünk a Router (https://angular.io/guide/router) szolgáltatás segítségével, valamint az alkalmazás alapértelmezetten irányítson át a /login URL-re.</summary>
 
 Természetesen fel kell vennünk ehhez egy újabb komponenst, amit nevezzünk MenuComponentnek:
 
@@ -470,7 +488,8 @@ Természetesen fel kell vennünk ehhez egy újabb komponenst, amit nevezzünk Me
 
 Regisztráljuk be az útvonalak közé, egyúttal a gyökér útvonal átirányítását is:
 
-`src\app\app.module.ts`
+`src\app\app.module.ts`:
+
 ``` TS
 RouterModule.forRoot([
   { path: 'game', component: GameComponent },
@@ -483,7 +502,8 @@ RouterModule.forRoot([
 
 A Router segítségével irányítsuk át a felhasználót a "menu" abszolút URL-re.
 
-`src\app\login\login.component.ts`
+`src\app\login\login.component.ts`:
+
 ``` TS
 constructor(
   private route: ActivatedRoute, 
@@ -507,9 +527,12 @@ submitForm() {
   }
 }
 ```
+
 </details>
 
 A MenuComponent-ben megfelelően lekérhetjük a folyamatban levő játékokat a játékos számára az alábbi módon:
+
+`src\app\menu\menu.component.ts`:
 
 ``` TS
   constructor(private api: ApiService) { } // import { ApiService } from '../api.service';
@@ -526,7 +549,7 @@ A MenuComponent-ben megfelelően lekérhetjük a folyamatban levő játékokat a
 
 ## Önálló feladatok
 
-Önállóan elvégezhetők az alábbi feladatok a szerver használatával, gyakorlás jelleggel:
+Önállóan elvégezhetők az alábbi feladatok a szerver használatával, gyakorlás (szorgalmi) jelleggel:
 - Menü oldal: a felhasználó folyamatban levő játékainak listázása (`/api/games`), kiválasztása és a toplista megjelenítése (`/api/highscores`).
 - Játék indítása: a `\menu` URL-en a játék indításához fel kell tudni konfigurálni a szükséges `GameOptionsDto` objektumot egy űrlap segítségével (vagy kiválasztani egy már futó játékot a listából). Használható validátor is, ugyanis minimum és maximum érték korlátozások vannak az opciókon. A GameOptionsDto elküldése után a visszakapott játék elindított állapotban van, tehát ennek felületét szükséges megjeleníteni a jelenlegi `game.component.ts`-ben. A GameComponent [URL paraméterben várja a játék ID-ját](https://angular.io/guide/router#route-parameters).
 - Tipp beküldése: a tipp beküldése immár aszinkron módon fog történni, tehát a megfelelő tipp elküldésekor a `.subcribe()` operátorral fel kell iratkozni a válaszra, ott pedig a megfelelő logika alapján eldönteni, hogy a játéknak vége lett-e, valamint megjeleníteni a teljes játékteret.
