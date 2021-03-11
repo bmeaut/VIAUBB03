@@ -308,12 +308,13 @@ Az alkalmazásunk mostantól szerverrel fog kommunikálni. A webes fejlesztés s
 A szerver a http://localhost:5000 címen érhető el, az alább is látható leíró felület a http://localhost:5000/swagger URL-en érhető el indítás után. A szervernek LocalDb adatbázisra van szüksége (pl. Visual Studioval települ), konzol alkalmazásként futtatható.
 
 ![Swagger UI](swagger.png)
-<br/>
+
 Ebből most a regisztrációt és belépést fogjuk elkészíteni:
+
 ![Regisztráció API](swagger-register.png)
-<br/>
+
 ![Belépés API](swagger-login.png)
-<br/>
+
 Hozzunk létre egy új service-t, ami az API-val történő kommunikációt fogja végezni:
 
 > `ng g s api`

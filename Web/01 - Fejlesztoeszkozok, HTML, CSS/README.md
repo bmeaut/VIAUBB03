@@ -293,6 +293,7 @@ Az így elkészült dokumentum részletes szemantikus körvonalát az alábbi li
 https://hoyois.github.io/html5outliner/
 
 Próbáljunk törekedni az alábbi ábrán látható eredményre!
+
 ![A példakód körvonala szemantikus elemekkel](semantic-result.png)
 
 ---

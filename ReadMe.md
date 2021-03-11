@@ -22,13 +22,13 @@ Az interaktív oldal a <https://bmeaut.github.io/VIAUBB03/> URL-en, ha szükség
 
 ## Mobil blokk - Android
 
-### *[Mobil előadás példák](https://github.com/bmeaut/VIAUBB03/https://github.com/bmeaut/VIAUBB03/tree/master/Mobil/El%C5%91ad%C3%A1s%20p%C3%A9ld%C3%A1k)*
+### *[Mobil előadás példák](https://github.com/bmeaut/VIAUBB03/tree/master/Mobil/El%C5%91ad%C3%A1s%20p%C3%A9ld%C3%A1k)*
 
 ### Laborok
 
-#### [Labor 00 - Hello World!](./Mobil/Labor00/Labor00)
-#### [Labor 01 - Felhasználói felület készítés](./Mobil/Labor01/Labor01)
-#### [Labor 02 - Felhasználói felület készítése - Fragmentek, Chartok](./Mobil/Labor02/Labor02)
-#### [Labor 03 - Perzisztencia - Bevásárló alkalmazás készítése](./Mobil/Labor03/Labor03)
-#### [Labor 04 - Weather Info alkalmazás készítése](./Mobil/Labor04)
+#### [Labor 00 - Hello World!](./Mobil/Labor/Labor00)
+#### [Labor 01 - Felhasználói felület készítés](./Mobil/Labor/Labor01)
+#### [Labor 02 - Felhasználói felület készítése - Fragmentek, Chartok](./Mobil/Labor/Labor02)
+#### [Labor 03 - Perzisztencia - Bevásárló alkalmazás készítése](./Mobil/Labor/Labor03)
+#### [Labor 04 - Weather Info alkalmazás készítése](./Mobil/Labor/Labor04)
 
