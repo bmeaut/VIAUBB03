@@ -273,7 +273,7 @@ behúzások csak az olvashatóságot segítik, a böngésző nem rajzolja ki az 
 
 Az npm parancs futtatásához telepített NodeJS-re is szükség van.
 
-3. A parancs futtatásával megnyílik az alapértelmezett böngésző a http://127.0.0.1:8080/ URL-en (ha nem, nyissuk meg mi magunk). Teszteljük le, mit látunk! A létrehozott index.html fájl automatikusan megjelenítésre kerül a böngészőben. A live-server automatikusan frissíti a kapcsolódott böngészőt, ha szerkesztjük a megtekintett fájlt.
+3. A parancs futtatásával megnyílik az alapértelmezett böngésző a http://127.0.0.1:8080/ URL-en (ha nem, nyissuk meg mi magunk). Teszteljük le, mit látunk! A létrehozott index.html fájl automatikusan megjelenítésre kerül a böngészőben (ha mégsem, írjuk a fájl nevét is az URL-be: http://127.0.0.1:8080/index.html). A live-server automatikusan frissíti a kapcsolódott böngészőt, ha szerkesztjük a megtekintett fájlt.
 
 4. Láthatjuk, hogy a szövegek formázását nem a whitespace-ek, hanem az elemek típusa adja. Ha szeretnénk látni, melyik elem hol helyezkedik el a felületen ill. a DOM-ban, az F12 eszköztáron, a DOM Explorer felső során levő ikonokkal változtathatjuk, hogy a felületen navigálva a DOM elem kijelölődjön-e, ill. a DOM-ban navigálva a felületen jelezve legyen-e a kiválasztott elem. 
 

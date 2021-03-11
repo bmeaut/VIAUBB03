@@ -1,0 +1,3 @@
+[submodule "Web/07 - Angular 3/mastermind-aspnetcore"]
+	path = Web/07 - Angular 3/mastermind-aspnetcore
+	url = https://github.com/yugabe/Mastermind
