@@ -38,6 +38,7 @@ Indítsuk el Terminálból a TypeScript compilert `watch` módban, ami figyelni 
 > `node_modules\.bin\tsc -w`
 
 Indítást követően a következő képernyő fogad minket:
+
 ![BlackJack kezdőképernyő](blackjack-start.png)
 
 A Start gombra kattintva nem történik egyelőre semmi.

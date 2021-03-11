@@ -326,12 +326,15 @@ A `<h2>` elemünk alá másoljuk be az alábbi kódot:
 ```
 
 Ennek hatására az alábbi kinézetet kapjuk:
+
 ![Bootstrap űrlapok](bootstrap-form.png)
 
 A mobil nézet reszponzívan átalakul egy töréspont után:
+
 ![Bootstrap űrlapok](bootstrap-form-mobil.png)
 
 Ha a Bootstrap stíluslapokat töröljük vagy nem importáljuk, a fenti nyers HTML-ünk és saját CSS szabályaink ennyit érnek el magukban:
+
 ![Bootstrap űrlapok Bootstrap nélkül](no-bootstrap-form.png)
 
 Említésre méltók az alábbiak:
@@ -375,6 +378,7 @@ A navigációs sáv felépítése legyen a következő (a HTML váz szerepel a k
 
 A navigációs sáv az alábbiak szerint nézzen ki:
 - Magas felbontáson
+
 > ![Fejléc](header.png)
 
 Mivel a navigáció is egy gyakori probléma, a Bootstrap ad rá kész komponenst, a **navbar**t.
@@ -392,7 +396,7 @@ A legfontosabb osztályok, amire a navbar épít:
 >
 > - A sötét hátterú navbarhoz használjuk a `.navbar-dark` osztályt.
 
-#### Reszponzív megjelenés
+### Reszponzív megjelenés
 
 A navigációt is reszponzívan kell megvalósítani, tehát ha átmérezezzük az oldalt, akkor a navigációs menüpontokat el kell rejteni és egy úgynevezett hamburger menüt kell megjeleníteni helyette, amire kattintva megjelennek a menüpontok.
 
@@ -454,6 +458,7 @@ A megoldáshoz használjuk a <a href="http://getbootstrap.com/docs/4.4/component
 - Ügyeljen arra, hogy a margók és paddingok hasonlóak legyenek. Tipp: használja a `m-0`, `py-2`.... osztályokat. Részletesen a <a href="http://getbootstrap.com/docs/4.4/components/spacing/">Bootstrap spacing</a> szekcióban lehet róla olvasni.
 
 Az egyes blog bejegyzéseknek, az alábbi képen látható módon kell megjelennie:
+
 > ![kartya](onecard.png)
 
 ### Reszponzív blog bejegyzés lista
@@ -463,9 +468,14 @@ Egészítse ki a HTML kódot úgy, hogy az oldalon összesen 6 blogbejegyzés je
 Az oldalt úgy valósítsa meg, hogy magas felbontáson 3 hasábos legyen, közepesen 2, kicsin pedig 1 hasábos.
 
 - Magas felbontáson
+
 ![Index-magas](index-full.png)
+
 - Közepes felbontáson
+
 <img src="index-full-medium.png" width="600" style="display: block">
+
 - Kicsi felbontáson
+
 <img src="index-full-small.png" width="300" style="display: block">
 

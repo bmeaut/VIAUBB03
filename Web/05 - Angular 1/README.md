@@ -10,6 +10,7 @@ Mivel a labor önállóan elvégzendő, ezért a kódrészletek, feladatok egy r
 </summary>
 
 `spoiler.ts`
+
 ``` TS
 export class Spoiler {
   text = "spoiler!";
@@ -17,11 +18,13 @@ export class Spoiler {
 ```
 
 A megoldásodat mindig ellenőrizd, és lehetőleg ne térj el lényegében a mintamegoldástól!
+
 </details>
 
 <br/>
 
 <details>
+
 <summary>Ez a dokumentum egyedi stíluslapot tartalmaz.</summary>
 
 GitHubon az alábbi CSS nyers szövegként jelenik meg, GitHub Pages oldalakon viszont értelmezésre kerül (tehát kiértékelődik), ezért a nyers szöveg nem látható.
@@ -83,6 +86,7 @@ Az [Angular](https://angular.io/) egy komplett alkalmazásfejlesztési keretrend
 - Sablonok: az Angular komponensek egy mögöttes, logikát és struktúrát leíró TypeScript fájlból és általában egy ehhez tartozó HTML fájlból tevődnek össze. A HTML fájl a mögöttes TypeScript fájlban definiált komponenshez fog adatot és eseményt kötni.
 - [Angular CLI](https://angular.io/cli): az Angular Command Line Interface (CLI) egy [npm](https://www.npmjs.com/get-npm)-ből telepíthető parancssori eszköz, aminek segítségével összeállíthatjuk a kiinduló projektünket, új fájlokat, komponenseket hozhatunk létre előre összeállított formában.
 - Dekorátorok: a TypeScript [dekorátorai](https://www.typescriptlang.org/docs/handbook/decorators.html#class-decorators) segítségével az Angular osztályainkhoz, tulajdonságokhoz metaadatokat rendelünk az alábbi formában:
+
 ``` TS
 import { Component } from '@angular/core';
 
@@ -233,10 +237,13 @@ A fentinek a rövidebb formája: [`ng g c peg`](https://angular.io/cli).
 A parancs 3 fájlt hoz nekünk létre a `mastermind\src\app\peg` mappában: 
 - a komponens stíluslapját (.scss) - ez jelenleg üres,
 - a komponens template-jét (.html):
+
 ``` HTML
 <p>peg works!</p>
 ```
+
 - a komponens kódját (.ts):
+
 ``` TS
 import { Component, OnInit } from '@angular/core';
 
@@ -255,7 +262,9 @@ export class PegComponent implements OnInit {
 }
 
 ```
+
 <details>
+
 <summary>Az 'app.component.html' kódját cseréljük le úgy, hogy az példányosítson 4 db PegComponentet!</summary>
 
 ``` HTML
@@ -275,25 +284,33 @@ A komponensünket tehát úgy példányosítottuk, hogy a komponenshez tartozó 
 
 Vegyük észre továbbá, hogy a komponensünk megvalósítja az ún. OnInit interfészt, ez később az [Angular komponens/direktíva életciklus](https://angular.io/guide/lifecycle-hooks) során lehet még hasznos.
 
-<details><summary>Hozzuk létre a színeket reprezentáló típust az `src\app\models\peg-color.ts` fájlba (a mappát és fájlt is hozzuk létre). A típus egy TypeScript uniótípus legyen a 'red', 'purple', 'blue', 'green', 'yellow', 'orange', 'black', 'white', és 'unset' string értékekkel!</summary>
+<details>
+
+<summary>Hozzuk létre a színeket reprezentáló típust az `src\app\models\peg-color.ts` fájlba (a mappát és fájlt is hozzuk létre). A típus egy TypeScript uniótípus legyen a 'red', 'purple', 'blue', 'green', 'yellow', 'orange', 'black', 'white', és 'unset' string értékekkel!</summary>
 
 ``` TS
 export type PegColor = 'red' | 'purple' | 'blue' | 'green' | 'yellow' | 'orange' | 'black' | 'white' | 'unset';
 ```
+
 </details>
 
 <br/>
 
-<details><summary>A Peg kétféle lehet: 'code' vagy 'key', ennek is hozzunk létre egy típust az 'src\app\models\peg-type.ts' fájlba PegType néven!</summary>
+<details>
+
+<summary>A Peg kétféle lehet: 'code' vagy 'key', ennek is hozzunk létre egy típust az 'src\app\models\peg-type.ts' fájlba PegType néven!</summary>
 
 ``` TS
 export type PegType = 'code' | 'key';
 ```
+
 </details>
 
 <br/>
 
-<details><summary>A PegComponent-be vegyünk fel egy adatkötött 'color' és 'type' tulajdonságot (komponens paraméter)! Vegyünk fel két számított, csak lekérdezhető értéket (getter): colorChar (a szín első karakterét adja vissza nagybetűsítve, vagy az "X" értéket, ha nincs szín) és colorLower (a szín nevét adja vissza, vagy az "unset" értéket, ha nincs szín).</summary>
+<details>
+
+<summary>A PegComponent-be vegyünk fel egy adatkötött 'color' és 'type' tulajdonságot (komponens paraméter)! Vegyünk fel két számított, csak lekérdezhető értéket (getter): colorChar (a szín első karakterét adja vissza nagybetűsítve, vagy az "X" értéket, ha nincs szín) és colorLower (a szín nevét adja vissza, vagy az "unset" értéket, ha nincs szín).</summary>
 
 ``` TS
 export class PegComponent implements OnInit {
@@ -326,6 +343,7 @@ A ?? operátor C#-ból ismerős lehet, TypeScriptben is használatos. A ?? a bal
 Szóval a komponensünknek, ami egy golyót fog reprezentálni, lesz egy színe és egy típusa, amit ő kívülről, a szülőtől fog várni paraméterként. A szín első betűjét nagybetűsítve le tudjuk kérdezni, vagy ha nincs megadva szín, egy X-et adunk vissza helyette.
 
 Módosítsuk a `peg.component.html` tartalmát az alábbira:
+
 ``` HTML
 <div class="{{colorLower}}">{{colorChar}}</div>
 ```
@@ -403,7 +421,9 @@ A DOM Explorerben láthatjuk, hogy nem jutott érvényre sem a `.peg-key`, sem a
 
 Észrevehetjük még, hogy az elem egy fura attribútumot kapott (pl. `_ngcontent-dca-c97`). Ennek oka, hogy a CSS szabályunk valójában módosításra került úgy, hogy magába foglalja ezt a generált attribútumot. Ezért nem fut le tehát ez a selector más elemekre. Az F12 CSS eszközei között (pl. Elements/Styles fülön) ezt láthatjuk is.
 
-<details><summary>Módosítsuk az 'app.component.html'-t, hogy legyen egy piros és egy zöld kódjelző, majd két fekete és két fehér kulcsjelző!</summary>
+<details>
+
+<summary>Módosítsuk az 'app.component.html'-t, hogy legyen egy piros és egy zöld kódjelző, majd két fekete és két fehér kulcsjelző!</summary>
 
 ```HTML
 <mm-peg [color]="'red'" [type]="'code'"></mm-peg>
@@ -444,9 +464,12 @@ A `peg.component.ts`-ből törölhetjük a `getColorChar()` függvényt, nem les
 
 Egy sorban tehát meg kell jelennie 4 színes golyónak (vagy helyőrzőnek), mellette 4 jelzőnek. Tíz sornak kell összesen megjelennie.
 
-<details><summary>Vegyünk fel egy osztályt, ami az egyes tippeket fogja reprezentálni az `src\app\models\guess.ts` fájlba! A modell osztály konstruktor tulajdonságokat tartalmaz: két 'PegColor' tömböt 'colors' és 'keys' néven.</summary>
+<details>
 
-`src\app\models\guess.ts`
+<summary>Vegyünk fel egy osztályt, ami az egyes tippeket fogja reprezentálni az `src\app\models\guess.ts` fájlba! A modell osztály konstruktor tulajdonságokat tartalmaz: két 'PegColor' tömböt 'colors' és 'keys' néven.</summary>
+
+`src\app\models\guess.ts`:
+
 ```TS
 import { PegColor } from './peg-color';
 
@@ -463,9 +486,12 @@ export class Guess {
 
 Az osztályunk 4-4 színt fog tehát tárolni: ami tipp érkezett, illetve ami a visszajelzéseket mutatja majd.
 
-<details><summary>Az 'AppComponent' funkcionalitását egészítsük ki! Legyen egy 'guesses' tömb, ami tárolja a leadott tippeket! Legyen egy 'initGame' függvény, ami feltölti a tippeket 10 db üres tipp ('Guess') példánnyal! A konstruktor hívja meg az 'initGame' függvényt!</summary>
+<details>
+
+<summary>Az 'AppComponent' funkcionalitását egészítsük ki! Legyen egy 'guesses' tömb, ami tárolja a leadott tippeket! Legyen egy 'initGame' függvény, ami feltölti a tippeket 10 db üres tipp ('Guess') példánnyal! A konstruktor hívja meg az 'initGame' függvényt!</summary>
 
 `src\app\app.component.ts`:
+
 ```TS
 import { Component } from '@angular/core';
 import { Guess } from './models/guess';
@@ -500,6 +526,7 @@ export class AppComponent {
 <details><summary>Jelenítsük meg az AppComponent template-jében a "leadott" (jelenleg üres) tippeket! Járjuk be az összes tippet (*ngFor), hozzuk létre a tipp színeinek megfelelő kód és kulcs típusú 'PegComponent' példányokat!</summary>
 
 `src\app\app.component.html`:
+
 ```HTML
 <main class="container-fluid">
     <section class="guesses-container">
@@ -520,6 +547,7 @@ Az oldal template-jében az `*ngFor` attribútum által jelzett `NgFor` direktí
 Stílusozzuk a komponenst az alábbiak szerint.
 
 `src\app\app.component.scss`:
+
 ```SCSS
 main {
     min-width: 450px;
@@ -545,9 +573,12 @@ main {
 
 A sorok fölött a jelenlegi tippünk összeállítása fog látszani. Ez alatt a 6 lehetséges szín fog megjelenni, amire kattintva össze tudjuk állítani a tippet, valamint egy gomb, amivel el tudjuk küldeni a tippünket.
 
-<details><summary>Egészítsük ki az 'AppComponent' funkcionalitását és megjelenítését az elvárt funkcionalitásnak megfelelően!</summary>
+<details>
+
+<summary>Egészítsük ki az 'AppComponent' funkcionalitását és megjelenítését az elvárt funkcionalitásnak megfelelően!</summary>
 
 `src\app\app.component.ts`:
+
 ```TS
 export class AppComponent {
   guesses: Guess[];
@@ -575,6 +606,7 @@ Az inicializáláskor kitöltjük a jelenlegi tippünket reprezentáló 4 színb
 Egészítsük ki a HTML-t, hogy megjelenítse az elemeket:
 
 `src\app\app.component.html`:
+
 ```HTML
 <main class="container-fluid">
     <section class="current-guess-container text-center mb-3">
@@ -595,6 +627,7 @@ Egészítsük ki a HTML-t, hogy megjelenítse az elemeket:
 Igazítsuk hozzá a stílusokat:
 
 `src\app\app.component.scss`:
+
 ```SCSS
 // ...
 
@@ -621,13 +654,17 @@ A currentGuess mezőben tároljuk a felhasználó által aktuálisan szerkesztet
 Alkalmazd az alábbi logikát, hogy megjelenítsd **a saját Neptun kódodnak megfelelő**, 6-jegyű színkombinációt az első sorban (`AppComponent.currentGuess`), a színpaletta (`AppComponent.possibleValues`) felett!
 
 A Neptun kódod minden karakterének vedd a karakterkódjának számértékét a `string.charCodeAt()` függvénnyel! Pl: 
+
 ``` JS
 let x = `XYZ012`.charCodeAt(0); // == 88
 ```
+
 Vedd az így keletkező karakter 6-os modulusát!
+
 ``` JS
 > let m = x % 6; // == 4
 ```
+
 Vedd a `possibleValues` ennek az indexnek megfelelő elemeit minden karakterre!
 
 Ennek eredményeképp a példa `XYZ012` Neptun kód esetén a `[88, 89, 90, 48, 49, 50]` értékek, ebből a `[4, 5, 0, 0, 1, 2]` maradékok tömbje, ebből pedig a `['yellow', 'orange', 'red', 'red', 'purple', 'blue']` tömb áll elő, amely a felületen az alábbi módon jelenik meg:
