@@ -31,7 +31,9 @@ A labor folyamán a hallgatók jelen anyag segítségével önállóan végeznek
 
 > *Figyelem!* Az Angular laborok során számos, viszonylag nagyméretű (többszáz megabájt) függőségi csomag letöltésére lesz szükség (az `npm install` parancs hatására), de ha valaki már sikeresen telepítette a korábbi labor során az NPM csomagokat, akkor azokat várhatóan nem kell újra letölteni.
 
-> Ha VS Code-ban (az egyedi formázásokkal) szeretnéd látni a leírást, akkor az alábbit kell tenned: File -> Open, majd megadni a labor README.md fájlhoz tartozó nyers fájlra mutató URL-t. Ez esetünkben: <https://raw.githubusercontent.com/bmeaut/VIAUBB03/master/Web/05%20-%20Angular%201/README.md>
+> Ha VS Code-ban (az egyedi formázásokkal) szeretnéd látni a leírást, akkor klónozd ezt repository-t a gépedre, és nyisd meg a megfelelő laborhoz tartozó README.md fájlt! A jobb felső sarokban tudod megnyitni a vizuális előnézetet. Javasolt a labor tényleges megkezdése előtt minden esetben pull-ozni a távoli forrást, hátha valami esetleg frissült.
+>
+> `git clone https://github.com/bmeaut/VIAUBB03.git`
 
 <details open>
 <summary>
