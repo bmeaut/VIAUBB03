@@ -2,8 +2,6 @@
 
 Ezen az oldalon a Kliensalkalmazások tárgy anyagai érhetők el.
 
-Az interaktív oldal a <https://bmeaut.github.io/VIAUBB03/> URL-en, ha szükséges, az oldal forráskódja pedig az <https://github.com/bmeaut/VIAUBB03> URL-en érhető el.
-
 ---
 
 ## Webes blokk

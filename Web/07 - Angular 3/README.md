@@ -1,10 +1,10 @@
 # Labor 07 - Angular Haladó
 
-<details>
+<details open>
 
 <summary>Ez a dokumentum egyedi stíluslapot tartalmaz.</summary>
 
-GitHubon az alábbi CSS nyers szövegként jelenik meg, GitHub Pages oldalakon viszont értelmezésre kerül (tehát kiértékelődik), ezért a nyers szöveg nem látható.
+GitHubon az alábbi CSS nyers szövegként jelenik meg, VS Code-ban viszont értelmezésre kerül (tehát kiértékelődik, és a blokkok "szépek" lesznek), ezért a nyers szöveg nem látható.
 
 <style>
 details {
@@ -32,6 +32,9 @@ A labor folyamán a hallgatók jelen anyag segítségével önállóan végeznek
 Ez a labor az [előző labor](../06%20-%20Angular%202) folytatása, a szükséges fejlesztői eszközök megegyeznek, a korábbi végállapotot folytatjuk. Az előző laborok ismereteinek megszerzése jelen labor elvégzéséhez erősen ajánlott.
 
 > *Figyelem!* Az Angular laborok során számos, viszonylag nagyméretű (többszáz megabájt) függőségi csomag letöltésére lesz szükség (az `npm install` parancs hatására), de ha valaki már sikeresen telepítette a korábbi labor során az NPM csomagokat, akkor azokat várhatóan nem kell újra letölteni.
+
+> Ha VS Code-ban (az egyedi formázásokkal) szeretnéd látni a leírást, akkor az alábbit kell tenned: File -> Open, majd megadni a labor README.md fájlhoz tartozó nyers fájlra mutató URL-t. Ez esetünkben: <https://raw.githubusercontent.com/bmeaut/VIAUBB03/master/Web/07%20-%20Angular%203/README.md>
+
 ## Előkészítés
 
 Ha nincs meg az előző labor végállapota a gépünkön (vagy szeretnénk biztosra menni), akkor töltsük le a [kiinduló projektet](labor-6-kiindulo.zip), csomagoljuk ki egy tetszőleges munkamappába a tartalmát, majd a projekt mappájában adjuk ki az alábbi parancsokat a VS Code beépített termináljának segítségével (`Ctrl+ö`):
@@ -88,7 +91,7 @@ Ez az útvonal a `/game` URL-re a `GameComponent`-et fogja betölteni arra a hel
 
 Az AppModule-ban a most hibásan GameComponentnek gondolt bootstrap elemet, tehát az alkalmazás belépési pontját, le kell cserélni ismét az AppComponentre (ha refaktorálta a VS Code nekünk).
 
-<details>
+<details open>
 
 <summary>Ha mindent jól csináltunk, az `src\app\app.module.ts` fájl tartalma az alábbi lesz.</summary>
 
@@ -137,7 +140,7 @@ Vegyünk fel egy új komponenst LoginComponent néven!
 
 > `ng g c login`
 
-<details>
+<details open>
 
 <summary>A LoginComponent-et regisztráljuk be a `login` és `register` útvonalakra! Mindkét esetben ugyanazt a komponenst fogjuk használni.</summary>
 
@@ -153,7 +156,7 @@ RouterModule.forRoot([
 
 Angular segítségével a komponenseink [konstruktor injektálás](https://angular.io/guide/architecture-services) segítségével használhatják az Angular által adott, illetve a magunk által definiált szolgáltatásokat. 
 
-<details>
+<details open>
 
 <summary>Injektáljuk be az ActivatedRoute szolgáltatást a LoginComponentbe, és ennek segítségével frissítsünk egy 'register' nevű tulajdonságot, ha az aktuális útvonal a 'register'-re mutat!</summary>
 
@@ -187,7 +190,7 @@ Az űrlap alján legyen egy link, ami `/login` esetén a `/register`-re mutat, `
 
 Az űrlap `(submit)` eseményére iratkoztassunk fel egy eseménykezelőt submitForm néven, ami a konzolra írja a `username`, `password` és `passwordAgain` értékét!
 
-<details>
+<details open>
 
 <summary>Készítsük el a fentieknek megfelelően az űrlapot!</summary>
 
@@ -478,7 +481,7 @@ A belépést a szerver süti alapú jogosultságkezeléssel kezeli, a `login` é
 
 Lehetőségünk van arra is, hogy a flag-et minden kérésünkhöz, vagy rendszerezetten adott kérésekhez fűzzük hozzá, vagy a 401-es hívások hatására átirányítsuk a felhasználót a login oldalra. Ehhez Angularben [HTTP Interceptorokat](https://angular.io/api/common/http/HttpInterceptor) használhatunk.
 
-<details>
+<details open>
 
 <summary>Valósítsuk meg, hogy sikeres belépést/regisztrációt követően a /menu URL-re kerüljünk a Router (https://angular.io/guide/router) szolgáltatás segítségével, valamint az alkalmazás alapértelmezetten irányítson át a /login URL-re.</summary>
 

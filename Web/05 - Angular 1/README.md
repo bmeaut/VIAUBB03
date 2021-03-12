@@ -1,33 +1,10 @@
 # Labor 05 - Angular bevezető
 
-## Bevezetés
-
-A labor folyamán a hallgatók jelen anyag segítségével önállóan végeznek feladatokat a webes technológiák gyakorlati megismerése érdekében. Az előző webes laborok ismereteinek megszerzése jelen labor elvégzéséhez erősen ajánlott.
-
-<details>
-<summary>
-Mivel a labor önállóan elvégzendő, ezért a kódrészletek, feladatok egy része kinyitható blokkokba került az alábbihoz hasonlóan, hogy a feladatot teljesen önállóan is meg lehessen oldani. Klikk!
-</summary>
-
-`spoiler.ts`
-
-```TS
-export class Spoiler {
-  text = "spoiler!";
-}
-```
-
-A megoldásodat mindig ellenőrizd, és lehetőleg ne térj el lényegében a mintamegoldástól!
-
-</details>
-
-<br/>
-
-<details>
+<details open>
 
 <summary>Ez a dokumentum egyedi stíluslapot tartalmaz.</summary>
 
-GitHubon az alábbi CSS nyers szövegként jelenik meg, GitHub Pages oldalakon viszont értelmezésre kerül (tehát kiértékelődik), ezért a nyers szöveg nem látható.
+GitHubon az alábbi CSS nyers szövegként jelenik meg, VS Code-ban viszont értelmezésre kerül (tehát kiértékelődik, és a blokkok "szépek" lesznek), ezért a nyers szöveg nem látható.
 
 <style>
 details {
@@ -47,6 +24,33 @@ details summary:hover {
 </style>
 
 </details>
+
+## Bevezetés
+
+A labor folyamán a hallgatók jelen anyag segítségével önállóan végeznek feladatokat a webes technológiák gyakorlati megismerése érdekében. Az előző webes laborok ismereteinek megszerzése jelen labor elvégzéséhez erősen ajánlott.
+
+> *Figyelem!* Az Angular laborok során számos, viszonylag nagyméretű (többszáz megabájt) függőségi csomag letöltésére lesz szükség (az `npm install` parancs hatására), de ha valaki már sikeresen telepítette a korábbi labor során az NPM csomagokat, akkor azokat várhatóan nem kell újra letölteni.
+
+> Ha VS Code-ban (az egyedi formázásokkal) szeretnéd látni a leírást, akkor az alábbit kell tenned: File -> Open, majd megadni a labor README.md fájlhoz tartozó nyers fájlra mutató URL-t. Ez esetünkben: <https://raw.githubusercontent.com/bmeaut/VIAUBB03/master/Web/05%20-%20Angular%201/README.md>
+
+<details open>
+<summary>
+Mivel a labor önállóan elvégzendő, ezért a kódrészletek, feladatok egy része becsukható (/kinyitható) blokkokba került az alábbihoz hasonlóan, hogy a feladatot teljesen önállóan is meg lehessen oldani. A GitHub alapértelmezett formázása miatt a blokkok alapértelmezetten nyitva jelennek meg. Klikk!
+</summary>
+
+`spoiler.ts`
+
+```TS
+export class Spoiler {
+  text = "spoiler!";
+}
+```
+
+A megoldásodat mindig ellenőrizd, és lehetőleg ne térj el lényegében a mintamegoldástól!
+
+</details>
+
+<br/>
 
 Felhasznált technológiák és eszközök:
 
@@ -263,7 +267,7 @@ export class PegComponent implements OnInit {
 
 ```
 
-<details>
+<details open>
 
 <summary>Az 'app.component.html' kódját cseréljük le úgy, hogy az példányosítson 4 db PegComponentet!</summary>
 
@@ -284,7 +288,7 @@ A komponensünket tehát úgy példányosítottuk, hogy a komponenshez tartozó 
 
 Vegyük észre továbbá, hogy a komponensünk megvalósítja az ún. OnInit interfészt, ez később az [Angular komponens/direktíva életciklus](https://angular.io/guide/lifecycle-hooks) során lehet még hasznos.
 
-<details>
+<details open>
 
 <summary>Hozzuk létre a színeket reprezentáló típust az `src\app\models\peg-color.ts` fájlba (a mappát és fájlt is hozzuk létre). A típus egy TypeScript uniótípus legyen a 'red', 'purple', 'blue', 'green', 'yellow', 'orange', 'black', 'white', és 'unset' string értékekkel!</summary>
 
@@ -296,7 +300,7 @@ export type PegColor = 'red' | 'purple' | 'blue' | 'green' | 'yellow' | 'orange'
 
 <br/>
 
-<details>
+<details open>
 
 <summary>A Peg kétféle lehet: 'code' vagy 'key', ennek is hozzunk létre egy típust az 'src\app\models\peg-type.ts' fájlba PegType néven!</summary>
 
@@ -308,7 +312,7 @@ export type PegType = 'code' | 'key';
 
 <br/>
 
-<details>
+<details open>
 
 <summary>A PegComponent-be vegyünk fel egy adatkötött 'color' és 'type' tulajdonságot (komponens paraméter)! Vegyünk fel két számított, csak lekérdezhető értéket (getter): colorChar (a szín első karakterét adja vissza nagybetűsítve, vagy az "X" értéket, ha nincs szín) és colorLower (a szín nevét adja vissza, vagy az "unset" értéket, ha nincs szín).</summary>
 
@@ -400,7 +404,7 @@ Stílusozzuk meg az elemet! A komponenshez tartozó stíluslap csak a komponens 
 }
 ```
 
-<details><summary>Cseréljük le az 'app-component.html' tartalmát: adjuk át adatkötéssel rendre a piros, zöld, kék és narancs színeket a PegComponent példányoknak!</summary>
+<details open><summary>Cseréljük le az 'app-component.html' tartalmát: adjuk át adatkötéssel rendre a piros, zöld, kék és narancs színeket a PegComponent példányoknak!</summary>
 
 ```HTML
 <mm-peg [color]="'red'"></mm-peg>
@@ -421,7 +425,7 @@ A DOM Explorerben láthatjuk, hogy nem jutott érvényre sem a `.peg-key`, sem a
 
 Észrevehetjük még, hogy az elem egy fura attribútumot kapott (pl. `_ngcontent-dca-c97`). Ennek oka, hogy a CSS szabályunk valójában módosításra került úgy, hogy magába foglalja ezt a generált attribútumot. Ezért nem fut le tehát ez a selector más elemekre. Az F12 CSS eszközei között (pl. Elements/Styles fülön) ezt láthatjuk is.
 
-<details>
+<details open>
 
 <summary>Módosítsuk az 'app.component.html'-t, hogy legyen egy piros és egy zöld kódjelző, majd két fekete és két fehér kulcsjelző!</summary>
 
@@ -464,7 +468,7 @@ A `peg.component.ts`-ből törölhetjük a `getColorChar()` függvényt, nem les
 
 Egy sorban tehát meg kell jelennie 4 színes golyónak (vagy helyőrzőnek), mellette 4 jelzőnek. Tíz sornak kell összesen megjelennie.
 
-<details>
+<details open>
 
 <summary>Vegyünk fel egy osztályt, ami az egyes tippeket fogja reprezentálni az `src\app\models\guess.ts` fájlba! A modell osztály konstruktor tulajdonságokat tartalmaz: két 'PegColor' tömböt 'colors' és 'keys' néven.</summary>
 
@@ -486,7 +490,7 @@ export class Guess {
 
 Az osztályunk 4-4 színt fog tehát tárolni: ami tipp érkezett, illetve ami a visszajelzéseket mutatja majd.
 
-<details>
+<details open>
 
 <summary>Az 'AppComponent' funkcionalitását egészítsük ki! Legyen egy 'guesses' tömb, ami tárolja a leadott tippeket! Legyen egy 'initGame' függvény, ami feltölti a tippeket 10 db üres tipp ('Guess') példánnyal! A konstruktor hívja meg az 'initGame' függvényt!</summary>
 
@@ -523,7 +527,7 @@ export class AppComponent {
 
 <br/>
 
-<details><summary>Jelenítsük meg az AppComponent template-jében a "leadott" (jelenleg üres) tippeket! Járjuk be az összes tippet (*ngFor), hozzuk létre a tipp színeinek megfelelő kód és kulcs típusú 'PegComponent' példányokat!</summary>
+<details open><summary>Jelenítsük meg az AppComponent template-jében a "leadott" (jelenleg üres) tippeket! Járjuk be az összes tippet (*ngFor), hozzuk létre a tipp színeinek megfelelő kód és kulcs típusú 'PegComponent' példányokat!</summary>
 
 `src\app\app.component.html`:
 
@@ -573,7 +577,7 @@ main {
 
 A sorok fölött a jelenlegi tippünk összeállítása fog látszani. Ez alatt a 6 lehetséges szín fog megjelenni, amire kattintva össze tudjuk állítani a tippet, valamint egy gomb, amivel el tudjuk küldeni a tippünket.
 
-<details>
+<details open>
 
 <summary>Egészítsük ki az 'AppComponent' funkcionalitását és megjelenítését az elvárt funkcionalitásnak megfelelően!</summary>
 
