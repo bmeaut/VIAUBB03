@@ -5,10 +5,10 @@
 A labor során egy tömegközlekedési vállalat számára megálmodott alkalmazás vázát készítjük el. Az alkalmazással a felhasználók különböző járművekre vásárolhatnak majd bérleteket. Az üzleti logikát (az authentikációt, a bevitt adatok ellenőrzését, a fizetés lebonyolítását) egyelőre csak szimulálni fogjuk, a labor fókusza a felületek és a köztük való navigáció elkészítése lesz.
 
 <p align="center">
-<img src="./assets/login.jpg" width="160">
-<img src="./assets/list.jpg" width="160">
-<img src="./assets/details.jpg" width="160">
-<img src="./assets/pass.jpg" width="160">
+<img src="./assets/login.png" width="160">
+<img src="./assets/list.png" width="160">
+<img src="./assets/details.png" width="160">
+<img src="./assets/pass.png" width="160">
 </p>
 
 ## Értékelés
@@ -47,7 +47,7 @@ Első lépésként indítsuk el az Android Studio-t, majd:
 
 A projekt létrehozásakor, a fordító keretrendszernek rengeteg függőséget kell letöltenie. Amíg ez nem történt meg, addig a projektben nehézkes navigálni, hiányzik a kódkiegészítés, stb... Éppen ezért ezt tanácsos kivárni, azonban ez akár 5 percet is igénybe vehet az első alkalommal! Az ablak alján látható információs sávot kell figyelni.
 
-Láthatjuk, hogy létrejött egy projekt, amiben van egy Activity, `MainActivity` néven, valamint egy hozzá tartozó layout fájl `activity_main.xml` néven. Nevezzük ezeket át `LoginActivity`-re, illetve `activity_login.xml`-re. Ezt a jobb gomb > Refactor > Rename menüpontban lehet megtenni (agy Shift+F6). Az átnevezésnél található egy Scope nevű beállítás. Ezt állítsuk úgy be, hogy csak a jelenlegi projekten belül nevezze át a dolgokat (Project Files).
+Láthatjuk, hogy létrejött egy projekt, amiben van egy Activity, `MainActivity` néven, valamint egy hozzá tartozó layout fájl `activity_main.xml` néven. Nevezzük ezeket át `LoginActivity`-re, illetve `activity_login.xml`-re. Ezt a jobb gomb > Refactor > Rename menüpontban lehet megtenni (vagy Shift+F6). Az átnevezésnél található egy Scope nevű beállítás. Ezt állítsuk úgy be, hogy csak a jelenlegi projekten belül nevezze át a dolgokat (Project Files).
 
 > Érdemes megfigyelni, hogy az átnevezés "okos". A layout fájl átnevezése esetén a LoginActivity-ben nem kell kézzel átírnunk a layout fájl azonosítóját, mert ezt a rendszer megteszi. Ugyanez igaz a manifest fájlra is.
 
@@ -56,7 +56,7 @@ Láthatjuk, hogy létrejött egy projekt, amiben van egy Activity, `MainActivity
 Az első Activity-nk a nevéhez híven a felhasználó bejelentkezéséért lesz felelős, azonban még mielőtt ez megjelenik a felhasználó számára, egy splash képernyővel fogjuk üdvözölni. Ez egy elegáns megoldás arra, hogy az alkalmazás betöltéséig ne egy egyszínű képernyő legyen a felhasználó előtt, hanem egy tetszőleges saját design.
 
 <p align="center"> 
-<img src="./assets/splash.jpg" width="320">
+<img src="./assets/splash.png" width="320">
 </p>
 
 Először töltsük le [az alkalmazáshoz képeit tartalmazó tömörített fájlt](./downloads/res.zip), ami tartalmazza az összes képet, amire szükségünk lesz. A tartalmát másoljuk be az `app/src/main/res` mappába (ehhez segít, ha Android Studio-ban bal fent a szokásos Android nézetről a Project nézetre váltunk, esetleg a mappán jobb klikk > Show in Explorer).
@@ -81,13 +81,15 @@ Jelen esetben egyetlen képet teszünk ide, de további `item`-ek felvételével
 Nyissuk meg a `values/themes.xml` fájlt. Ez definiálja az alkalmazásban használt különböző témákat. A splash képernyőhöz egy új témát fogunk létrehozni, amelyben az előbb létrehozott drawable-t állítjuk be az alkalmazásablakunk hátterének (mivel ez látszik valójában, amíg nem töltött be a UI többi része). Ezt így tehetjük meg:
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_background</item>
-    </style>
+<style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+    <item name="android:windowBackground">@drawable/splash_background</item>
+</style>
 ```
 
-Ennek használatához az alkalmazásunk manifest fájlját (`AndroidManifest.xml`) kell módosítanunk. Ezt megnyitva láthatjuk, hogy jelenleg a teljes alkalmazás az `AppTheme` nevű témát használja.
+A fenti témát illesszük be a `night` minősítővel ellátott `themes.xml` fájlba is.
+
+
+A téma használatához az alkalmazásunk manifest fájlját (`AndroidManifest.xml`) kell módosítanunk. Ezt megnyitva láthatjuk, hogy jelenleg a teljes alkalmazás az `AppTheme` nevű témát használja.
 
 ```xml
 <application
@@ -133,7 +135,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 Most már elkészíthetjük a login képernyőt. A felhasználótól egy email címet, illetve egy számokból álló jelszót fogunk bekérni, és egyelőre csak azt fogjuk ellenőrizni, hogy beírt-e valamit a mezőkbe.
 
 <p align="center"> 
-<img src="./assets/login.jpg" width="320">
+<img src="./assets/login.png" width="320">
 </p>
 
 Az `activity_login.xml` fájlba kerüljön az alábbi kód. Alapértelmezetten egy grafikus szerkesztő nyílik meg, ezt át kell állítani a szöveges szerkesztőre. Ezt az Android Studio verziójától függően a jobb felső, vagy a jobb alsó sarokban lehet megtenni:
@@ -206,7 +208,7 @@ Ha most kipróbáljuk az alkalmazást, már látjuk a beállítások hatását:
 - A legtöbb billentyűzettel az első mezőhöz most már megjelenik a `@` szimbólum, a másodiknál pedig csak számokat írhatunk be.
 - Mivel a második mezőt jelszó típusúnak állítottuk be, a karakterek a megszokott módon elrejtésre kerülnek a beírásuk után.
 
-Még egy dolgunk van ezen a képernyőn, az input ellenőrzése. Ezt a `LoginActivity.kt` fájlban tehetjük meg. A layout-unkat alkotó View-kat az `onCreate` függvényben lévő `setContentView` hívás után tudjuk először elérni. 
+Még egy dolgunk van ezen a képernyőn, az input ellenőrzése. Ezt a `LoginActivity.kt` fájlban tehetjük meg. A layout-unkat alkotó `View`-kat az `onCreate` függvényben lévő `setContentView` hívás után tudjuk először elérni. 
 
 Ezt csinálhatnánk a klasszikus módon, azaz példányosítunk egy gombot, a `findViewById` metódussal referenciát szerzünk a felületen lévő vezérlőre, és a példányon beállítjuk az eseménykezelőt:
 
@@ -221,7 +223,7 @@ Azonban a `findViewById` hívásnak számos problémája [van](https://developer
 
 > A [`ViewBinding`](https://developer.android.com/topic/libraries/view-binding) a kódítást könnyíti meg számunkra. Amennyiben ezt használjuk, az automatikusan generálódó *binding* osztályokon keresztül közvetlen referencián keresztül tudunk elérni minden *ID*-val rendelkező erőforrást az `XML` fájljainkban.
 
-Először is be kell kapcsolnunk a modulunkra a `ViewBinding`-ot. Az `app` modulhoz tartozó `build.gradle` fájlban az `android` tagen belülre illesszük be az engedélyezést:
+Először is be kell kapcsolnunk a modulunkra a `ViewBinding`-ot. Az `app` modulhoz tartozó `build.gradle` fájlban az `android` tagen belülre illesszük be az engedélyezést (Ezek után kattintsunk jobb felül a `Sync Now` gombra.):
 
 ```kotlin
 android {
@@ -233,14 +235,14 @@ android {
 
 ```
 
-(Ezek után kattintsunk jobb felül a `Sync Now` gombra.) Ezzel után már a teljes modulunkban automatikusan elérhetővé vált a `ViewBinging`. Használatához az `Activity`-nkben csak példányosítanunk kell a `binding` objektumot, amin keresztül majd elérhetjük az erőforrásainkat.
+Ezzel után már a teljes modulunkban automatikusan elérhetővé vált a `ViewBinging`. Használatához az `Activity`-nkben csak példányosítanunk kell a `binding` objektumot, amin keresztül majd elérhetjük az erőforrásainkat.
 A `binding` példány működéséhez három dolgot kell tennünk:
 1. A generált `binding` osztály *statikus* `inflate` függvényével példányosítjuk a `binding` osztályunkat az `Activity`-hez,
 2. Szerzünk egy referenciát a gyökér nézetre a `getRoot()` függvénnyel,
 3.  Ezt a gyökérelemet odaadjuk a `setContentView()` függvénynek, hogy ez legyen az aktív *view* a képernyőn:
 
 ```kotlin
-private lateinit var binding: ActivityMainBinding
+private lateinit var binding: ActivityLoginBinding
 
 override fun onCreate(savedInstanceState: Bundle?) {
     try {
@@ -284,7 +286,7 @@ Amennyiben valamelyik `EditText` üres volt, a `requestFocus` függvény meghív
 A következő képernyőn a felhasználó a különböző járműtípusok közül válaszhat. Egyelőre három szolgáltatás működik a fiktív vállalatunkban: biciklik, buszok illetve vonatok.
 
 <p align="center"> 
-<img src="./assets/list.jpg" width="320">
+<img src="./assets/list.png" width="320">
 </p>
 
 Hozzunk ehhez létre egy új Activity-t (a package-ünkön jobb klikk > New > Activity > Empty Activity), nevezzük el `ListActivity`-nek. Most, hogy ez már létezik, menjünk vissza a `LoginActivity` kódjában lévő TODO-hoz, és indítsuk ott el ezt az új Activity-t:
@@ -384,7 +386,7 @@ Próbáljuk ki az alkalmazásunkat, bejelentkezés után a most elkészített li
 Miután a felhasználó kiválasztotta a kívánt közlekedési eszközt, néhány további opciót fogunk még felajánlani számára. Ezen a képernyőn fogja kiválasztani a bérleten szereplő dátumokat, illetve a rá vonatkozó kedvezményt, amennyiben van ilyen.
 
 <p align="center"> 
-<img src="./assets/details.jpg" width="320">
+<img src="./assets/details.png" width="320">
 </p>
 
 Hozzuk létre ezt az új Activity-t `DetailsActivity` néven, a layout-ját kezdjük az alábbi kóddal:
@@ -412,7 +414,6 @@ Hozzuk létre ezt az új Activity-t `DetailsActivity` néven, a layout-ját kezd
 
 Az eddigiekhez képest itt újdonság, hogy a használt `LinearLayout`-ot egy `ScrollView`-ba tesszük, mivel sok nézetet fogunk egymás alatt elhelyezni, és alapértelmezetten egy `LinearLayout` nem görgethető, így ezek bizonyos eszközökön már a képernyőn kívül lennének.
 
----
 
 Kezdjük el összerakni a szükséges layout-ot a `LinearLayout` belsejében. Az oldal tetejére elhelyezünk egy címet, amely a kiválasztott jegy típusát fogja megjeleníteni.
 
@@ -428,7 +429,6 @@ Kezdjük el összerakni a szükséges layout-ot a `LinearLayout` belsejében. Az
 
 Az itt használt `tools` névtérrel megadott `text` attribútum hatása csak az előnézetben fog megjelenni, az alkalmazásban ezt majd a Kotlin kódból állítjuk be, az előző képernyőn megnyomott gomb függvényében.
 
----
 
 Az első beállítás ezen a képernyőn a bérlet érvényességének időtartama lesz. 
 
@@ -462,7 +462,6 @@ Ezt az érvényesség első és utolsó napjának megadásával tesszük, amelyh
 
 Ezeknek a `DatePicker`-eknek is adtunk ID-kat, hiszen később szükségünk lesz a Kotlin kódunkban a rajtuk beállított értékekre.
 
----
 
 Még egy beállítás van hátra, az árkategória kiválasztása - nyugdíjasoknak és közalkalmazottaknak különböző kedvezményeket adunk a jegyek árából.
 
@@ -503,7 +502,6 @@ Mivel ezek közül az opciók közül egyszerre csak egynek akarjuk megengedni a
 
 Fontos, hogy adjunk ID-t a teljes csoportnak, és a benne lévő minden opciónak is, mivel később ezek alapján tudjuk majd megnézni, hogy melyik van kiválasztva.
 
----
 
 Végül az oldal alján kiírjuk a kiválasztott bérlet árát, illetve ide kerül a megvásárláshoz használható gomb is. Az árnak egyelőre csak egy fix értéket írunk ki.
 
@@ -613,7 +611,7 @@ Próbáljuk ki az alkalmazást! A `DetailsActivity`-ben meg kell jelennie a hozz
 Az alkalmazás utolsó képernyője már kifejezetten egyszerű lesz, ez magát a bérletet fogja reprezentálni. Itt a bérlet típusát és érvényességi idejét fogjuk megjeleníteni, illetve egy QR kódot, amivel ellenőrizni lehet a bérletetet.
 
 <p align="center"> 
-<img src="./assets/pass.jpg" width="320">
+<img src="./assets/pass.png" width="320">
 </p>
 
 Hozzuk létre a szükséges Activity-t, `PassActivity` néven. Ennek az Activity-nek szüksége lesz a jegy típusára és a kiválasztott dátumokra - a QR kód az egyszerűség kedvéért egy fix kép lesz.
@@ -661,7 +659,7 @@ private fun getDateFrom(picker: DatePicker): String {
 
 (Itt a hónaphoz azért adtunk hozzá egyet, mert akárcsak a [`Calendar`](https://developer.android.com/reference/java/util/Calendar.html#MONTH) osztály esetében, a `DatePicker` osztálynál is 0 indexelésűek a hónapok.)
 
----
+
 
 Most már elkészíthetjük a `PassActivity`-t. Kezdjük a layout-jával (`activity_pass.xml`), aminek már majdnem minden elemét használtuk, az egyetlen újdonság itt az `ImageView` használata.
 
@@ -765,7 +763,7 @@ Ebből még az alábbi kedvezményeket adjuk:
 | Nyugdíjas | 90% |
 | Közalkalmazott | 50% |
 
-A számolásokhoz és az eseménykezeléshez a [`Calendar`](https://developer.android.com/reference/java/util/Calendar.html) osztályt, a `DatePicker` osztály [`init`](https://developer.android.com/reference/android/widget/DatePicker.html#init(int%2C%20int%2C%20int%2C%20android.widget.DatePicker.OnDateChangedListener) függvényét, illetve a `RadioGroup` osztály [`setOnCheckedChangeListener`](https://developer.android.com/reference/android/widget/RadioGroup.html#setOnCheckedChangeListener(android.widget.RadioGroup.OnCheckedChangeListener)) osztályát érdemes használni.
+A számolásokhoz és az eseménykezeléshez a [`Calendar`](https://developer.android.com/reference/java/util/Calendar.html)) osztályt, a `DatePicker` osztály [`init`](https://developer.android.com/reference/android/widget/DatePicker.html#init(int%2C%20int%2C%20int%2C%20android.widget.DatePicker.OnDateChangedListener) függvényét, illetve a `RadioGroup` osztály [`setOnCheckedChangeListener`](https://developer.android.com/reference/android/widget/RadioGroup.html#setOnCheckedChangeListener(android.widget.RadioGroup.OnCheckedChangeListener)) osztályát érdemes használni.
 
 ## Feltöltendő állományok
 
@@ -779,11 +777,11 @@ A labor értékeléséhez **két külön** fájlt kell feltölteni:
 
 2. Egy pdf-et, amiben a név, neptun kód és az alábbi képernyőképek szerepelnek (az emulátor, és egy lényegesebb kódrészlet is):
 
-<p align="center"> 
-<img src="./assets/hw.png" width="640">
-</p>
-
 	1. LoginActivity
 	2. ListActivity (ha kész az önálló rész, az is szerepeljen)
 	3. DetailsActivity (ha kész az önálló rész, az is szerepeljen)
 	4. PassActivity (ha kész az önálló rész, az is szerepeljen)
+
+<p align="center"> 
+<img src="./assets/hw.png" width="640">
+</p>
