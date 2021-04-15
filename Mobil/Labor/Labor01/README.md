@@ -40,14 +40,14 @@ Másrészről viszont a nyelv sok mindenben tér el a hagyományosan C jellegű 
 Első lépésként indítsuk el az Android Studio-t, majd:
 
 1. Hozzunk létre egy új projektet, válasszuk az *Empty Activity* lehetőséget.
-2. A projekt neve legyen `PublicTransport`, a kezdő package pedig `hu.bme.aut.publictransport`
+2. A projekt neve legyen `PublicTransport`, a kezdő package pedig `hu.bme.aut.android.publictransport`
 3. Nyelvnek válasszuk a *Kotlin*-t.
 4. A minimum API szint legyen API21: Android 5.0.
 5. Az instant app támogatást, valamint a *Use legacy android.support libraries* pontot **ne** pipáljuk be.
 
 A projekt létrehozásakor, a fordító keretrendszernek rengeteg függőséget kell letöltenie. Amíg ez nem történt meg, addig a projektben nehézkes navigálni, hiányzik a kódkiegészítés, stb... Éppen ezért ezt tanácsos kivárni, azonban ez akár 5 percet is igénybe vehet az első alkalommal! Az ablak alján látható információs sávot kell figyelni.
 
-Láthatjuk, hogy létrejött egy projekt, amiben van egy Activity, `MainActivity` néven, valamint egy hozzá tartozó layout fájl `activity_main.xml` néven. Nevezzük ezeket át `LoginActivity`-re, illetve `activity_login.xml`-re. Ezt a jobb gomb > Refactor > Rename menüpontban lehet megtenni. Az átnevezésnél található egy Scope nevű beállítás. Ezt állítsuk úgy be, hogy csak a jelenlegi projekten belül nevezze át a dolgokat (Project Files).
+Láthatjuk, hogy létrejött egy projekt, amiben van egy Activity, `MainActivity` néven, valamint egy hozzá tartozó layout fájl `activity_main.xml` néven. Nevezzük ezeket át `LoginActivity`-re, illetve `activity_login.xml`-re. Ezt a jobb gomb > Refactor > Rename menüpontban lehet megtenni (agy Shift+F6). Az átnevezésnél található egy Scope nevű beállítás. Ezt állítsuk úgy be, hogy csak a jelenlegi projekten belül nevezze át a dolgokat (Project Files).
 
 > Érdemes megfigyelni, hogy az átnevezés "okos". A layout fájl átnevezése esetén a LoginActivity-ben nem kell kézzel átírnunk a layout fájl azonosítóját, mert ezt a rendszer megteszi. Ugyanez igaz a manifest fájlra is.
 
@@ -59,7 +59,7 @@ Az első Activity-nk a nevéhez híven a felhasználó bejelentkezéséért lesz
 <img src="./assets/splash.jpg" width="320">
 </p>
 
-Először töltsük le [az alkalmazáshoz képeit tartalmazó tömörített fájlt](./downloads/res.zip), ami tartalmazza az összes képet, amire szükségünk lesz. A tartalmát másoljuk be az `app/src/main/res` mappába (ehhez segít, ha Android Studio-ban bal fent a szokásos Android nézetről a Project nézetre váltunk).
+Először töltsük le [az alkalmazáshoz képeit tartalmazó tömörített fájlt](./downloads/res.zip), ami tartalmazza az összes képet, amire szükségünk lesz. A tartalmát másoljuk be az `app/src/main/res` mappába (ehhez segít, ha Android Studio-ban bal fent a szokásos Android nézetről a Project nézetre váltunk, esetleg a mappán jobb klikk > Show in Explorer).
 
 Hozzunk létre egy új XML fájlt a `drawable` mappában `splash_background.xml` néven. Ez lesz a splash képernyőnkön megjelenő grafika. A tartalma az alábbi legyen:
 
@@ -78,12 +78,13 @@ Hozzunk létre egy új XML fájlt a `drawable` mappában `splash_background.xml`
 
 Jelen esetben egyetlen képet teszünk ide, de további `item`-ek felvételével komplexebb dolgokat is összeállíthatnánk itt. Tipikus megoldás például egy egyszínű háttér beállítása, amin az alkalmazás ikonja látszik.
 
-Nyissuk meg a `values/styles.xml` fájlt. Ez definiálja az alkalmazásban használt különböző témákat. A splash képernyőhöz egy új témát fogunk létrehozni, amelyben az előbb létrehozott drawable-t állítjuk be az alkalmazásablakunk hátterének (mivel ez látszik valójában, amíg nem töltött be a UI többi része). Ezt így tehetjük meg:
+Nyissuk meg a `values/themes.xml` fájlt. Ez definiálja az alkalmazásban használt különböző témákat. A splash képernyőhöz egy új témát fogunk létrehozni, amelyben az előbb létrehozott drawable-t állítjuk be az alkalmazásablakunk hátterének (mivel ez látszik valójában, amíg nem töltött be a UI többi része). Ezt így tehetjük meg:
 
 ```xml
-<style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-    <item name="android:windowBackground">@drawable/splash_background</item>
-</style>
+<?xml version="1.0" encoding="utf-8"?>
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
 ```
 
 Ennek használatához az alkalmazásunk manifest fájlját (`AndroidManifest.xml`) kell módosítanunk. Ezt megnyitva láthatjuk, hogy jelenleg a teljes alkalmazás az `AppTheme` nevű témát használja.
@@ -91,7 +92,7 @@ Ennek használatához az alkalmazásunk manifest fájlját (`AndroidManifest.xml
 ```xml
 <application
     ...
-    android:theme="@style/AppTheme" >
+    android:theme="@style/Theme.PublicTransport" >
 ```
 
 Mi ezt nem akarjuk megváltoztatni, hanem csak a `LoginActivity`-nek akarunk egy új témát adni. Ezt így tehetjük meg:
@@ -108,7 +109,7 @@ Mivel a betöltés után már nem lesz szükségünk erre a háttérre, a `Login
 
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
-    setTheme(R.style.AppTheme)
+    setTheme(R.style.Theme_PublicTransport)
     ...
 }
 ```
@@ -122,7 +123,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     } catch (e: InterruptedException) {
         e.printStackTrace()
     }
-    setTheme(R.style.AppTheme);
+    setTheme(R.style.Theme_PublicTransport);
     ...
 }
 ```
@@ -205,17 +206,68 @@ Ha most kipróbáljuk az alkalmazást, már látjuk a beállítások hatását:
 - A legtöbb billentyűzettel az első mezőhöz most már megjelenik a `@` szimbólum, a másodiknál pedig csak számokat írhatunk be.
 - Mivel a második mezőt jelszó típusúnak állítottuk be, a karakterek a megszokott módon elrejtésre kerülnek a beírásuk után.
 
-Még egy dolgunk van ezen a képernyőn, az input ellenőrzése. Ezt a `LoginActivity.kt` fájlban tehetjük meg. A layout-unkat alkotó View-kat az `onCreate` függvényben lévő `setContentView` hívás után tudjuk először elérni. Ezeket az XML kódban lévő ID-jük segítségével tudjuk beszerezni, és segítségükkel megvalósítani a gomb lenyomásának kezelését:
+Még egy dolgunk van ezen a képernyőn, az input ellenőrzése. Ezt a `LoginActivity.kt` fájlban tehetjük meg. A layout-unkat alkotó View-kat az `onCreate` függvényben lévő `setContentView` hívás után tudjuk először elérni. 
+
+Ezt csinálhatnánk a klasszikus módon, azaz példányosítunk egy gombot, a `findViewById` metódussal referenciát szerzünk a felületen lévő vezérlőre, és a példányon beállítjuk az eseménykezelőt:
 
 ```kotlin
+val btnLogin = findViewById<Button>(R.id.btnLogin)
 btnLogin.setOnClickListener {
-    if(etEmailAddress.text.toString().isEmpty()) {
-        etEmailAddress.requestFocus()
-        etEmailAddress.error = "Please enter your email address"
+    ...
+}
+```
+
+Azonban a `findViewById` hívásnak számos problémája [van](https://developer.android.com/topic/libraries/view-binding#findviewbyid). Ezekről bővebben az előadáson lesz szó (pl.: *Null safety*, *type safety*). Ezért e helyett "nézetkötést", azaz `ViewBinding`-ot fogunk használni.
+
+> A [`ViewBinding`](https://developer.android.com/topic/libraries/view-binding) a kódítást könnyíti meg számunkra. Amennyiben ezt használjuk, az automatikusan generálódó *binding* osztályokon keresztül közvetlen referencián keresztül tudunk elérni minden *ID*-val rendelkező erőforrást az `XML` fájljainkban.
+
+Először is be kell kapcsolnunk a modulunkra a `ViewBinding`-ot. Az `app` modulhoz tartozó `build.gradle` fájlban az `android` tagen belülre illesszük be az engedélyezést:
+
+```kotlin
+android {
+    ...
+    buildFeatures {
+        viewBinding true
     }
-    else if(etPassword.text.toString().isEmpty()) {
-        etPassword.requestFocus()
-        etPassword.error = "Please enter your password"
+}
+
+```
+
+(Ezek után kattintsunk jobb felül a `Sync Now` gombra.) Ezzel után már a teljes modulunkban automatikusan elérhetővé vált a `ViewBinging`. Használatához az `Activity`-nkben csak példányosítanunk kell a `binding` objektumot, amin keresztül majd elérhetjük az erőforrásainkat.
+A `binding` példány működéséhez három dolgot kell tennünk:
+1. A generált `binding` osztály *statikus* `inflate` függvényével példányosítjuk a `binding` osztályunkat az `Activity`-hez,
+2. Szerzünk egy referenciát a gyökér nézetre a `getRoot()` függvénnyel,
+3.  Ezt a gyökérelemet odaadjuk a `setContentView()` függvénynek, hogy ez legyen az aktív *view* a képernyőn:
+
+```kotlin
+private lateinit var binding: ActivityMainBinding
+
+override fun onCreate(savedInstanceState: Bundle?) {
+    try {
+        Thread.sleep(1000)
+    } catch (e: InterruptedException) {
+        e.printStackTrace()
+    }
+    setTheme(R.style.Theme_PublicTransport)
+    super.onCreate(savedInstanceState)
+    binding = ActivityLoginBinding.inflate(layoutInflater)
+    setContentView(binding.root)
+}
+```
+
+> A [`lateinit`](https://kotlinlang.org/docs/reference/properties.html#late-initialized-properties-and-variables) kulcsszóval megjelölt property-ket a fordító megengedi inicializálatlanul hagyni az osztály konstruktorának lefutása utánig, anélkül, hogy nullable-ként kéne azokat megjelölnünk (ami később kényelmetlenné tenné a használatukat, mert mindig ellenőriznünk kéne, hogy `null`-e az értékük). Ez praktikus olyan esetekben, amikor egy osztály inicializálása nem a konstruktorában történik (például ahogy az `Activity`-k esetében az `onCreate`-ben), mert később az esetleges `null` eset lekezelése nélkül használhatjuk majd a property-t. A `lateinit` használatával átvállaljuk a felelősséget a fordítótól, hogy a property-t az első használata előtt inicializálni fogjuk - ellenkező esetben kivételt kapunk.
+
+Ezek után már be is állíthatjuk a gombunk eseménykezelőit:
+
+```kotlin
+binding.btnLogin.setOnClickListener {
+    if(binding.etEmailAddress.text.toString().isEmpty()) {
+        binding.etEmailAddress.requestFocus()
+        binding.etEmailAddress.error = "Please enter your email address"
+    }
+    else if(binding.etPassword.text.toString().isEmpty()) {
+        binding.etPassword.requestFocus()
+        binding.etPassword.error = "Please enter your password"
     }
     else {
         // TODO login
@@ -225,27 +277,21 @@ btnLogin.setOnClickListener {
 
 Amennyiben valamelyik `EditText` üres volt, a `requestFocus` függvény meghívásával aktívvá tesszük, majd az [`error`](https://developer.android.com/reference/android/widget/TextView.html#setError(java.lang.CharSequence)) property beállításával kiírunk rá egy hibaüzenetet. Ez egy kényelmes, beépített megoldás input hibák jelzésére. Így nem kell például egy külön `TextView`-t használnunk erre a célra, és abba beleírni a fellépő hibát. Ezt már akár ki is próbálhatjuk, bár helyes adatok megadása esetén még nem történik semmi.
 
-> Érdemes megfigyelni, hogy a `btnLogin`-t sehol nem deklaráltuk a kódban, mégis felismeri a rendszer. Ha a *ctrl* gombot nyova tartva rákattintunk (ugrás a deklarációhoz), akkor látható, hogy a layout fájl nyílik meg, és kiválasztásra kerül benne a gombunk. 
-> 
-> Ezen felül az import-ok között találni fogunk egy `import kotlinx.android.synthetic.main.activity_login.*` sort. Egy *Kotlin Android Extensions* nevű plugin felel azért, hogy minden minden layout fájlból létrejöjjön egy ilyen speciális csomag, amiből be lehet importálni a layout-on lévő vezérlőket, a layout-on megadott ID-jük segítségével.
->
-> Ez ugyanakkor gyakori hibaforrás is. Ha olyan hibát kapunk, hogy a változó nincs inicializálva, akkor érdemes megnézni, hogy a megfelelő csomag van-e importálva. Különösen nagyobb projekteknél ugyanis előfordulhat, hogy több layout fájlban is van azonos ID-vel renelkező nézet. Például `btnDelete`.
-
 > A [`setOnClickListener`](https://developer.android.com/reference/android/view/View.html#setOnClickListener(android.view.View.OnClickListener)) függvény valójában olyan objektumot vár paraméterként, ami megvalósítja a [`View.OnClickListener`](https://developer.android.com/reference/android/view/View.OnClickListener) interfészt. Ezt Java-ban anonim objektumokkal szokás megoldani, amit [meg lehet tenni](https://kotlinlang.org/docs/reference/object-declarations.html#object-expressions) Kotlin nyelven is.Ehelyett azonban érdemesebb kihasználni, hogy a Kotlin rendelkezik igazi függvény típusokkal, így megadható egy olyan [lambda kifejezés](https://kotlinlang.org/docs/reference/lambdas.html#lambda-expressions-and-anonymous-functions), amelynek a fejléce megegyezik az elvárt interfész egyetlen függvényének fejlécével. Ez alapján pedig a [SAM conversion](https://kotlinlang.org/docs/reference/java-interop.html#sam-conversions) nevű nyelvi funkció a háttérben a lambda alapján létrehozza a megfelelő `View.OnClickListener` példányt.
 
 ### Lehetőségek listája
 
-A következő képernyőn a felhasználó a különböző járműtípusok közül válaszhat. Egyelőre három szolgáltatás működik a fiktív vállalatunkban: biciklik, buszok, illetve vonatok.
+A következő képernyőn a felhasználó a különböző járműtípusok közül válaszhat. Egyelőre három szolgáltatás működik a fiktív vállalatunkban: biciklik, buszok illetve vonatok.
 
 <p align="center"> 
 <img src="./assets/list.jpg" width="320">
 </p>
 
-Hozzunk ehhez létre egy új Activity-t (New -> Activity -> Empty Activity), nevezzük el `ListActivity`-nek. Most, hogy ez már létezik, menjünk vissza a `LoginActivity` kódjában lévő TODO-hoz, és indítsuk ott el ezt az új Activity-t:
+Hozzunk ehhez létre egy új Activity-t (a package-ünkön jobb klikk > New > Activity > Empty Activity), nevezzük el `ListActivity`-nek. Most, hogy ez már létezik, menjünk vissza a `LoginActivity` kódjában lévő TODO-hoz, és indítsuk ott el ezt az új Activity-t:
 
 
 ```kotlin
-btnLogin.setOnClickListener {
+binding.btnLogin.setOnClickListener {
     ...
     else {
         startActivity(Intent(this, ListActivity::class.java))
@@ -312,7 +358,7 @@ A `FrameLayout` egy nagyon egyszerű és gyors elrendezés, amely lényegében c
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Bike"
+        android:text="@string/bike"
         android:textColor="#FFF"
         android:textSize="36sp" />
 
@@ -320,6 +366,14 @@ A `FrameLayout` egy nagyon egyszerű és gyors elrendezés, amely lényegében c
 ```
 
 Az itt használt `ImageButton` pont az, aminek hangzik: egy olyan gomb, amelyen egy képet helyezhetünk el. Azt, hogy ez melyik legyen, az `src` attribútummal adtuk meg. Az utána szereplő `TextView` fehér színnel és nagy méretű betűkkel a kép fölé fog kerülni, ebbe írjuk bele a jármű nevét.
+
+A `@string/bike` hibát jelez. Mint látható, itt sem egy konkrét szöveget, hanem egy hivatkozást használunk. Ez azért hasznos, mert így egy helyre tudjuk szervezni a szöveges erőforrásainkat (`strings.xml`), így egyszerűen [lokalizálhatjuk](https://developer.android.com/guide/topics/resources/localization) az alkalmazásunkat `erőforrásminősítők` segítségével. 
+
+Adjunk tehát értéket a `@strings/bike` elemnek. Ezt megtehetjük kézzel is a `strings.xml`-ben, de `Alt+Enter`rel a helyi menüben is:
+
+```xml
+<string name="bike">Bike</string>
+```
 
 Töltsük ki ehhez hasonló módon a másik két `FrameLayout`-ot is, ID-ként használjuk a `@+id/btnBus` és `@+id/btnTrain` értékeket, képnek pedig használhatjuk a korábban már bemásolt `@drawable/bus` és `@drawable/trains` erőforrásokat. Ne felejtsük el a `TextView`-k szövegét is értelemszerűen átírni.
 
@@ -471,7 +525,7 @@ Végül az oldal alján kiírjuk a kiválasztott bérlet árát, illetve ide ker
     android:text="Purchase pass" />
 ```
 
----
+Ne felejtsük el, a stringeket itt is kiszervezni!
 
 Meg kell oldanunk még azt, hogy az előző képernyőn tett választás eredménye elérhető legyen a `DetailsActivity`-ben. Ezt úgy tehetjük meg, hogy az Activity indításához használt `Intent`-be teszünk egy azonosítót, amiből kiderül, hogy melyik típust választotta a felhasználó.
 
@@ -491,9 +545,9 @@ Ezután menjünk a `ListActivity` kódjához, és vegyünk fel konstansokat a k�
 ```kotlin
 class ListActivity : AppCompatActivity() {
     companion object {
-        const val TYPE_BUS = 1
-        const val TYPE_TRAIN = 2
-        const val TYPE_BIKE = 3
+        const val TYPE_BIKE = 1
+        const val TYPE_BUS = 2
+        const val TYPE_TRAIN = 3
     }
     ...
 }
@@ -501,13 +555,25 @@ class ListActivity : AppCompatActivity() {
 
 > A Kotlin egy nagy eltérése az eddig ismert, megszokott OOP nyelvektől, hogy nincs benne `static` kulcsszó, és így nincsenek statikus változók vagy függvények sem. Ehelyett minden osztályhoz lehet definiálni egy [`companion object`-et](https://kotlinlang.org/docs/reference/object-declarations.html#companion-objects), ami egy olyan singleton-t definiál, ami az olytály összes példányán keresztül elérhető. Röviden, minden `companion object`-en belül definiált konstans, változó, függvény úgy viselkedik, mintha statikus lenne.
 
-Most már létrehozhatjuk a gombok listener-jeit, amelyek elindítják a `DetailsActivity`-t, extrának beletéve a kiválasztott típust. Az első gomb listenerjének beállítását így tehetjük meg:
+Most már létrehozhatjuk a gombok listener-jeit, amelyek elindítják a `DetailsActivity`-t, extrának beletéve a kiválasztott típust. Az első gomb listenerjének beállítását `ViewBindinggal`
+így tehetjük meg:
 
 ```kotlin
-btnBus.setOnClickListener {
-    val intent = Intent(this, DetailsActivity::class.java)
-    intent.putExtra(DetailsActivity.KEY_TRANSPORT_TYPE, TYPE_BUS)
-    startActivity(intent)
+lateinit var binding: ActivityListBinding
+
+...
+
+ override fun onCreate(savedInstanceState: Bundle?) {
+     super.onCreate(savedInstanceState)
+
+     binding = ActivityListBinding.inflate(layoutInflater)
+     setContentView(binding.root)
+
+     binding.btnBike.setOnClickListener {
+         val intent = Intent(this, DetailsActivity::class.java)
+         intent.putExtra(DetailsActivity.KEY_TRANSPORT_TYPE, TYPE_BIKE)
+         startActivity(intent)
+     }
 }
 ```
 
@@ -534,10 +600,10 @@ private fun getTypeString(transportType: Int): String {
 
 > Egy másik nagy eltérése a Kotlin-nak a megszokott nyelvektől, hogy nincs benne `switch`. Helyette a Kotlin egy [`when`](https://kotlinlang.org/docs/reference/control-flow.html#when-expression) nevű szerkezetet használ, ami egyrészről egy kifejetés (látható, hogy az értéke vissza van adva), másrészről pedig sokkal sokoldalúbb feltételeket kínál, mint a hagyományos *case*.
 
-Végül pedig az `onCreate` függvénybe visszatérve meg kell keresnünk a megfelelő `TextView`-t, és beállítani a szövegének a függvény által visszaadott értéket:
+Végül pedig az `onCreate` függvénybe visszatérve meg kell keresnünk a megfelelő `TextView`-t, és beállítani a szövegének a függvény által visszaadott értéket (készítsük el a `ViewBindingot` is):
 
 ```kotlin
-tvTicketType.text = getTypeString(transportType)
+binding.tvTicketType.text = getTypeString(transportType)
 ```
 
 Próbáljuk ki az alkalmazást! A `DetailsActivity`-ben meg kell jelennie a hozzáadott beállításoknak, illetve a tetején a megfelelő jegy típusnak.
@@ -567,9 +633,9 @@ class PassActivity : AppCompatActivity() {
 Ezeket az adatokat a `DetailsActivity`-ben kell összekészítenünk és beleraknunk az `Intent`-be. Ehhez adjunk hozzá a vásárlás gombhoz egy listener-t az `onCreate`-ben:
 
 ```kotlin
-btnPurchase.setOnClickListener {
+binding.btnPurchase.setOnClickListener {
     val typeString = getTypeString(transportType)
-    val dateString = "${getDateFrom(dpStartDate)} - ${getDateFrom(dpEndDate)}"
+    val dateString = "${getDateFrom(binding.dpStartDate)} - ${getDateFrom(binding.dpEndDate)}"
 
     val intent = Intent(this, PassActivity::class.java)
     intent.putExtra(PassActivity.KEY_TYPE_STRING, typeString)
@@ -640,11 +706,12 @@ Most már elkészíthetjük a `PassActivity`-t. Kezdjük a layout-jával (`activ
 </ScrollView>
 ```
 
-Az Activity Kotlin kódjában pedig csak a két `TextView` szövegét kell az `Intent`-ben megkapott értékekre állítanunk (természetesen az `onCreate` függvényben):
+Az Activity Kotlin kódjában pedig csak a két `TextView` szövegét kell az `Intent`-ben megkapott értékekre állítanunk az `onCreate` függvényben(illetve beállítani a `ViewBindingot`):
 
 ```kotlin
-tvTicketType.text = intent.getStringExtra(KEY_TYPE_STRING)
-tvDates.text = intent.getStringExtra(KEY_DATE_STRING)
+binding.tvTicketType.text = intent.getStringExtra(KEY_TYPE_STRING)
+binding.tvDates.text = intent.getStringExtra(KEY_DATE_STRING)
+
 ```
 
 ## Önálló feladat
@@ -698,10 +765,25 @@ Ebből még az alábbi kedvezményeket adjuk:
 | Nyugdíjas | 90% |
 | Közalkalmazott | 50% |
 
-A számolásokhoz és az eseménykezeléshez a [`Calendar`][calendar] osztályt, a `DatePicker` osztály [`init`][picker-init-link] függvényét, illetve a `RadioGroup` osztály [`setOnCheckedChangeListener`][radio-checked-changed] osztályát érdemes használni.
+A számolásokhoz és az eseménykezeléshez a [`Calendar`](https://developer.android.com/reference/java/util/Calendar.html) osztályt, a `DatePicker` osztály [`init`](https://developer.android.com/reference/android/widget/DatePicker.html#init(int%2C%20int%2C%20int%2C%20android.widget.DatePicker.OnDateChangedListener) függvényét, illetve a `RadioGroup` osztály [`setOnCheckedChangeListener`](https://developer.android.com/reference/android/widget/RadioGroup.html#setOnCheckedChangeListener(android.widget.RadioGroup.OnCheckedChangeListener)) osztályát érdemes használni.
 
-[calendar]: https://developer.android.com/reference/java/util/Calendar.html
+## Feltöltendő állományok
 
-[picker-init-link]: https://developer.android.com/reference/android/widget/DatePicker.html#init(int%2C%20int%2C%20int%2C%20android.widget.DatePicker.OnDateChangedListener)
+A labor értékeléséhez **két külön** fájlt kell feltölteni:
 
-[radio-checked-changed]: https://developer.android.com/reference/android/widget/RadioGroup.html#setOnCheckedChangeListener(android.widget.RadioGroup.OnCheckedChangeListener)
+1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Manage IDE Settings` > `Export to Zip File...` menüponttal.
+
+<p align="center"> 
+<img src="./assets/export.png" width="320">
+</p>
+
+2. Egy pdf-et, amiben a név, neptun kód és az alábbi képernyőképek szerepelnek (az emulátor, és egy lényegesebb kódrészlet is):
+
+<p align="center"> 
+<img src="./assets/hw.png" width="640">
+</p>
+
+	1. LoginActivity
+	2. ListActivity (ha kész az önálló rész, az is szerepeljen)
+	3. DetailsActivity (ha kész az önálló rész, az is szerepeljen)
+	4. PassActivity (ha kész az önálló rész, az is szerepeljen)
