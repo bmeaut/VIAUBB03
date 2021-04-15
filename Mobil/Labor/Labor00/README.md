@@ -19,9 +19,9 @@ A projekt létrehozása után a forráskód az `src` könyvtárban, míg a felha
 
 2.  A fejlesztőkörnyezet az erőforrás állományokból folyamatosan naprakészen tartja az `R.java` erőforrás fájlt a fejlesztéshez és a fordításhoz. **FONTOS: az `R.java` állomány generált, kézzel SOHA ne módosítsuk!** (Az Android Studio egyébként nem is hagyja.)
 
-3.  A fejlesztő a Manifest állományban beállítja az alkalmazás hozzáférési jogosultságait (pl. Internet elérés, szenzorok használata, stb.), illetve ha futás idejű jogosultságok szükségesek, ezt kezeli, de erről a [11. laboron](../labor11/labor11.md) hallunk majd bővebben.
+3.  A fejlesztő a Manifest állományban beállítja az alkalmazás hozzáférési jogosultságait (pl. Internet elérés, szenzorok használata, stb.), illetve ha futás idejű jogosultságok szükségesek, ezt kezeli, de erről az [Engedélykezelés](../permissions/permissions.md) laboron hallunk majd bővebben.
 
-4.  A fordító a forráskódból, az erőforrásokból és a külső könyvtárakból előállítja a Dalvik/[**ART**](https://hu.wikipedia.org/wiki/Android_Runtime) virtuális gép gépi kódját.
+4.  A fordító a forráskódból, az erőforrásokból és a külső könyvtárakból előállítja az [**ART**](https://hu.wikipedia.org/wiki/Android_Runtime) virtuális gép gépi kódját.
 
 5.  A gépi kódból és az erőforrásokból előáll a nem aláírt APK állomány.
 
@@ -104,6 +104,7 @@ A fenti képen bal oldalon a létező virtuális eszközök listáját találjuk
         - *WebcamX*, hardveres kamera, ami a számítógépre van csatlakoztatva
         - *Emulated*, egy egyszerű szoftveres megoldás, **most legalább az egyik kamera legyen ilyen**.
         - *VirtualScene*, egy kifinomultabb szoftveres megoldás, amelyben egy 3D világban mozgathatjuk a kamerát.
+    - Hálózat: Állíthatjuk a sebességét és a késleltetését is kommunikációs technológiák szerint.
     - *Boot Option*: Nemrég jelent meg az Android emulátor állapotáról való pillanatkép elmentésének lehetősége. Ez azt takarja, hogy a virtuális operációs rendszer csak felfüggesztésre kerül az emulátor bezáráskor (például a megnyitott alkalmazás is megmarad, a teljes állapotával), és *Quick boot* esetben a teljes OS indítása helyett másodperceken belül elindul az emulált rendszer. *Cold Boot* esetben minden alkalommal leállítja és újra indítja a virtális eszköz teljes operációs rendszerét.
     - Memória és tárhely: 
         - RAM: Ha kevés a rendszermemóriánk, nem érdemes 768 MB-nál többet adni, mert könnyen futhatunk problémákba. Ha az emulátor lefagy, vagy az egész OS megáll működés közben, akkor állítsuk alacsonyabbra ezt az értéket. 8 GB vagy több rendszermemória mellett nyugodtan állíthatjuk az emulátor memóriáját 1024, 1536, vagy 2048 MB-ra.
@@ -120,7 +121,7 @@ A Play gombbal indítsuk el az új emulátort!
 
 Az elindított emulátoron próbáljuk ki az *API Demos* és *Dev Tools* alkalmazásokat!
 
-Megjegyzés: A gyári emulátoron kívül több alternatíva is létezik, a [Genymotion](https://www.genymotion.com/fun-zone/) ezek közül az egyik legjobb, viszont a Google féle emulátor a legelterjedtebb, így amennyiben ezzel nem jelentkeznek problémáink, maradjunk ennél.
+Megjegyzés: A gyári emulátoron kívül több alternatíva is létezik, mint pl. a [Genymotion](https://www.genymotion.com/fun-zone/) vagy a [BigNox](https://www.bignox.com/), viszont a Google féle emulátor a legelterjedtebb, így amennyiben ezzel nem jelentkeznek problémáink, maradjunk ennél.
 
 Tesztelés céljából nagyon jól használható az emulátor, amely az alábbi képen látható plusz funkciókat is adja. Lehetőség van többek között egyedi hely beállítására, bejövő hívás szimulálására, stb. A panelt a futó emulátor jobb oldalán található vezérlő gombok közül a *...* gombbal lehet megnyitni:
 
@@ -140,11 +141,8 @@ A laborvezető segítségével készítsenek egy egyszerű Hello World alkalmaz�
 
 Ez a rész azoknak szól, akik korábban már használták az Eclipse nevű IDE-t, és szeretnék megismerni a különbségeket az Android Studio-hoz képest.
 
-*   **Import régi projektekből:** Android Studioban lehetséges a projekt
-    importálása régebbi verziójú projektekből és a régi Eclipse
-    projektekből is.
-*   **Projektstruktúra:** A Studio Gradle-lel fordít, és más felépítést
-    használ. Projekten belül:
+*   **Import régi projektekből:** Android Studioban lehetséges a projekt importálása régebbi verziójú projektekből és a régi Eclipse projektekből is.
+*   **Projektstruktúra:** A Studio Gradle-lel fordít, és más felépítést használ. Projekten belül:
     *   `.idea`: IDE fájlok
     *   `app`: forrás
         *   `build`: fordított állományok
@@ -225,6 +223,19 @@ A készülék erőforráshasználata [monitorozható](https://developer.android.
 Például részletes információt kaphatunk a hálózati forgalomról:
 
 ![](assets/ap_network.png)
+
+
+## Database Inspector
+
+A készüléken debuggolt alkalmazásunknak az [adatbázisát](https://developer.android.com/studio/inspect/database) is meg tudjuk tekinteni.
+
+![](assets/di.png)
+
+## Database Inspector
+
+A készüléken lévő fájlrendszert is [böngészhetjük](https://developer.android.com/studio/debug/device-file-explorer).
+
+![](assets/dfe.png)
 
 ## Feladatok:
 
