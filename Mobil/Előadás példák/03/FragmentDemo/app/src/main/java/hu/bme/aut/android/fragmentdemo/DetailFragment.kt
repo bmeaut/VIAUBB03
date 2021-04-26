@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_detail.*
+import hu.bme.aut.android.fragmentdemo.databinding.FragmentDetailBinding
 
 class DetailFragment(): Fragment() {
+    private var _binding: FragmentDetailBinding? = null
 
+    private val binding get() = _binding!!
 
     companion object {
         const val TAG="DetailFragment"
@@ -26,16 +28,17 @@ class DetailFragment(): Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView=inflater.inflate(R.layout.fragment_detail,container,false)
+        _binding = FragmentDetailBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
 
-        return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val name=arguments!!.getString(NAME)
 
-        nameTextView.text="Hello $name"
+        binding.nameTextView.text="Hello $name"
     }
 
 }

@@ -2,31 +2,26 @@ package hu.bme.aut.android.layoutdemo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.empty_linear.*
-import kotlinx.android.synthetic.main.layout_item.view.*
+import hu.bme.aut.android.layoutdemo.databinding.EmptyLinearBinding
+import hu.bme.aut.android.layoutdemo.databinding.LayoutItemBinding
 
 class MainActivity : AppCompatActivity() {
+    lateinit var binding:EmptyLinearBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.empty_linear)
+        binding = EmptyLinearBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        btnAdd.setOnClickListener{
+        binding.btnAdd.setOnClickListener {
+            var bindingItem = LayoutItemBinding.inflate(layoutInflater)
 
-            if (etTodo.text.isEmpty())
-                etTodo.error = "Adjon meg nevet!"
-            else {
-
-                val item = layoutInflater.inflate(R.layout.layout_item, null, false)
-
-                item.cbItem.text = etTodo.text
-                item.btnDelete.setOnClickListener {
-                    layoutContent.removeView(item)
-                }
-
-                layoutContent.addView(item)
+            bindingItem.cbItem.text = binding.etTodo.text
+            bindingItem.btnDelete.setOnClickListener {
+                binding.root.removeView(bindingItem.root)
             }
-        }
 
+            binding.root.addView(bindingItem.root)
+        }
     }
 }
