@@ -34,10 +34,22 @@ Bónusz feladat
 Első lépésként indítsuk el az Android Studio-t, majd:
 
 1. Hozzunk létre egy új projektet, válasszuk az *Add No Activity* lehetőséget.
-2. A projekt neve legyen `WorkplaceApp`, a kezdő package pedig `hu.bme.aut.workplaceapp`
+2. A projekt neve legyen `WorkplaceApp`, a kezdő package pedig `hu.bme.aut.android.workplaceapp`
 3. Nyelvnek válasszuk a *Kotlin*-t.
 4. A minimum API szint legyen API21: Android 5.0.
 5. Az instant app támogatást, valamint a *Use legacy android.support libraries* pontot **ne** pipáljuk be.
+
+Amint elkészült a projektünk, kapcsoljuk is be a `ViewBinding`-ot. Az `app` modulhoz tartozó `build.gradle` fájlban az `android` tagen belülre illesszük be az engedélyezést (Ezek után kattintsunk jobb felül a `Sync Now` gombra.):
+
+```kotlin
+android {
+    ...
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+```
 
 Az első Activity-nk legyen egy Empty Activity, és nevezzük el `MenuActivity`-nek (app-on jobb gomb, New -> Activity -> Empty Activity). A hozzá tartozó layout fájl automatikusan megkapja az `activity_menu.xml` nevet.
 
@@ -135,18 +147,28 @@ Ne felejtsük el a szövegeket kiszervezni erőforrásba! (a szövegen állva `A
 
 Hozzunk létre a két új Empty Activity-t (`ProfileActivity` és `HolidayActivity`)
 
-A MenuActivity fájljában (`MenuActivity.kt`) rendeljünk a gombok lenyomásához eseménykezelőt az onCreate metódusban:
+A MenuActivity fájljában (`MenuActivity.kt`), a binding beállítása után, rendeljünk a gombok lenyomásához eseménykezelőt az onCreate metódusban:
 
 ```kotlin
-btnProfile.setOnClickListener {
+class MenuActivity : AppCompatActivity() {
+    lateinit var binding: ActivityMenuBinding
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMenuBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.btnProfile.setOnClickListener {
             val profileIntent = Intent(this, ProfileActivity::class.java)
             startActivity(profileIntent)
         }
-        
-btnHoliday.setOnClickListener {
+
+        binding.btnHoliday.setOnClickListener {
             val holidayIntent = Intent(this, HolidayActivity::class.java)
             startActivity(holidayIntent)
         } });
+    }
+}
 ```
 
 Mivel az Activityt kézzel hoztuk létre, így az első futtatás előtt meg kell adnunk az `AndroidManifest.xml` file-ban, hogy mi legyen az alkalmazás belépési pontja.
@@ -204,13 +226,18 @@ A két Fragmentben származzunk le a Fragment osztályból (androidx-es verziót
 
 `MainProfileFragment.kt`:
 ```kotlin
-class MainProfileFragment: Fragment() {
+class MainProfileFragment : Fragment() {
+    private var _binding: ProfileMainBinding? = null
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(hu.bme.aut.workplaceapp.R.layout.profile_main, container, false)
+        _binding = ProfileMainBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -218,33 +245,38 @@ class MainProfileFragment: Fragment() {
 
         val person: Person = DataManager.person
 
-        tvName.text = person.name
-        tvEmail.text = person.email
-        tvAddress.text = person.address
+        binding.tvName.text = person.name
+        binding.tvEmail.text = person.email
+        binding.tvAddress.text = person.address
     }
 }
 ```
 
 `DetailsProfileFragment.kt`:
 ```kotlin
-class DetailsProfileFragment: Fragment() {
+class DetailsProfileFragment : Fragment() {
+    private var _binding: ProfileDetailBinding? = null
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.profile_detail, container, false)
+        _binding = ProfileDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val person: Person = DataManager.person
 
-        tvId.text = person.id
-        tvSSN.text = person.socialSecurityNumber
-        tvTaxId.text = person.taxId
-        tvRegistrationId.text = person.registrationId
+        binding.tvId.text = person.id
+        binding.tvSSN.text = person.socialSecurityNumber
+        binding.tvTaxId.text = person.taxId
+        binding.tvRegistrationId.text = person.registrationId
     }
 }
 ```
@@ -384,17 +416,6 @@ Készítsük el a megfelelő layout-okat a Fragmentekhez (`R.layout.profile_main
 
 Már csak a lapozás megvalósítása maradt hátra, ezt a ViewPager osztállyal fogjuk megvalósítani.
 
-A korábban használt ViewPager elavult. Azóta ezt egy új ViewPager2-vel helyettesítették. Ennek a használatához szükségünk van a hozzá tartozó könyvtárakra. Ehhez az app szintű build.gradle-t módosítsuk:
-
-```groovy
-dependencies {
-    ...
-    implementation "com.google.android.material:material:1.1.0-beta01"
-}
-```
-
-Ezután kattinsunk az Android Studioban jobb fent megjelenő `Sync Now` feliratra vagy a fejlécen szereplő mérges gradle elefánt gombra, hogy a library fájljai letöltődjenek.
-
 Az `activity_profile.xml` fájlba hozzunk létre egy `ViewPager`-t:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -403,7 +424,7 @@ Az `activity_profile.xml` fájlba hozzunk létre egy `ViewPager`-t:
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="hu.bme.aut.workplaceapp.ProfileActivity">
+    tools:context="hu.bme.aut.android.workplaceapp.ProfileActivity">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpProfile"
@@ -433,9 +454,9 @@ class ProfilePagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
 }
 ```
 
-A ProfileActivity-ben rendeljük hozzá a ViewPagerhez a most elkészített adaptert (onCreate metódus): 
+A ProfileActivity-ben rendeljük hozzá a ViewPagerhez a most elkészített adaptert (onCreate metódus a `ViewBinding` beállítása után): 
 ```kotlin
-vpProfile.adapter = ProfilePagerAdapter(this)
+binding.vpProfile.adapter = ProfilePagerAdapter(this)
 ```
 
 Próbáljuk ki az alkalmazást. A Profile gombra kattinva megjelennek a felhasználó adatai és lehet lapozni is.
@@ -470,7 +491,7 @@ App szintű build.gradle:
 ```groovy
 dependencies {
     ...
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
 ```
 
@@ -484,7 +505,7 @@ Ha a library fájljai letöltődtek, akkor írjuk meg az Activity layout-ját (`
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="hu.bme.aut.workplaceapp.HolidayActivity">
+    tools:context="hu.bme.aut.android.workplaceapp.HolidayActivity">
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/chartHoliday"
@@ -505,19 +526,21 @@ Ha a library fájljai letöltődtek, akkor írjuk meg az Activity layout-ját (`
 Írjuk meg az Activity kódját (`HolidayActivity.kt`):
 ```kotlin
 class HolidayActivity : AppCompatActivity() {
+    lateinit var binding: ActivityHolidayBinding
 
-override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_holiday)
+        binding = ActivityHolidayBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        btnTakeHoliday.setOnClickListener {
-                // TODO: DatePickerDialogFragment megjelenítése
+        binding.btnTakeHoliday.setOnClickListener {
+            // TODO: DatePickerDialogFragment megjelenítése
         }
 
         loadHolidays()
     }
 
-private fun loadHolidays() {
+    private fun loadHolidays() {
         var entries: ArrayList<PieEntry> = ArrayList()
 
         entries.add(PieEntry(DataManager.holidays.toFloat(), "Taken"))
@@ -527,8 +550,8 @@ private fun loadHolidays() {
         dataSet.setColors(*ColorTemplate.MATERIAL_COLORS)
 
         val data = PieData(dataSet)
-        chartHoliday.data = data
-        chartHoliday.invalidate()
+        binding.chartHoliday.data = data
+        binding.chartHoliday.invalidate()
 
     }
 }
@@ -546,16 +569,16 @@ class DatePickerDialogFragment: DialogFragment(), DatePickerDialog.OnDateSetList
 
     private lateinit var onDateSelectedListener: OnDateSelectedListener
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        try{
-            onDateSelectedListener = if (targetFragment != null){
+        try {
+            onDateSelectedListener = if (targetFragment != null) {
                 targetFragment as OnDateSelectedListener
             } else {
                 activity as OnDateSelectedListener
             }
-        } catch ( e: ClassCastException){
+        } catch (e: ClassCastException) {
             throw RuntimeException(e)
         }
     }
@@ -588,7 +611,7 @@ A laborvezetővel vizsgáljuk meg az `OnDateSelectedListener` interface működ�
 
 Állítsuk be a gomb eseménykezelőjét a HolidayActivity-ben, hogy lenyomáskor jelenítse meg a dátumválasztót:
 ```kotlin
-btnTakeHoliday.setOnClickListener {
+binding.btnTakeHoliday.setOnClickListener {
             DatePickerDialogFragment().show(supportFragmentManager, "DATE_TAG")
         }
 ```
@@ -629,3 +652,25 @@ A Payment menüpontra kattintva jelenjen meg egy PaymentActivity rajta egy ViewP
 - `MonthlyPaymentFragment`: egy oszlopdiagramot mutasson 12 oszloppal, a havi szinten lebontott fizetéseket mutatva - érdemes az adatokat itt is a DataManager osztályban tárolni
 
 [Segítség](https://github.com/PhilJay/MPAndroidChart/wiki)
+
+
+## Feltöltendő állományok
+
+A labor értékeléséhez **két külön** fájlt kell feltölteni:
+
+1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Manage IDE Settings` > `Export to Zip File...` menüponttal.
+
+<p align="center"> 
+<img src="./assets/export.png" width="320">
+</p>
+
+2. Egy pdf-et, amiben a név, neptun kód és az alábbi képernyőképek szerepelnek (az emulátor, és egy lényegesebb kódrészlet is):
+
+	1. MenuActivity
+	2. ProfileActivity
+	3. HolidayActivity (ha kész az önálló rész, az is szerepeljen)
+	4. Dátumválasztó (ha kész az önálló rész, az is szerepeljen)
+
+<p align="center"> 
+<img src="./assets/hw.png" width="640">
+</p>
