@@ -152,7 +152,7 @@ A MenuActivity fájljában (`MenuActivity.kt`), a binding beállítása után, r
 ```kotlin
 class MenuActivity : AppCompatActivity() {
     lateinit var binding: ActivityMenuBinding
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
@@ -166,7 +166,7 @@ class MenuActivity : AppCompatActivity() {
         binding.btnHoliday.setOnClickListener {
             val holidayIntent = Intent(this, HolidayActivity::class.java)
             startActivity(holidayIntent)
-        } });
+        }
     }
 }
 ```
