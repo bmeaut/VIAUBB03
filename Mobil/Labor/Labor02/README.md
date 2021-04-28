@@ -281,7 +281,7 @@ class DetailsProfileFragment : Fragment() {
 }
 ```
 
-Készítsük el a megfelelő layout-okat a Fragmentekhez (`R.layout.profile_main` és `R.layout.profile_detail`-en állva `Alt+Enter`).
+Készítsük el a megfelelő layout-okat a Fragmentekhez (`profile_main` és `profile_detail`) a layout mappába (jobb klikk > new layout resource file).
 
 `profile_main.xml`:
 ```xml
