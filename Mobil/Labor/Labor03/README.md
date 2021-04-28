@@ -137,7 +137,7 @@ data class ShoppingItem(
 
 ```
 
-Látható, hogy a  dájl elején létrehoztunk egy enum-ot, amivel egy kategóriát akarunk kódolni. Az enum-nak van két statikus metódusa, `@TypeConverter` annotációval ellátva. Ezekkel oldható meg, hogy az adatbázis akár összetett adatszerkezeteket is tárolni tudjon. Ezek a függvények felelősek azért, hogy egy felhasználói típust lefordítsanak egy, az adatbázis által támogatott típusra, illetve fordítva. Megfigyelhető továbbá, hogy ezen függvények el vannak látva a `@JvmStatic` annotációval is. Erre azért van szükség, mert alapvetően, amikor a companion object-ek Jvm bájtkódra fordulnak, akkor egy külön statikus osztály jön számukra létre. Ezzel az annotációval lehet megadni, hogy ne jöjjön létre külön statikus osztály, ehelyett a bennfoglaló osztály (jelen esetben `ShoppingItemCategory`) statikus függvényei legyenek. Erre a speciális viselkedésre pedig a Room működése miatt van szükség, ugyanis tudnia kell, hol keresse egy-egy típusra a konvertereket.
+Látható, hogy a  fájl elején létrehoztunk egy enum-ot, amivel egy kategóriát akarunk kódolni. Az enum-nak van két statikus metódusa, `@TypeConverter` annotációval ellátva. Ezekkel oldható meg, hogy az adatbázis akár összetett adatszerkezeteket is tárolni tudjon. Ezek a függvények felelősek azért, hogy egy felhasználói típust lefordítsanak egy, az adatbázis által támogatott típusra, illetve fordítva. Megfigyelhető továbbá, hogy ezen függvények el vannak látva a `@JvmStatic` annotációval is. Erre azért van szükség, mert alapvetően, amikor a companion object-ek Jvm bájtkódra fordulnak, akkor egy külön statikus osztály jön számukra létre. Ezzel az annotációval lehet megadni, hogy ne jöjjön létre külön statikus osztály, ehelyett a bennfoglaló osztály (jelen esetben `ShoppingItemCategory`) statikus függvényei legyenek. Erre a speciális viselkedésre pedig a Room működése miatt van szükség, ugyanis tudnia kell, hol keresse egy-egy típusra a konvertereket.
 
 Ezt követően létre lett hozva egy `data class`, amire, valamint aminek a property-jeire szintén annotációkat helyeztünk el. Az `@Entity` jelzi a `Room` kódgenerátorának, hogy ennek az osztálynak a példányai adatbázis rekordoknak fognak megfelelni egy táblában és hogy az egyes property-k felelnek majd meg a tábla oszlopainak. A `@ColumnInfo` *annotációval* megadjuk, hogy mi legyen a property-nek megfelelő oszlop neve. `@PrimaryKey`-jel jelöljük a tábla egyszerű kulcs attribútumát.
 
@@ -421,23 +421,27 @@ Megfigyelhető, hogy a témában kikapcsoltuk az ActionBar megjelenését, helye
 
 Adjuk hozzá az alábbi változókat a `MainActivity`-hez és cseréljük le a projekt létrehozásakor generált `onCreate()` függvényt:
 ```kotlin
+private lateinit var binding: ActivityMainBinding
+
 private lateinit var database: ShoppingListDatabase
-    private lateinit var adapter: ShoppingAdapter
+private lateinit var adapter: ShoppingAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
+    setSupportActionBar(binding.toolbar)
 
-        database = ShoppingListDatabase.getDatabase(applicationContext)
+    database = ShoppingListDatabase.getDatabase(applicationContext)
 
-        binding.fab.setOnClickListener {
-            //TODO
-        }
+    binding.fab.setOnClickListener {
+        //TODO
     }
+}
 ```
+
 A `MainActivity` öröklését egészítsük ki, valamint adjuk hozzá a  `RecyclerView`-t inicializáló kódrészletet: 
+
 ```kotlin
 class MainActivity :
     AppCompatActivity(), CoroutineScope by MainScope() {
@@ -456,8 +460,6 @@ class MainActivity :
         }
         adapter.update(items)
     }
-
-	//...
 }
 ```
 
@@ -486,8 +488,6 @@ class MainActivity :
             database.shoppingItemDao().update(item)
         }
     }
-
-    //...
 }
 ```
 
@@ -495,19 +495,19 @@ Hívjuk meg az `initRecyclerView()` függvényt az `onCreate()` függvény utols
 
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
+    super.onCreate(savedInstanceState)
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
+    setSupportActionBar(binding.toolbar)
 
-        database = ShoppingListDatabase.getDatabase(applicationContext)
+    database = ShoppingListDatabase.getDatabase(applicationContext)
 
-        binding.fab.setOnClickListener {
-            //TODO
-        }
-
-        initRecyclerView()
+    binding.fab.setOnClickListener {
+        //TODO
     }
+
+    initRecyclerView()
+}
 ```
 
 Ezen a ponton az alkalmazásunk már meg tudja jeleníteni az adatbázisban tárolt vásárolni valókat, azonban sajnos még egy elemünk sincs, mivel lehetőségünk sem volt felvenni őket. A következő lépés az új elem létrehozását biztosító funkció implementálása.
@@ -515,9 +515,7 @@ Ezen a ponton az alkalmazásunk már meg tudja jeleníteni az adatbázisban tár
 ### Dialógus megvalósítása új elem hozzáadásához
 A dialógus megjelenítéséhez `DialogFragment`-et fogunk használni.
 
-Hozzuk létre a dialógushoz tartozó *layoutot*. (`dialog_new_shopping_item`)
-
-Az így létrejött fájlba másoljuk be a dialógushoz tartozó *layoutot*:
+Hozzuk létre a dialógushoz tartozó *layoutot*, (`dialog_new_shopping_item`) majd másoljuk be a dialógushoz tartozó *layoutot*:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -581,9 +579,7 @@ Az így létrejött fájlba másoljuk be a dialógushoz tartozó *layoutot*:
 </LinearLayout>
 ```
 
-Adjuk hozzá a `strings.xml`-hez a hiányzó szöveges erőforrásokat:
-
->  Az egyszerűség kedvéért itt a teljes `strings.xml` tartalma látható.
+Adjuk hozzá a `strings.xml`-hez a hiányzó szöveges erőforrásokat (Az egyszerűség kedvéért itt a teljes `strings.xml` tartalma látható.):
 
 ```xml
 <resources>
@@ -659,13 +655,6 @@ override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         .create()
 }
 ```
-Az *Alt+Enter* billentyű kombinációval vegyük fel a hiányzó szöveges erőforrásokat:
-
-| Azonosító                  | Érték             |
-| -------------------------- | ----------------- |
-| R.string.new_shopping_item | New shopping item |
-| R.string.ok                | OK                |
-| R.string.cancel            | Cancel            |
 
 A *ViewBinding*gal létrehoztuk és felfújtuk a felületet, ami felkerül a képernyőre. Azonban a spinner tartalmát külön be kell állítanunk (a már stringként felvett enumokra):
 
