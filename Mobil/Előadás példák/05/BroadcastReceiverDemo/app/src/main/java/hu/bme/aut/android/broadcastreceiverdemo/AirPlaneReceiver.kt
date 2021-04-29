@@ -1,4 +1,4 @@
-package hu.aut.android.broadcastreceiverdemo
+package hu.bme.aut.android.broadcastreceiverdemo
 
 import android.content.BroadcastReceiver
 import android.content.Context

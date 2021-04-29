@@ -1,4 +1,4 @@
-package hu.aut.android.broadcastreceiverdemo
+package hu.bme.aut.android.broadcastreceiverdemo
 
 import android.Manifest
 import android.content.DialogInterface

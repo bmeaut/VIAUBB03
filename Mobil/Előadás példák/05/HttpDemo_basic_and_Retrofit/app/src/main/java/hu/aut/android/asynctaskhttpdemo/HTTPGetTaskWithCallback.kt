@@ -1,8 +1,5 @@
 package hu.aut.android.asynctaskhttpdemo
 
-import android.content.Context
-import android.support.v4.content.LocalBroadcastManager
-import android.content.Intent
 import android.os.AsyncTask
 import java.io.ByteArrayOutputStream
 import java.io.IOException

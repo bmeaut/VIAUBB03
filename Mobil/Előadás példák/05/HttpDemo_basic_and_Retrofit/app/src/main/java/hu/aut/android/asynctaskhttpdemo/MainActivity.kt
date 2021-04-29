@@ -1,27 +1,28 @@
 package hu.aut.android.asynctaskhttpdemo
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import org.json.JSONException
 import org.json.JSONObject
 import android.content.Intent
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.support.v4.content.LocalBroadcastManager
 import android.content.IntentFilter
 import android.widget.Toast
 import hu.aut.android.asynctaskhttpdemo.retrofit.CurrencyExchangeAPI
 import hu.aut.android.asynctaskhttpdemo.retrofit.MoneyResult
-import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import android.R.attr.name
+import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import hu.aut.android.asynctaskhttpdemo.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var binding : ActivityMainBinding
 
     private val URL_BASE = "https://api.exchangeratesapi.io/latest?base=EUR"
 
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 val rawJson = JSONObject(rawResult)
                 val hufValue = rawJson.getJSONObject("rates").getString("HUF")
-                tvResult.text = hufValue
+                binding.tvResult.text = hufValue
 
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -45,7 +46,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.exchangeratesapi.io/")
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         val currencyAPI = retrofit.create(CurrencyExchangeAPI::class.java)
 
-        btnGetRate.setOnClickListener {
+        binding.btnGetRate.setOnClickListener {
 
             //httpGetAsyncTask()
             //httpGetAsyncTaskCallback()
@@ -72,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 val rawJson = JSONObject(result)
                 val hufValue = rawJson.getJSONObject("rates").getString("HUF")
-                tvResult.text = hufValue
+                binding.tvResult.text = hufValue
 
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -93,11 +95,11 @@ class MainActivity : AppCompatActivity() {
         val ratesCall = currencyAPI.getRates("EUR")
         ratesCall.enqueue(object : Callback<MoneyResult> {
             override fun onFailure(call: Call<MoneyResult>, t: Throwable) {
-                tvResult.text = t.message
+                binding.tvResult.text = t.message
             }
 
             override fun onResponse(call: Call<MoneyResult>, response: Response<MoneyResult>) {
-                tvResult.text = response.body()?.rates?.HUF.toString()
+                binding.tvResult.text = response.body()?.rates?.HUF.toString()
             }
         })
     }
