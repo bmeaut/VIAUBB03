@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import hu.bme.aut.android.preferenceframeworkdemo.R
 
 
 class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -31,7 +30,7 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
     }
 
     override fun onSharedPreferenceChanged(
-            sharedPreferences: SharedPreferences, key: String) {
+        sharedPreferences: SharedPreferences, key: String) {
         Toast.makeText(this, key, Toast.LENGTH_LONG).show()
     }
 

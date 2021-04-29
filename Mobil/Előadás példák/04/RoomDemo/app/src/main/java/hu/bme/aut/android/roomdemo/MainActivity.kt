@@ -4,17 +4,21 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import hu.bme.aut.android.roomdemo.data.AppDatabase
 import hu.bme.aut.android.roomdemo.data.Grade
-import kotlinx.android.synthetic.main.activity_main.*
+import hu.bme.aut.android.roomdemo.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var binding : ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        btnSubmit.setOnClickListener {
-            val grade = Grade(null, etStudentId.text.toString(),
-                    etGrade.text.toString())
+
+        binding.btnSubmit.setOnClickListener {
+            val grade = Grade(null, binding.etStudentId.text.toString(),
+                binding.etGrade.text.toString())
 
             val dbThread = Thread {
                 AppDatabase.getInstance(this@MainActivity).gradeDao().insertGrades(grade)
@@ -22,14 +26,14 @@ class MainActivity : AppCompatActivity() {
             dbThread.start()
         }
 
-        btnSearch.setOnClickListener {
+        binding.btnSearch.setOnClickListener {
             val dbThread = Thread {
                 val grades = AppDatabase.getInstance(this@MainActivity).gradeDao()
                         .getSpecificGrades("A+")
                 runOnUiThread {
-                    tvResult.text = ""
+                    binding.tvResult.text = ""
                     grades.forEach {
-                        tvResult.append("${it.studentId} ${it.grade}\n")
+                        binding.tvResult.append("${it.studentId} ${it.grade}\n")
                     }
                 }
             }

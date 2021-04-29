@@ -8,7 +8,7 @@ import android.os.Environment
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_main.*
+import hu.bme.aut.android.filedemo.databinding.ActivityMainBinding
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
@@ -16,20 +16,23 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var binding : ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        btnWriteFile.setOnClickListener{
+        binding.btnWriteFile.setOnClickListener{
             writeFile("Hello! ${Date(System.currentTimeMillis()).toString()}");
         }
 
-        btnReadFile.setOnClickListener{
-            tvData.text = readFile()
+        binding.btnReadFile.setOnClickListener{
+            binding.tvData.text = readFile()
         }
 
-        btnReadFile.isEnabled = false
-        btnWriteFile.isEnabled = false
+        binding.btnReadFile.isEnabled = false
+        binding.btnWriteFile.isEnabled = false
 
         requestNeededPermission()
     }
@@ -48,8 +51,8 @@ class MainActivity : AppCompatActivity() {
                     101)
         } else {
             // már van engedély
-            btnReadFile.isEnabled = true
-            btnWriteFile.isEnabled = true
+            binding.btnReadFile.isEnabled = true
+            binding.btnWriteFile.isEnabled = true
         }
     }
 
@@ -61,8 +64,8 @@ class MainActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "WRITE_EXTERNAL_STORAGE perm granted", Toast.LENGTH_SHORT).show()
 
-                    btnReadFile.isEnabled = true
-                    btnWriteFile.isEnabled = true
+                    binding.btnReadFile.isEnabled = true
+                    binding.btnWriteFile.isEnabled = true
 
                 } else {
                     Toast.makeText(this,

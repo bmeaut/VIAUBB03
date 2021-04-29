@@ -1,20 +1,18 @@
 package hu.bme.aut.android.contentproviderdemo
 
 import android.Manifest
-import android.content.ContentValues
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.provider.ContactsContract
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
+import hu.bme.aut.android.contentproviderdemo.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    lateinit var binding:ActivityMainBinding
 
     companion object {
         val KEY_LOG = "LOG_PROVIDER"
@@ -22,7 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initUI()
 
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUI() {
-        btnGet.setOnClickListener {
+        binding.btnGet.setOnClickListener {
             val cursorContacts = contentResolver.query(
                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER),
