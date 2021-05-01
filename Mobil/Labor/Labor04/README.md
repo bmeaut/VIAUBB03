@@ -50,13 +50,25 @@ Vezetett rész (1 pont)
 
 Első lépésként indítsuk el az Android Studio-t, majd:
 
-1. Hozzunk létre egy új projektet, válasszuk az `Add no activity` lehetőséget.
-2. A projekt neve legyen `WeatherInfo`, a kezdő package pedig `hu.bme.aut.weatherinfo`
+1. Hozzunk létre egy új projektet, válasszuk az `Empty activity` lehetőséget.
+2. A projekt neve legyen `WeatherInfo`, a kezdő package pedig `hu.bme.aut.android.weatherinfo`
 3. Nyelvnek válasszuk a *Kotlin*-t.
 4. A minimum API szint legyen API21: Android 5.0.
 5. Az instant app támogatást, valamint a *Use legacy android.support libraries* pontot **ne** pipáljuk be.
 
-Első `Activity`-ként hozzunk létre egy *Basic Activity*, `Fragment` használata **nélkül** és nevezzük el `CityActivity`-nek, legyen ez a **Launcher Activity**-nk majd kattintsunk a *Finish* gombra!
+A létrejött *Activity*-t nevezzük át `CityActivity`re, a hozzá tartozó layout fájlt `activity_city`-re. 
+
+Kapcsoljuk be a `ViewBinding`-ot. Az `app` modulhoz tartozó `build.gradle` fájlban az `android` tagen belülre illesszük be az engedélyezést (Ezek után kattintsunk jobb felül a `Sync Now` gombra.):
+
+```kotlin
+android {
+    ...
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+```
 
 Töltsük le és tömörítsük ki [az alkalmazáshoz szükséges erőforrásokat](./downloads/drawables.zip) , majd másoljuk be őket a projekt *app/src/main/res* mappájába (Studio-ban a *res* mappa kijelölése után *Ctrl+V*)!
 
@@ -65,10 +77,11 @@ Az *app* modulhoz tartozó `build.gradle` fájlban a `dependencies` blokkhoz adj
 ```groovy
 dependencies{
     //...
-    def retrofit_version = "2.4.0"
+    def retrofit_version = "2.9.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 }
 ```
 
@@ -132,65 +145,73 @@ Valósítsuk meg az egy `RecyclerView`-ból álló, városok listáját megjelen
 
 A város nevére kattintva jelenik majd meg egy részletező nézet (*DetailsAcitivity*), ahol az időjárás információk letöltése fog történni. Új város felvételére egy *FloatingActionButton* fog szolgálni.
 
-Cseréljük le a *content_city.xml* tartalmát egy `RecyclerView`-ra:
+Egészítsük ki a *activity_city.xml* tartalmát egy `RecyclerView`-val és egy `FloatingActionButton`nel:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/MainRecyclerView"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    />
-```
+    tools:context=".CityActivity">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mainRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-Cseréljük le a `FloatingActionButton` ikonját az  `activity_city.xml`-ben:
-
-```xml
-<com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/fab"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom|end"
-    android:layout_margin="@dimen/fab_margin"
-    android:src="@drawable/ic_add_white_36dp"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:src="@drawable/ic_add_white_36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 ```
 
 Az egyes funkciókhoz tartozó osztályokat külön package-ekbe fogjuk szervezni. Előfordulhat, hogy a másolások miatt az Android Studio nem ismeri fel egyből a package szerkezetet, így ha ilyen problémánk lenne, az osztály néven állva Alt+Enter után állítassuk be a megfelelő package nevet.
 
-A `hu.bme.aut.weatherinfo` package-ben hozzunk létre egy `feature` nevű package-et. A `feature` package-ben hozzunk létre egy `city` nevű package-et. *Drag and drop* módszerrel helyezzük át a `CityActivity`-t a `city` *package*-be, a felugró dialógusban pedig kattintsunk a *Refactor* gombra.
+A `hu.bme.aut.android.weatherinfo` package-ben hozzunk létre egy `feature` nevű package-et. A `feature` package-ben hozzunk létre egy `city` nevű package-et. *Drag and drop* módszerrel helyezzük át a `CityActivity`-t a `city` *package*-be, a felugró dialógusban pedig kattintsunk a *Refactor* gombra.
 
 A `CityActivity` kódját cseréljük le a következőre:
 
 ```kotlin
-class CityActivity: AppCompatActivity(), CityAdapter.OnCitySelectedListener,
-    AddCityDialogFragment.AddCityDialogListener {
+class CityActivity : AppCompatActivity(), CityAdapter.OnCitySelectedListener,
+        AddCityDialogFragment.AddCityDialogListener {
 
+    private lateinit var binding: ActivityCityBinding
     private lateinit var adapter: CityAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_city)
+        binding = ActivityCityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initFab()
         initRecyclerView()
     }
 
     private fun initFab() {
-        fab.setOnClickListener{
-	//TODO Show new city dialog
+        binding.fab.setOnClickListener {
+            //TODO Show new city dialog
         }
     }
 
     private fun initRecyclerView() {
-        MainRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.mainRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter = CityAdapter(this)
         adapter.addCity("Budapest")
         adapter.addCity("Debrecen")
         adapter.addCity("Sopron")
         adapter.addCity("Szeged")
-        MainRecyclerView.adapter = adapter
+        binding.mainRecyclerView.adapter = adapter
     }
 
     override fun onCitySelected(city: String?) {
@@ -203,18 +224,15 @@ class CityActivity: AppCompatActivity(), CityAdapter.OnCitySelectedListener,
 }
 ```
 
-A `city` package-ben hozzuk létre a `CityAdapter` osztályt:
+A `city` package-ben hozzuk létre egy `adapter` package-et és abban egy `CityAdapter` osztályt:
 
 ```kotlin
-class CityAdapter (private val listener: OnCitySelectedListener) : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
-
+class CityAdapter(private val listener: OnCitySelectedListener) : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
     private var cities: MutableList<String> = ArrayList()
-    
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
-       	val view: View =
-    	   	LayoutInflater.from(parent.context).inflate(R.layout.item_city, parent, false)
-        return CityViewHolder(view)
-    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = CityViewHolder(
+            ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
 
     override fun onBindViewHolder(holder: CityViewHolder, position: Int) {
         val item = cities[position]
@@ -236,23 +254,26 @@ class CityAdapter (private val listener: OnCitySelectedListener) : RecyclerView.
         }
     }
 
-    inner class CityViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
+    inner class CityViewHolder(val binding: ItemLayoutBinding) :
+            RecyclerView.ViewHolder(binding.root) {
         var item: String? = null
 
         init {
-            itemView.setOnClickListener{
+            binding.root.setOnClickListener {
                 listener.onCitySelected(item)
             }
         }
+
         fun bind(newCity: String?) {
             item = newCity
-            itemView.CityItemNameTextView.text = item
+            binding.cityItemNameTextView.text = item
         }
     }
+
     interface OnCitySelectedListener {
         fun onCitySelected(city: String?)
     }
+
 }
 ```
 
@@ -272,14 +293,14 @@ Hozzuk létre a `res/layout` mappában az  `item_city.xml` layoutot:
     android:weightSum="3">
 
     <TextView
-        android:id="@+id/CityItemNameTextView"
+        android:id="@+id/cityItemNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
         tools:text="Budapest" />
 
     <Button
-        android:id="@+id/CityItemRemoveButton"
+        android:id="@+id/cityItemRemoveButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -301,7 +322,7 @@ Hozzunk létre egy `dialog_new_city.xml` nevű layout fájlt a `res/layout` mapp
     android:padding="24dp">
 
     <EditText
-        android:id="@+id/NewCityDialogEditText"
+        android:id="@+id/newCityDialogEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/new_city_hint"
@@ -315,36 +336,39 @@ A `city` package-ben hozzuk létre az `AddCityDialogFragment` osztályt:
 ```kotlin
 class AddCityDialogFragment : AppCompatDialogFragment() {
 
+    private var _binding: DialogNewCityBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var listener: AddCityDialogListener
-    private lateinit var contentView: View
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        try{
-            listener = if (targetFragment != null){
+        try {
+            listener = if (targetFragment != null) {
                 targetFragment as AddCityDialogListener
             } else {
                 activity as AddCityDialogListener
             }
-        } catch ( e: ClassCastException){
+        } catch (e: ClassCastException) {
             throw RuntimeException(e)
         }
     }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    	contentView = getContentView()
+        _binding = DialogNewCityBinding.inflate(LayoutInflater.from(context))
         return AlertDialog.Builder(requireContext())
-            .setTitle(R.string.new_city)
-            .setView(contentView)
-            .setPositiveButton(R.string.ok) { dialogInterface, i ->
-                    listener!!.onCityAdded(contentView.NewCityDialogEditText!!.text.toString())
+                .setTitle(R.string.new_city)
+                .setView(binding.root)
+                .setPositiveButton(R.string.ok) { dialogInterface, i ->
+                    listener!!.onCityAdded(binding.newCityDialogEditText!!.text.toString())
                 }
-            .setNegativeButton(R.string.cancel, null)
-            .create()
+                .setNegativeButton(R.string.cancel, null)
+                .create()
     }
 
-    private fun getContentView(): View{
+    private fun getContentView(): View {
         return LayoutInflater.from(context).inflate(R.layout.dialog_new_city, null)
-        }
+    }
 
     interface AddCityDialogListener {
         fun onCityAdded(city: String?)
@@ -356,29 +380,20 @@ Végül egészítsük ki a `CityActivity` `initFab(…)` függvényét úgy, hog
 
 ```kotlin
 private fun initFab() {
-        fab.setOnClickListener{
-            AddCityDialogFragment()
+    binding.fab.setOnClickListener{
+        AddCityDialogFragment()
                 .show(supportFragmentManager, AddCityDialogFragment::class.java.simpleName)
-        }
     }
+}
 ```
 
 Indítsuk el az alkalmazást, amely már képes városnevek bekérésére és megjelenítésére.
 
 ### Részletező nézet létrehozása és bekötése a navigációba
 
-A következő lépésben a `hu.bme.aut.weatherinfo.feature`  package-en belül hozzunk létre egy `details` nevű packaget.
+A következő lépésben a `hu.bme.aut.android.weatherinfo.feature`  package-en belül hozzunk létre egy `details` nevű packaget.
 
 A `details` package-ben hozzunk létre egy *Empty Activity* típusú `Activity`-t  `DetailsActivity` néven.
-
-A ViewPager2 fogjuk használni, ehhez módosítsuk az app szintű build.gradle-t:
-
-```groovy
-dependencies {
-    ...
-    implementation "com.google.android.material:material:1.1.0-beta01"
-}
-```
 
 A hozzá tartozó `activity_details.xml` layout kódja:
 
@@ -394,7 +409,7 @@ A hozzá tartozó `activity_details.xml` layout kódja:
     android:paddingTop="@dimen/activity_vertical_margin">
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
+        android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top" />
@@ -417,6 +432,8 @@ A `DetailsActivity.kt`  kódja legyen a következő:
 ```kotlin
 class DetailsActivity : AppCompatActivity() {
 
+    lateinit var binding:ActivityDetailsBinding
+
     companion object {
         private const val TAG = "DetailsActivity"
         const val EXTRA_CITY_NAME = "extra.city_name"
@@ -426,8 +443,9 @@ class DetailsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_details)
-        
+        binding = ActivityDetailsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         city = intent.getStringExtra(EXTRA_CITY_NAME)
 
         supportActionBar!!.title = getString(R.string.weather, city)
@@ -436,7 +454,7 @@ class DetailsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-}
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
@@ -475,7 +493,7 @@ Próbáljuk ki az alkalmazást, kattintsunk egy város nevére!
 
 Modell osztályok létrehozása 
 
-A modell osztályok számára a `hu.bme.aut.weatherinfo` package-ben hozzunk létre új package-et `model` néven. 
+A modell osztályok számára a `hu.bme.aut.android.weatherinfo` package-ben hozzunk létre új package-et `model` néven. 
 
 A `model` package-ben hozzunk létre egy új osztályt `WeatherData` néven:
 
@@ -553,7 +571,7 @@ A használt `weatherData` változónak fogunk később értéket adni, amikor vi
 
 A hálózati réteg megvalósítása
 
-A `hu.bme.aut.weatherinfo` package-ben hozzuk létre egy `network` nevű package-et, amely a hálózati kommunikációhoz kapcsolódó osztályokat fogja tartalmazni. 
+A `hu.bme.aut.android.weatherinfo` package-ben hozzuk létre egy `network` nevű package-et, amely a hálózati kommunikációhoz kapcsolódó osztályokat fogja tartalmazni. 
 
 A `network` package-en belül hozzuk létre egy `WeatherApi` nevű interfészt. 
 
@@ -587,7 +605,7 @@ object NetworkManager {
     private val weatherApi: WeatherApi
 
     private const val SERVICE_URL = "https://api.openweathermap.org" 
-    private const val APP_ID = "bb251b14d946dd3d456c67626e5df869"
+    private const val APP_ID = "APP_ID"
 
     init {
         retrofit = Retrofit.Builder()
@@ -622,7 +640,7 @@ A modell elemek és a hálózati réteg megvalósítása után a részletező n�
 
 A részletező nézetek továbbfejlesztése
 
-A `ViewPager` megfelelő működéséhez létre kell hoznunk egy `FragmentStateAdapter`-ből származó osztályt a `details` package-ben, ami az eddig látott adapterekhez hasonlóan azt határozza meg, hogy milyen elemek jelenjenek meg a hozzájuk tartozó nézeten (jelen esetben az elemek `Fragment`-ek lesznek):
+A `ViewPager` megfelelő működéséhez létre kell hoznunk egy `FragmentStateAdapter`-ből származó osztályt a `details.adapter` package-ben (hozzunk létre egy `adapter` package-et), ami az eddig látott adapterekhez hasonlóan azt határozza meg, hogy milyen elemek jelenjenek meg a hozzájuk tartozó nézeten (jelen esetben az elemek `Fragment`-ek lesznek):
 
 ```kotlin
 class DetailsPagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
@@ -682,10 +700,13 @@ DetailsMainFragment.kt
 </LinearLayout>
 ```
 
-A `details` package-ben a `DetailsMainFragment`:
+A `details.fragments` package-ben a `DetailsMainFragment`:
 
 ```kotlin
 class DetailsMainFragment : Fragment() {
+
+    private var _binding: FragmentDetailsMainBinding? = null
+    private val binding get() = _binding!!
 
     private var weatherDataHolder: WeatherDataHolder? = null
 
@@ -695,19 +716,17 @@ class DetailsMainFragment : Fragment() {
             activity as WeatherDataHolder?
         } else {
             throw RuntimeException(
-                "Activity must implement WeatherDataHolder interface!"
+                    "Activity must implement WeatherDataHolder interface!"
             )
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(
-            R.layout.fragment_details_main,
-            container, false
-        )
+        _binding = FragmentDetailsMainBinding.inflate(LayoutInflater.from(context))
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -720,12 +739,12 @@ class DetailsMainFragment : Fragment() {
 
     private fun displayWeatherData() {
         val weather = weatherDataHolder!!.getWeatherData()?.weather!![0]
-        tvMain!!.text = weather.main
-        tvDescription!!.text = weather.description
+        binding.tvMain!!.text = weather.main
+        binding.tvDescription!!.text = weather.description
         Glide.with(this)
-            .load("https://openweathermap.org/img/w/" + weather.icon + ".png")
-            .transition(DrawableTransitionOptions().crossFade())
-            .into(ivIcon)
+                .load("https://openweathermap.org/img/w/" + weather.icon + ".png")
+                .transition(DrawableTransitionOptions().crossFade())
+                .into(binding.ivIcon)
     }
 }
 ```
@@ -805,14 +824,17 @@ DetailsMoreFragment.kt
 </TableLayout>
 ```
 
-A `details` package-ben a `DetailsMoreFragment`:
+A `details.fragment` package-ben a `DetailsMoreFragment`:
 
 ```kotlin
 class DetailsMoreFragment : Fragment() {
 
+    private var _binding: FragmentDetailsMoreBinding? = null
+    private val binding get() = _binding!!
+
     private var weatherDataHolder: WeatherDataHolder? = null
-    
-    override fun onCreate( savedInstanceState: Bundle?) {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         weatherDataHolder = if (activity is WeatherDataHolder) {
             activity as WeatherDataHolder?
@@ -822,14 +844,12 @@ class DetailsMoreFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(
-            R.layout.fragment_details_more,
-            container, false
-        )
+        _binding = FragmentDetailsMoreBinding.inflate(LayoutInflater.from(context))
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -841,11 +861,11 @@ class DetailsMoreFragment : Fragment() {
 
     private fun showWeatherData() {
         val weatherData = weatherDataHolder!!.getWeatherData()
-        tvTemperature!!.text = "" + weatherData?.main!!.temp
-        tvMinTemp!!.text = "" + weatherData?.main!!.temp_min
-        tvMaxTemp!!.text = "" + weatherData?.main!!.temp_max
-        tvPressure!!.text = "" + weatherData?.main!!.pressure
-        tvHumidity!!.text = "" + weatherData?.main!!.humidity
+        binding.tvTemperature!!.text = "" + weatherData?.main!!.temp
+        binding.tvMinTemp!!.text = "" + weatherData?.main!!.temp_min
+        binding.tvMaxTemp!!.text = "" + weatherData?.main!!.temp_max
+        binding.tvPressure!!.text = "" + weatherData?.main!!.pressure
+        binding.tvHumidity!!.text = "" + weatherData?.main!!.humidity
     }
 }
 ```
@@ -857,24 +877,24 @@ Ideiglenesen a `DetailsActivity` `onResume()` függvénye legyen az alábbi:
 ```kotlin
 override fun onResume() {
         super.onResume()
-	
+
         val detailsPagerAdapter =
-            DetailsPagerAdapter(this)
-        mainViewPager.adapter = detailsPagerAdapter 
-	
-	TabLayoutMediator(tab_layout, mainViewPager) { tab, position ->
+                DetailsPagerAdapter(this)
+        binding.mainViewPager.adapter = detailsPagerAdapter
+
+        TabLayoutMediator(binding.tab_layout, binding.mainViewPager) { tab, position ->
             tab.text = when(position) {
                 0 -> getString(R.string.main)
                 1 -> getString(R.string.details)
                 else -> ""
             }
         }.attach()
-}
+    }
 ```
 
 Próbáljuk ki az alkalmazást, kattintsunk egy városra! jelenleg még nem jelennek meg valós adatok, mivel még nem kötöttük be a az adatok lekéréséért felelős hívást.
 
-Hálózati hívás bekötése
+###Hálózati hívás bekötése
 
 Az időjárás adatok lekérdezésének bekötéséhez implementáljunk egy `loadWeatherData()` nevű függvényt a `DetailsActivity`-ben:
 
@@ -923,7 +943,7 @@ private fun displayWeatherData(receivedWeatherData: WeatherData?) {
         weatherData = receivedWeatherData
         
 	val detailsPagerAdapter = DetailsPagerAdapter(this)
-        mainViewPager.adapter = detailsPagerAdapter
+        binding.mainViewPager.adapter = detailsPagerAdapter
     } 
 ```
 
@@ -943,3 +963,24 @@ Futtassuk az alkalmazást és figyeljük meg a működését! Próbáljuk ki azt
 ### Város listából törlés megvalósítása
 
 Valósítsuk meg a városok törlését a *Remove* gomb megnyomásának hatására.
+
+## Feltöltendő állományok
+
+A labor értékeléséhez **két külön** fájlt kell feltölteni:
+
+1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Manage IDE Settings` > `Export to Zip File...` menüponttal.
+
+<p align="center"> 
+<img src="./assets/export.png" width="320">
+</p>
+
+2. Egy pdf-et, amiben a név, neptun kód és az alábbi képernyőképek szerepelnek (az emulátor, és egy lényegesebb kódrészlet is):
+
+	1. CityActivity (ha kész az önálló rész, a háttérben a CityActivity megfelelő részével)
+	2. AddCityDialogFragment
+	3. DetailsMainFragment (egy újonnan felvett város adataival)
+	3. DetailsMoreFragment (egy újonnan felvett város adataival)
+
+<p align="center"> 
+<img src="./assets/hw.png" width="640">
+</p>
