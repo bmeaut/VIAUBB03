@@ -9,9 +9,9 @@ Az alkalmazás városok listáját jeleníti meg egy [`RecyclerView`](https://de
 > REST = [**Re**presentational **S**tate **T**ransfer](https://en.wikipedia.org/wiki/Representational_state_transfer)
 
 <p align="center">
-<img src="./assets/list.png">
-<img src="./assets/main.png">
-<img src="./assets/details.png">
+<img src="./assets/list.png" width="320">
+<img src="./assets/main.png" width="320">
+<img src="./assets/details.png" width="320">
 </p>
 
 Felhasznált technológiák: 
@@ -143,9 +143,9 @@ A kapott API kulcsra később szükségünk lesz az időjárás adatokat lekér�
 
 Valósítsuk meg az egy `RecyclerView`-ból álló, városok listáját megjelenítő `CityAcitivity`-t! 
 
-A város nevére kattintva jelenik majd meg egy részletező nézet (*DetailsAcitivity*), ahol az időjárás információk letöltése fog történni. Új város felvételére egy *FloatingActionButton* fog szolgálni.
+A város nevére kattintva jelenik majd meg egy részletező nézet (`DetailsAcitivity`), ahol az időjárás információk letöltése fog történni. Új város felvételére egy `FloatingActionButton` fog szolgálni.
 
-Egészítsük ki a *activity_city.xml* tartalmát egy `RecyclerView`-val és egy `FloatingActionButton`nel:
+Egészítsük ki a `activity_city.xml` tartalmát egy `RecyclerView`-val és egy `FloatingActionButton`nel:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -231,7 +231,7 @@ class CityAdapter(private val listener: OnCitySelectedListener) : RecyclerView.A
     private var cities: MutableList<String> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = CityViewHolder(
-            ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemCityBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun onBindViewHolder(holder: CityViewHolder, position: Int) {
@@ -254,7 +254,7 @@ class CityAdapter(private val listener: OnCitySelectedListener) : RecyclerView.A
         }
     }
 
-    inner class CityViewHolder(val binding: ItemLayoutBinding) :
+    inner class CityViewHolder(val binding: ItemCityBinding) :
             RecyclerView.ViewHolder(binding.root) {
         var item: String? = null
 
@@ -331,7 +331,7 @@ Hozzunk létre egy `dialog_new_city.xml` nevű layout fájlt a `res/layout` mapp
 </LinearLayout>
 ```
 
-A `city` package-ben hozzuk létre az `AddCityDialogFragment` osztályt:
+A `city` package-ben hozzuk létre a `fragment` packkage-et, ebben pedig az `AddCityDialogFragment` osztályt:
 
 ```kotlin
 class AddCityDialogFragment : AppCompatDialogFragment() {
@@ -882,7 +882,7 @@ override fun onResume() {
                 DetailsPagerAdapter(this)
         binding.mainViewPager.adapter = detailsPagerAdapter
 
-        TabLayoutMediator(binding.tab_layout, binding.mainViewPager) { tab, position ->
+        TabLayoutMediator(binding.tabLayout, binding.mainViewPager) { tab, position ->
             tab.text = when(position) {
                 0 -> getString(R.string.main)
                 1 -> getString(R.string.details)
@@ -894,7 +894,7 @@ override fun onResume() {
 
 Próbáljuk ki az alkalmazást, kattintsunk egy városra! jelenleg még nem jelennek meg valós adatok, mivel még nem kötöttük be a az adatok lekéréséért felelős hívást.
 
-###Hálózati hívás bekötése
+### Hálózati hívás bekötése
 
 Az időjárás adatok lekérdezésének bekötéséhez implementáljunk egy `loadWeatherData()` nevű függvényt a `DetailsActivity`-ben:
 
@@ -976,7 +976,7 @@ A labor értékeléséhez **két külön** fájlt kell feltölteni:
 
 2. Egy pdf-et, amiben a név, neptun kód és az alábbi képernyőképek szerepelnek (az emulátor, és egy lényegesebb kódrészlet is):
 
-	1. CityActivity (ha kész az önálló rész, a háttérben a CityActivity megfelelő részével)
+	1. CityActivity (ha kész az önálló rész, a háttérben a CityAdapter megfelelő részével)
 	2. AddCityDialogFragment
 	3. DetailsMainFragment (egy újonnan felvett város adataival)
 	3. DetailsMoreFragment (egy újonnan felvett város adataival)
