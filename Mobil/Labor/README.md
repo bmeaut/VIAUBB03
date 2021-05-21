@@ -1,7 +1,7 @@
 # Kliensalkalmazások - Adroid labor
 
 
-[0. labor - Hello World](./Labor00/Labor00.md)
+[0. labor - Hello World](./Labor00/README.md)
 
 [1. labor - Felhasználói felület készítés](./Labor01/README.md)
 
