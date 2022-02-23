@@ -13,7 +13,7 @@ A labor során egy tömegközlekedési vállalat számára megálmodott alkalmaz
 
 ## Értékelés
 
-Vezetett rész (1 pont)
+Vezetett rész (0,5 pont)
 - [Projekt létrehozása](#projekt-létrehozása)
 - [Splash képernyő](#splash-képernyő)
 - [Login](#login)
@@ -21,7 +21,7 @@ Vezetett rész (1 pont)
 - [Részletes nézet](#részletes-nézet)
 - [A bérlet](#a-bérlet)
 
-Önálló feladat (1 pont)
+Önálló feladat (0,5 pont)
 - [Hajók](#hajók)
 
 Bónusz feladatok
@@ -769,7 +769,7 @@ A számolásokhoz és az eseménykezeléshez a [`Calendar`](https://developer.an
 
 A labor értékeléséhez **két külön** fájlt kell feltölteni:
 
-1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Manage IDE Settings` > `Export to Zip File...` menüponttal.
+1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Export` > `Export to Zip File...` menüponttal.
 
 <p align="center"> 
 <img src="./assets/export.png" width="320">
