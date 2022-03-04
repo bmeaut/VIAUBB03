@@ -14,14 +14,14 @@ A labor során egy HR alkalmazást készítünk el, amelybe belépve a felhaszn�
 
 ## Értékelés
 
-Vezetett rész (1 pont)
+Vezetett rész (0,5 pont)
 - [Projekt létrehozása](#projekt-létrehozása)
 - [Főmenü képernyő](#főmenü-képernyő)
 - [Profil képernyő](#profil-képernyő)
 - [Szabadság képernyő](#szabadság-képernyő)
 - [Dátumválasztó, napok csökkentése](#dátumválasztó-napok-csökkentése)
 
-Önálló feladat (1 pont)
+Önálló feladat (0,5 pont)
 - [Szabadság továbbfejlesztése](#szabadság-továbbfejlesztése)
 
 Bónusz feladat
@@ -51,9 +51,9 @@ android {
 
 ```
 
-Az első Activity-nk legyen egy Empty Activity, és nevezzük el `MenuActivity`-nek (app-on jobb gomb, New -> Activity -> Empty Activity). A hozzá tartozó layout fájl automatikusan megkapja az `activity_menu.xml` nevet.
+Az első Activity-nk legyen egy Empty Activity, és nevezzük el `MenuActivity`-nek (app-on jobb gomb, New -> Activity -> Empty Activity). A hozzá tartozó layout fájl automatikusan megkapja az `activity_menu.xml` nevet. Állítsuk be azt is, hogy ez az Activity launcher Activity legyen.
 
-Előzetesen töltsük le az alkalmazás képeit tartalmazó [tömörített fájlt](./downloads/res.zip) és bontsuk ki. A benne lévő drawable könyvtárat másoljuk be az app/src/main/res mappába (Studio-ban res mappán állva `Ctrl+V`).
+Előzetesen töltsük le az alkalmazás képeit tartalmazó [tömörített fájlt](./downloads/res.zip) és bontsuk ki. Itt most csak egy méretben állnak rendelkezésre a képek, de ezen könnyen segíthetünk. Számos online asset creatort találhatunk erre a célra. Ilyen például az [Image Baker](https://www.img-bak.in/) is. Itt ha behúzzuk az oldalra a képeinket, rögtön le is tudjuk tölteni a megfelelő állományokat. Ezeket a drawable könyvtárakat másoljuk be az app/src/main/res mappába (Studio-ban res mappán állva `Ctrl+V`).
 
 ### Főmenü képernyő
 
@@ -175,11 +175,13 @@ Mivel az Activityt kézzel hoztuk létre, így az első futtatás előtt meg kel
 
 ```xml
 …
-<activity android:name=".MenuActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<activity
+    android:name=".MenuActivity"
+    android:exported="true">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
 </activity>
 ```
 
@@ -227,7 +229,7 @@ A két Fragmentben származzunk le a Fragment osztályból (androidx-es verziót
 `MainProfileFragment.kt`:
 ```kotlin
 class MainProfileFragment : Fragment() {
-    private var _binding: ProfileMainBinding? = null
+    private var _binding: FragmentProfileMainBinding? = null
 
     private val binding get() = _binding!!
 
@@ -236,7 +238,7 @@ class MainProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = ProfileMainBinding.inflate(inflater, container, false)
+        _binding = FragmentProfileMainBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -255,7 +257,7 @@ class MainProfileFragment : Fragment() {
 `DetailsProfileFragment.kt`:
 ```kotlin
 class DetailsProfileFragment : Fragment() {
-    private var _binding: ProfileDetailBinding? = null
+    private var _binding: FragmentProfileDetailsBinding? = null
 
     private val binding get() = _binding!!
 
@@ -264,7 +266,7 @@ class DetailsProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = ProfileDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentProfileDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -281,9 +283,9 @@ class DetailsProfileFragment : Fragment() {
 }
 ```
 
-Készítsük el a megfelelő layout-okat a Fragmentekhez (`profile_main` és `profile_detail`) a layout mappába (jobb klikk > new layout resource file).
+Készítsük el a megfelelő layout-okat a Fragmentekhez (`fragment_profile_main` és `fragment_profile_details`) a layout mappába (jobb klikk > new layout resource file).
 
-`profile_main.xml`:
+`fragment_profile_main.xml`:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -340,7 +342,7 @@ Készítsük el a megfelelő layout-okat a Fragmentekhez (`profile_main` és `pr
 </LinearLayout>
 ```
 
-`profile_detail.xml`:
+`fragment_profile_details.xml`:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -477,17 +479,18 @@ fun getRemainingHolidays(): Int = HOLIDAY_MAX_VALUE - holidays
 
 A PieChart kirajzolásához az [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) library-t fogjuk használni.
 
-Projekt szintű build.gradle:
+Ennek importálásához fel kell vennünk a Projekt szintű settings.gradle-be a megfelelő maven repository-t:
 ```groovy
-allprojects {
+dependencyResolutionManagement {
+    ...
     repositories {
         ...
-        maven { url "https://jitpack.io" }
+        maven { url "https://jitpack.io"}
     }
 }
 ```
 
-App szintű build.gradle:
+Illetve az App szintű build.gradle-be a megfelelő függőséget:
 ```groovy
 dependencies {
     ...
@@ -525,8 +528,8 @@ Ha a library fájljai letöltődtek, akkor írjuk meg az Activity layout-ját (`
 
 Írjuk meg az Activity kódját (`HolidayActivity.kt`):
 ```kotlin
-class HolidayActivity : AppCompatActivity() {
-    lateinit var binding: ActivityHolidayBinding
+class HolidayActivity : AppCompatActivity()
+    private lateinit var binding: ActivityHolidayBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -541,7 +544,7 @@ class HolidayActivity : AppCompatActivity() {
     }
 
     private fun loadHolidays() {
-        var entries: ArrayList<PieEntry> = ArrayList()
+        val entries: ArrayList<PieEntry> = ArrayList()
 
         entries.add(PieEntry(DataManager.holidays.toFloat(), "Taken"))
         entries.add(PieEntry(DataManager.getRemainingHolidays().toFloat(), "Remaining"))
@@ -565,7 +568,7 @@ A következő lépésben a Take Holiday gombra megjelenő dátumválasztó műk�
 
 Hozzunk létre egy DatePickerDialogFragment osztályt:
 ```kotlin
-class DatePickerDialogFragment: DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     private lateinit var onDateSelectedListener: OnDateSelectedListener
 
@@ -573,24 +576,21 @@ class DatePickerDialogFragment: DialogFragment(), DatePickerDialog.OnDateSetList
         super.onAttach(context)
 
         try {
-            onDateSelectedListener = if (targetFragment != null) {
-                targetFragment as OnDateSelectedListener
-            } else {
-                activity as OnDateSelectedListener
-            }
+            onDateSelectedListener = activity as OnDateSelectedListener
+
         } catch (e: ClassCastException) {
             throw RuntimeException(e)
         }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        var c = Calendar.getInstance()
-        var year = c.get(Calendar.YEAR)
-        var month = c.get(Calendar.MONTH)
-        var day = c.get(Calendar.DAY_OF_MONTH)
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
 
-            return DatePickerDialog(
-            activity!!, this,
+        return DatePickerDialog(
+            requireActivity(), this,
             year, month, day
         )
     }
@@ -612,8 +612,8 @@ A laborvezetővel vizsgáljuk meg az `OnDateSelectedListener` interface működ�
 Állítsuk be a gomb eseménykezelőjét a HolidayActivity-ben, hogy lenyomáskor jelenítse meg a dátumválasztót:
 ```kotlin
 binding.btnTakeHoliday.setOnClickListener {
-            DatePickerDialogFragment().show(supportFragmentManager, "DATE_TAG")
-        }
+	DatePickerDialogFragment().show(supportFragmentManager, "DATE_TAG")
+}
 ```
 
 A kiválasztott dátum feldolgozásához implementáljuk az OnDateSelectedListener-t a HolidayActivity-ben:
@@ -623,15 +623,13 @@ DatePickerDialogFragment.OnDateSelectedListener {
 ...
 
 override fun onDateSelected(year: Int, month: Int, day: Int) {
-        var numHolidays = DataManager.holidays
+    val numHolidays = DataManager.holidays
 
-        if (DataManager.getRemainingHolidays() > 0) {
-            DataManager.holidays = numHolidays + 1
-        }
-        
-        // Update chart
-        loadHolidays()
-    }
+    DataManager.holidays = numHolidays + 1
+
+    // Update chart
+    loadHolidays()
+}
 ```
 
 Próbáljuk ki az alkalmazást! Most már a gomb is jól kell, hogy működjön, a napok számának is csökkennie kell a diagramon.
@@ -658,7 +656,7 @@ A Payment menüpontra kattintva jelenjen meg egy PaymentActivity rajta egy ViewP
 
 A labor értékeléséhez **két külön** fájlt kell feltölteni:
 
-1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Manage IDE Settings` > `Export to Zip File...` menüponttal.
+1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Export` > `Export to Zip File...` menüponttal.
 
 <p align="center"> 
 <img src="./assets/export.png" width="320">
