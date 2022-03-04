@@ -229,7 +229,7 @@ A két Fragmentben származzunk le a Fragment osztályból (androidx-es verziót
 `MainProfileFragment.kt`:
 ```kotlin
 class MainProfileFragment : Fragment() {
-    private var _binding: FragmentProfileMainBinding? = null
+    private var _binding: FragmentMainProfileBinding? = null
 
     private val binding get() = _binding!!
 
@@ -238,7 +238,7 @@ class MainProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentProfileMainBinding.inflate(inflater, container, false)
+        _binding = FragmentMainProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -257,7 +257,7 @@ class MainProfileFragment : Fragment() {
 `DetailsProfileFragment.kt`:
 ```kotlin
 class DetailsProfileFragment : Fragment() {
-    private var _binding: FragmentProfileDetailsBinding? = null
+    private var _binding: FragmentDetailsProfileBinding? = null
 
     private val binding get() = _binding!!
 
@@ -266,7 +266,7 @@ class DetailsProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentProfileDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentDetailsProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 
