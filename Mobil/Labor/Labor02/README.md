@@ -283,9 +283,9 @@ class DetailsProfileFragment : Fragment() {
 }
 ```
 
-Készítsük el a megfelelő layout-okat a Fragmentekhez (`fragment_profile_main` és `fragment_profile_details`) a layout mappába (jobb klikk > new layout resource file).
+Készítsük el a megfelelő layout-okat a Fragmentekhez (`fragment_main_profile` és `fragment_details_profile`) a layout mappába (jobb klikk > new layout resource file).
 
-`fragment_profile_main.xml`:
+`fragment_main_profile.xml`:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -342,7 +342,7 @@ Készítsük el a megfelelő layout-okat a Fragmentekhez (`fragment_profile_main
 </LinearLayout>
 ```
 
-`fragment_profile_details.xml`:
+`fragment_details_profile.xml`:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -528,7 +528,7 @@ Ha a library fájljai letöltődtek, akkor írjuk meg az Activity layout-ját (`
 
 Írjuk meg az Activity kódját (`HolidayActivity.kt`):
 ```kotlin
-class HolidayActivity : AppCompatActivity()
+class HolidayActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHolidayBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
