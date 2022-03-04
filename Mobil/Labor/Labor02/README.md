@@ -665,9 +665,10 @@ A labor értékeléséhez **két külön** fájlt kell feltölteni:
 2. Egy pdf-et, amiben a név, neptun kód és az alábbi képernyőképek szerepelnek (az emulátor, és egy lényegesebb kódrészlet is):
 
 	1. MenuActivity
-	2. ProfileActivity
-	3. HolidayActivity (ha kész az önálló rész, az is szerepeljen)
-	4. Dátumválasztó (ha kész az önálló rész, az is szerepeljen)
+	2. MainProfileFragment
+	3. DetailsProfileFragment
+	4. HolidayActivity (ha kész az önálló rész, az is szerepeljen)
+	5. DatePickerDialogFragment (ha kész az önálló rész, az is szerepeljen)
 
 <p align="center"> 
 <img src="./assets/hw.png" width="640">
