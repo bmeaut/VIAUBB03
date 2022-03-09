@@ -3,7 +3,7 @@
 ## Bevezető
 A labor során egy bevásárló lista alkalmazás elkészítése a feladat. Az alkalmazásban fel lehet venni megvásárolni kívánt termékeket, valamint  megvásároltnak lehet jelölni és törölni lehet meglévőket.
 
-Az alkalmazás a termékek listáját [`RecyclerView`](https://developer.android.com/guide/topics/ui/layout/recyclerview)-ban jeleníti meg, a lista elemeket és azok állapotát a [`Room`](https://developer.android.com/topic/libraries/architecture/room) nevű ORM library segítségével tárolja perzisztensen. Új elem felvételére egy [`FloatingActionButton`](https://developer.android.com/guide/topics/ui/floating-action-button) megnyomásával van lehetőség.
+Az alkalmazás a termékek listáját [`RecyclerView`](https://developer.android.com/guide/topics/ui/layout/recyclerview)-ban jeleníti meg, a lista elemeket és azok állapotát a [`Room`](https://developer.android.com/training/data-storage/room) nevű ORM library segítségével tárolja perzisztensen. Új elem felvételére egy [`FloatingActionButton`](https://developer.android.com/guide/topics/ui/floating-action-button) megnyomásával van lehetőség.
 
 > ORM = [Object-relational mapping](https://en.wikipedia.org/wiki/Object-relational_mapping)
 
@@ -25,12 +25,12 @@ Felhasznált technológiák:
 
 ## Értékelés
 
-Vezetett rész (1 pont)
+Vezetett rész (0,5 pont)
 - [Perzisztens adattárolás megvalósítása](#perzisztens-adattárolás-megvalósítása)
 - [Lista megjelenítése `RecyclerView`-val](#lista-megjelenítése-recyclerview-val)
 - [Dialógus megvalósítása új elem hozzáadásához](#dialógus-megvalósítása-új-elem-hozzáadásához)
 
-Önálló feladat (1 pont)
+Önálló feladat (0,5 pont)
 - [Törlés megvalósítása](#törlés-megvalósítása)
 
 Bónusz feladatok
@@ -64,6 +64,29 @@ android {
 
 ```
 
+
+Adjuk hozzá a `strings.xml`-hez a projektben szükséges szöveges erőforrásokat:
+
+```xml
+<resources>
+    <string name="app_name">ShoppingList</string>
+    <string name="bought">Bought</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_shopping_item">New shopping item</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="category">Category</string>
+    <string name="estimated_price">Estimated price</string>
+    <string name="already_purchased">Already purchased</string>
+    <string-array name="category_items">
+        <item>Food</item>
+        <item>Electronic</item>
+        <item>Book</item>
+    </string-array>
+</resources>
+```
+
 A kezdő Activity neve maradhat `MainActivity`, valamint töltsük le és tömörítsük ki [az alkalmazáshoz szükséges erőforrásokat](downloads/res.zip), majd másoljuk be őket a projekt *app/src/main/res* mappájába (Studio-ban a *res* mappán állva *Ctrl+V*)!
 
 ### Perzisztens adattárolás megvalósítása
@@ -75,21 +98,29 @@ Kezdjük azzal, hogy az *app* modulhoz tartozó `build.gradle` fájlban a plugin
 ```gradle
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
 }
 
 //...
 ```
-Ezt követően, szintén ebben a `build.gradle` fájlban a `dependencies` blokkhoz adjuk hozzá a `Room` libraryt:
+
+Ezt követően, szintén ebben a `build.gradle` fájlban a `dependencies` blokkhoz adjuk hozzá a `Room` libraryt és csatolt részeit:
+
 ```gradle
 dependencies {
     //...
-    implementation 'androidx.room:room-runtime:2.3.0'
-    implementation 'androidx.room:room-ktx:2.3.0'
-    kapt 'androidx.room:room-compiler:2.3.0'
+	//room database
+    def room_version = "2.4.2"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+	//room coroutines
+    implementation "androidx.room:room-ktx:$room_version"
+
 }
 ```
+
 Ezután kattintsunk a jobb felső sarokban megjelenő **Sync now** gombra.
 
 A  `Room` egy kényelmes adatbazáskezelést lehetővé tevő API-t nyújt a platform szintű SQLite implementáció fölé. Megspórolható vele rengeteg újra és újra megírandó kód, például a táblák adatait és létrehozó scriptjét tartalmazó osztályok. Ezeket és más segédosztályokat a `Room` *annotation* alapú kódgenerálással hozza létre a *build* folyamat részeként.
@@ -97,7 +128,28 @@ A  `Room` egy kényelmes adatbazáskezelést lehetővé tevő API-t nyújt a pla
 A `Room` alapvető komponenseinek, architektúrájának és használatának leírása megtalálható a megfelelő [developer.android.com](https://developer.android.com/training/data-storage/room/) oldalon.
 
 #### Egy modell osztály létrehozása
-A `hu.bme.aut.android.shoppinglist` package-ben hozzunk létre egy új package-et `data` néven. A `data` package-ben hozzunk létre egy új Kotlin fájlt, aminek a neve legyen `ShoppingItem`:
+
+A `hu.bme.aut.android.shoppinglist` package-ben hozzunk létre egy új package-et `data` néven. A `data` package-ben hozzunk létre egy új Kotlin adat osztályt, aminek a neve legyen `ShoppingItem`:
+
+```kotlin
+@Entity(tableName = "shoppingitem")
+data class ShoppingItem(
+    @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) var id: Long = 0,
+
+    @ColumnInfo(name = "name") var name: String,
+    @ColumnInfo(name = "category") var category: ShoppingItemCategory,
+    @ColumnInfo(name = "description") var description: String = "",
+    @ColumnInfo(name = "estimated_price") var estimatedPrice: Int = 0,
+    @ColumnInfo(name = "is_bought") var isBought: Boolean = false
+)
+```
+
+A `data class` property-jeire annotációkat helyeztünk el. Az `@Entity` jelzi a `Room` kódgenerátorának, hogy ennek az osztálynak a példányai adatbázis rekordoknak fognak megfelelni egy táblában és hogy az egyes property-k felelnek majd meg a tábla oszlopainak. A `@ColumnInfo` *annotációval* megadjuk, hogy mi legyen a property-nek megfelelő oszlop neve. `@PrimaryKey`-jel jelöljük a tábla egyszerű kulcs attribútumát.
+
+> Kotlinban van lehetőség úgynevezett [`data class`](https://kotlinlang.org/docs/reference/data-classes.html) létrehozására. Ezt talán legkönnyebben a Java-s POJO (Plain-Old-Java-Object) osztályoknak lehet megfeleltetni. A céljuk, hogy publikus property-kben összefüggő adatokat tároljanak, semmi több! Ezen kívül automatikusan létrejönnek bizonyos segédfüggvények is, például egy megfelelő `equals`, `toString` és `copy` implementáció.
+
+Ugyanide hozzunk létre egy `ShoppingItemCategory` enumot , amivel egy termék kategóriát akarunk kódolni:
+
 ```kotlin
 enum class ShoppingItemCategory {
     FOOD, ELECTRONIC, BOOK;
@@ -123,25 +175,9 @@ enum class ShoppingItemCategory {
         }
     }
 }
-
-@Entity(tableName = "shoppingitem")
-data class ShoppingItem(
-    @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) var id: Long = 0,
-
-    @ColumnInfo(name = "name") var name: String,
-    @ColumnInfo(name = "category") var category: ShoppingItemCategory,
-    @ColumnInfo(name = "description") var description: String = "",
-    @ColumnInfo(name = "estimated_price") var estimatedPrice: Int = 0,
-    @ColumnInfo(name = "is_bought") var isBought: Boolean = false
-)
-
 ```
 
-Látható, hogy a  fájl elején létrehoztunk egy enum-ot, amivel egy kategóriát akarunk kódolni. Az enum-nak van két statikus metódusa, `@TypeConverter` annotációval ellátva. Ezekkel oldható meg, hogy az adatbázis akár összetett adatszerkezeteket is tárolni tudjon. Ezek a függvények felelősek azért, hogy egy felhasználói típust lefordítsanak egy, az adatbázis által támogatott típusra, illetve fordítva. Megfigyelhető továbbá, hogy ezen függvények el vannak látva a `@JvmStatic` annotációval is. Erre azért van szükség, mert alapvetően, amikor a companion object-ek Jvm bájtkódra fordulnak, akkor egy külön statikus osztály jön számukra létre. Ezzel az annotációval lehet megadni, hogy ne jöjjön létre külön statikus osztály, ehelyett a bennfoglaló osztály (jelen esetben `ShoppingItemCategory`) statikus függvényei legyenek. Erre a speciális viselkedésre pedig a Room működése miatt van szükség, ugyanis tudnia kell, hol keresse egy-egy típusra a konvertereket.
-
-Ezt követően létre lett hozva egy `data class`, amire, valamint aminek a property-jeire szintén annotációkat helyeztünk el. Az `@Entity` jelzi a `Room` kódgenerátorának, hogy ennek az osztálynak a példányai adatbázis rekordoknak fognak megfelelni egy táblában és hogy az egyes property-k felelnek majd meg a tábla oszlopainak. A `@ColumnInfo` *annotációval* megadjuk, hogy mi legyen a property-nek megfelelő oszlop neve. `@PrimaryKey`-jel jelöljük a tábla egyszerű kulcs attribútumát.
-
-> Kotlinban van lehetőség úgynevezett [`data class`](https://kotlinlang.org/docs/reference/data-classes.html) létrehozására. Ezt talán legkönnyebben a Java-s POJO (Plain-Old-Java-Object) osztályoknak lehet megfeleltetni. A céljuk, hogy publikus property-kben összefüggő adatokat tároljanak, semmi több! Ezen kívül automatikusan létrejönnek bizonyos segédfüggvények is, például egy megfelelő `equals`, `toString` és `copy` implementáció.
+Az enum-nak van két statikus metódusa, `@TypeConverter` annotációval ellátva. Ezekkel oldható meg, hogy az adatbázis akár összetett adatszerkezeteket is tárolni tudjon. Ezek a függvények felelősek azért, hogy egy felhasználói típust lefordítsanak egy, az adatbázis által támogatott típusra, illetve fordítva. Megfigyelhető továbbá, hogy ezen függvények el vannak látva a `@JvmStatic` annotációval is. Erre azért van szükség, mert alapvetően, amikor a companion object-ek Jvm bájtkódra fordulnak, akkor egy külön statikus osztály jön számukra létre. Ezzel az annotációval lehet megadni, hogy ne jöjjön létre külön statikus osztály, ehelyett a bennfoglaló osztály (jelen esetben `ShoppingItemCategory`) statikus függvényei legyenek. Erre a speciális viselkedésre pedig a Room működése miatt van szükség, ugyanis tudnia kell, hol keresse egy-egy típusra a konvertereket.
 
 #### Egy DAO osztály létrehozása
 
@@ -202,45 +238,7 @@ Ezen kívül van még egy statikus `getDatabase` függvény, ami azt írja le, h
 
 ### Lista megjelenítése `RecyclerView`-val
 
-#### A lista adapter létrehozása
-Következő lépésként a lista adaptert fogjuk létrehozni, ami a modell elemeket fogja majd szolgáltatni a `ReciclerView`-nak.
-
-A `hu.bme.aut.android.shoppinglist` package-ben hozzunk létre egy új package-et `adapter` néven!
-
-Az `adapter` package-ben hozzunk létre egy új Kotlin osztályt `ShoppingAdapter` néven:
-
-```kotlin
-class ShoppingAdapter(private val listener: ShoppingItemClickListener) :
-    RecyclerView.Adapter<ShoppingAdapter.ShoppingViewHolder>() {
-    private val items = mutableListOf<ShoppingItem>()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ShoppingViewHolder(
-        ItemShoppingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-    )
-
-    override fun onBindViewHolder(holder: ShoppingViewHolder, position: Int) {
-        //TODO
-
-    }
-
-    override fun getItemCount(): Int = items.size
-
-    interface ShoppingItemClickListener {
-        fun onItemChanged(item: ShoppingItem)
-    }
-
-    inner class ShoppingViewHolder(val binding: ItemShoppingListBinding) :
-        RecyclerView.ViewHolder(binding.root) {}
-}
-```
-
- A listát `RecyclerView` segítségével szeretnénk megjeleníteni, ezért az adapter a `RecyclerView.Adapter` osztályból származik. Az adapter a modell elemeket egy listában tárolja. A rendszer a `RecyclerView`-val való hatékony lista megjelenítéshez a [*ViewHolder* tervezési mintát](https://developer.android.com/training/improving-layouts/smooth-scrolling#java) valósítja meg, ezért szükség van egy `ViewHolder` osztály megadására is. `ViewHolder`-eken keresztül érhetjük majd el a lista elemekhez tartozó `View`-kat.
-
-A `RecyclerView.Adapter` három absztrakt függvényt definiál, amelyeket kötelező megvalósítani. Az `onCreateViewHolder()`-ben hozzuk létre az adott lista elemet megjelenítő `View`-t és a hozzá tartozó `ViewHolder`-t. Az `onBindViewHolder()`-ben kötjük hozzá a modell elemhez a nézetet, a `getItemCount()` pedig a listában található (általános esetre fogalmazva a megjelenítendő) elemek számát kell, hogy visszaadja.
-
-A `ShoppingAdapter`-ben definiáltunk egy `ShoppingItemClickListener` nevű interfészt is, aminek a segítségével jelezhetjük az alkalmazás többi része felé, hogy esemény történt egy lista elemen.
-
-Egy listaelem megjelenítéséhez hozzuk létre a layout mappában az `item_shopping_list` *layout resource file*-t. Cseréljük le az újonnan létrehozott fájl tartalmát az alábbira:
+A listában sok egyforma elemet szeretnénk megjeleníteni. Egy listaelem megjelenítéséhez hozzuk létre a layout mappában az `item_shopping_list` *layout resource file*-t. Cseréljük le az újonnan létrehozott fájl tartalmát az alábbira:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -312,9 +310,47 @@ Egy listaelem megjelenítéséhez hozzuk létre a layout mappában az `item_shop
 
 </LinearLayout>
 ```
-Hozzuk létre a `@string/bought` erőforrást! Kattintsunk rá az erőforrás hivatkozásra, majd *Alt + Enter* lenyomása után válasszuk a *„Create string value resource ’bought’”* lehetőséget! A felugró ablakban az erőforrás értékének adjuk a "Bought" értéket (idézőjelek nélkül)!
 
-Térjünk vissza az `ShoppingAdapter`-hez, és írjuk meg `onBindViewHolder`-ben az adatok megjelenítésének logikáját. Érdemes megfigyelni a `getImageResource` függvényt, ami az enum-hoz társítja a megfelelő képi erőforrást.
+#### A lista adapter létrehozása
+
+Következő lépésként a lista adaptert fogjuk létrehozni, ami a modell elemeket fogja majd szolgáltatni a `ReciclerView`-nak.
+
+A `hu.bme.aut.android.shoppinglist` package-ben hozzunk létre egy új package-et `adapter` néven!
+
+Az `adapter` package-ben hozzunk létre egy új Kotlin osztályt `ShoppingAdapter` néven:
+
+```kotlin
+class ShoppingAdapter(private val listener: ShoppingItemClickListener) :
+    RecyclerView.Adapter<ShoppingAdapter.ShoppingViewHolder>() {
+    private val items = mutableListOf<ShoppingItem>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ShoppingViewHolder(
+        ItemShoppingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
+
+    override fun onBindViewHolder(holder: ShoppingViewHolder, position: Int) {
+    	///TODO
+
+    }
+
+    override fun getItemCount(): Int = items.size
+
+    interface ShoppingItemClickListener {
+        fun onItemChanged(item: ShoppingItem)
+    }
+
+    inner class ShoppingViewHolder(val binding: ItemShoppingListBinding) :
+        RecyclerView.ViewHolder(binding.root) {}
+}
+```
+
+ A listát `RecyclerView` segítségével szeretnénk megjeleníteni, ezért az adapter a `RecyclerView.Adapter` osztályból származik. Az adapter a modell elemeket egy listában tárolja. A rendszer a `RecyclerView`-val való hatékony lista megjelenítéshez a [*ViewHolder* tervezési mintát](https://developer.android.com/training/improving-layouts/smooth-scrolling#java) valósítja meg, ezért szükség van egy `ViewHolder` osztály megadására is. `ViewHolder`-eken keresztül érhetjük majd el a lista elemekhez tartozó `View`-kat.
+
+A `RecyclerView.Adapter` három absztrakt függvényt definiál, amelyeket kötelező megvalósítani. Az `onCreateViewHolder()`-ben hozzuk létre az adott lista elemet megjelenítő `View`-t és a hozzá tartozó `ViewHolder`-t. Az `onBindViewHolder()`-ben kötjük hozzá a modell elemhez a nézetet, a `getItemCount()` pedig a listában található (általános esetre fogalmazva a megjelenítendő) elemek számát kell, hogy visszaadja.
+
+A `ShoppingAdapter`-ben definiáltunk egy `ShoppingItemClickListener` nevű interfészt is, aminek a segítségével jelezhetjük az alkalmazás többi része felé, hogy esemény történt egy lista elemen.
+
+A `ShoppingAdapter`-ben írjuk meg `onBindViewHolder`-ben az adatok megjelenítésének logikáját. Érdemes megfigyelni a `getImageResource` függvényt, ami az enum-hoz társítja a megfelelő képi erőforrást.
 
 ```kotlin
 override fun onBindViewHolder(holder: ShoppingViewHolder, position: Int) {
@@ -331,7 +367,6 @@ override fun onBindViewHolder(holder: ShoppingViewHolder, position: Int) {
         shoppingItem.isBought = isChecked
         listener.onItemChanged(shoppingItem)
     }
-
 }
 
 @DrawableRes()
@@ -361,7 +396,25 @@ fun update(shoppingItems: List<ShoppingItem>) {
 }
 ```
 
-> A RecyclerView megírásánál figyeltek arra, hogy hatékony legyen, ezért az adathalmaz változásakor csak azokat a nézeteket frissíti, amit feltétlen szükséges. Azonban szintén hatékonyság miatt, nem az adapter fogja kiszámolni a változást, hanem ezt a programozónak kell kézzel jeleznie. Erre szolgál a `notify***` függvénycsalád, aminek két tagja fent látható. Az alsó hatására a teljes adathalmaz lecserélődik, és újrarajzolódik minden. Az első hatására viszont a már létező elemek nem módosulnak, csak egy újonnan beszúrt elem lesz kirajzolva.
+A RecyclerView megírásánál figyeltek arra, hogy hatékony legyen, ezért az adathalmaz változásakor csak azokat a nézeteket frissíti, amit feltétlen szükséges. Azonban szintén hatékonyság miatt, nem az adapter fogja kiszámolni a változást, hanem ezt a programozónak kell kézzel jeleznie. Erre szolgál a `notify***` függvénycsalád, aminek két tagja fent látható. Az alsó hatására a teljes adathalmaz lecserélődik, és újrarajzolódik minden. Az első hatására viszont a már létező elemek nem módosulnak, csak egy újonnan beszúrt elem lesz kirajzolva.
+
+> A `RecyclerView` képes az elemek változását a megfelelő animációkkal megjeleníteni, ehhez viszont szükséges manuálisan követni az elemek változását, és a megfelelő `notifyItem` függvényeket meghívni. Ezek egy-egy elem változásánál még akár kézzel is megtehetőek, bonyolultabb listaműveletek esetén viszont egyre nagyobb a valószínűsége, hogy valamelyik hívást rosszult intézzük, így rossz animáció játszódhat le, illetve a megjelenített lista is mást fog megjeleníteni, mint amire számítanánk.
+> Annak érdekében, hogy ezt a problémát ne kelljen minden egyes fejlesztőnek magától megoldania, a Google több segéd osztályt létrehozott. Az első ilyen a [`DiffUtil`](https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil) osztály, mely képes eldönteni, milyen műveletek szükségesek ahhoz, hogy egyik listából egy másik lista állapotába jussunk. A bemeneti paramétere egy [callback objektum](https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil.Callback), melynek több függvényt is kell tartalmaznia, az algoritmus ez alapján fogja a változások listáját létrehozni:
+
+>  - `getOldListSize()`: A régi lista méretét adja vissza.
+>  - `getNewListSize()`: Az új lista méretét adja vissza.
+>  - `areItemsTheSame(int oldItemPosition, int newItemPosition)`: Megadja, hogy a régi és az új listában az adott indexeken található elem ugyanazt az adatot reprezentálja-e.
+>  - `areContentsTheSame(int oldItemPosition, int newItemPosition)`: Megadja, hogy a régi és az új listában az adott indexeken található elem ugyanazzal az adattal rendelkezik-e.
+>  - `getChangePayload(int oldItemPosition, int newItemPosition)`: Ha a listában a két index által jelölt elem ugyanazt az adatot reprezentálja, de az adatban történt valami változás, akkor ez a függvény visszaad egy leírást arról, hogy mi változott pontosan. Opcionális, visszatérhet `null` értékkel.
+
+> Látható, hogy egy adat elemhez tartozik valamilyen egyértelmű azonosító, illetve az elemet leíró adathalmaz. Az algoritmus ez alapján tudja megkülönböztetni azt a két esetet, ha egy adatelem csak módosul (pl. megváltozik a neve ugyanannak a személynek, ekkor az azonosító azonos marad), vagy ha töröljük az elemet, és helyette egy újat adunk hozzá (ekkor meg fog változni az azonosító is). Az azonosító segítségével lehet azt is detektálni, ha egy elem a listában egy másik helyre kerül.
+
+> Látható, hogy a callback objektum csak és kizárólag indexekkel dolgozik. Ennek megfelelően a fejlesztő felelőssége a régi, illetve új lista és a benne található elemek tárolása. Emiatt javasolt erősen, hogy az adat elemeink _immutable_ adat osztályok legyenek: ha megváltoztatjuk az elem értékét, akkor nem fogjuk tudni összehasonlítani a régebbi adat példánnyal, mivel az nem létezik külön. Hasonló okokból ilyenkor ajánlott a listákat is _immutable_ módon létrehozni (pl. `listOf()` függvénnyel), így elkerülhető, hogy véletlenül a régi lista módosuljon.
+
+>  A `DiffUtil`-ra építve egy másik hasznos osztály a `ListAdapter`, mely a `RecyclerView.Adapter` osztályból származik le. Ez magába foglalja a `DiffUtil` osztályt, a `submitList()` függvényt meghívva automatikusan elindul az összehasonlítás egy háttérszálon, és miután ezzel végzett, frissíti a megjelenített listát. 
+> A függvény paramétere egy referencia az elemek listájára, melyet az osztály el is tárol magában. Emiatt ebben az esetben ezt a listát semmiképp sem módosíthatjuk később, ekkor ugyanis rosszul működne az összehasonlító algoritmus.
+
+> Mivel a `ListAdapter` osztály ismeri a konkrét listákat, ez esetben egy másik típusú [callback objektumra](https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil.ItemCallback) van szükség, mely már a konkrét adat elemekkel operál a paraméterekben az indexek helyett. 
 
 #### A `RecyclerView` és az adatok megjelenítése
 
@@ -420,23 +473,25 @@ Szeretnék, hogy a bevásárlólista alkalmazás egyetlen `Activity`-jét teljes
 Megfigyelhető, hogy a témában kikapcsoltuk az ActionBar megjelenését, helyette az xml fájlban szerepel egy Toolbar típusú elem, egy AppBarLayout-ba csomagolva. Mostanában tanácsos nem a beépített ActionBar-t használni, hanem helyette egy Toolbar-t lehelyezni, mert ez több, hasznos funkciót is támogat, például integrálódni tud egy NavigationDrawer-rel, vagy az újabb navigációs komponenssel (amit ebből a tárgyból nem veszünk).
 
 Adjuk hozzá az alábbi változókat a `MainActivity`-hez és cseréljük le a projekt létrehozásakor generált `onCreate()` függvényt:
+
 ```kotlin
-private lateinit var binding: ActivityMainBinding
+ private lateinit var binding: ActivityMainBinding
 
-private lateinit var database: ShoppingListDatabase
-private lateinit var adapter: ShoppingAdapter
+ private lateinit var database: ShoppingListDatabase
+ private lateinit var adapter: ShoppingAdapter
 
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    binding = ActivityMainBinding.inflate(layoutInflater)
-    setContentView(binding.root)
-    setSupportActionBar(binding.toolbar)
+ override fun onCreate(savedInstanceState: Bundle?) {
+     super.onCreate(savedInstanceState)
+     binding = ActivityMainBinding.inflate(layoutInflater)
+     setContentView(binding.root)
+     setSupportActionBar(binding.toolbar)
 
-    database = ShoppingListDatabase.getDatabase(applicationContext)
+     database = ShoppingListDatabase.getDatabase(applicationContext)
 
-    binding.fab.setOnClickListener {
-        //TODO
-    }
+     binding.fab.setOnClickListener {
+	 	///TODO
+     }
+
 }
 ```
 
@@ -447,19 +502,19 @@ class MainActivity :
     AppCompatActivity(), CoroutineScope by MainScope() {
 	//...
 
-    private fun initRecyclerView() {
-        adapter = ShoppingAdapter(this)
-        binding.rvMain.layoutManager = LinearLayoutManager(this)
-        binding.rvMain.adapter = adapter
-        loadItemsInBackground()
-    }
+private fun initRecyclerView() {
+    adapter = ShoppingAdapter(this)
+    binding.rvMain.layoutManager = LinearLayoutManager(this)
+    binding.rvMain.adapter = adapter
+    loadItemsInBackground()
+}
 
-    private fun loadItemsInBackground() = launch {
-        val items = withContext(Dispatchers.IO) {
-            database.shoppingItemDao().getAll()
-        }
-        adapter.update(items)
+private fun loadItemsInBackground() = launch {
+    val items = withContext(Dispatchers.IO) {
+        database.shoppingItemDao().getAll()
     }
+    adapter.update(items)
+}
 }
 ```
 
@@ -488,7 +543,6 @@ class MainActivity :
             database.shoppingItemDao().update(item)
         }
     }
-}
 ```
 
 Hívjuk meg az `initRecyclerView()` függvényt az `onCreate()` függvény utolsó lépéseként:
@@ -533,6 +587,7 @@ Hozzuk létre a dialógushoz tartozó *layoutot*, (`dialog_new_shopping_item`) m
 
     <EditText
         android:id="@+id/etName"
+        android:maxLines="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -579,32 +634,10 @@ Hozzuk létre a dialógushoz tartozó *layoutot*, (`dialog_new_shopping_item`) m
 </LinearLayout>
 ```
 
-Adjuk hozzá a `strings.xml`-hez a hiányzó szöveges erőforrásokat (Az egyszerűség kedvéért itt a teljes `strings.xml` tartalma látható.):
-
-```xml
-<resources>
-    <string name="app_name">ShoppingList</string>
-    <string name="bought">Bought</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="new_shopping_item">New shopping item</string>
-    <string name="name">Name</string>
-    <string name="description">Description</string>
-    <string name="category">Category</string>
-    <string name="estimated_price">Estimated price</string>
-    <string name="already_purchased">Already purchased</string>
-    <string-array name="category_items">
-        <item>Food</item>
-        <item>Electronic</item>
-        <item>Book</item>
-    </string-array>
-</resources>
-```
-
 A `hu.bme.aut.android.shoppinglist` package-ben hozzunk létre egy új package-et `fragments` néven. A `fragments` package-ben hozzunk létre egy új Kotlin osztályt, aminek a neve legyen `NewShoppingItemDialogFragment`:
 
 ```kotlin
-class NewShoppingItemDialogFragment : DialogFragment() {
+lass NewShoppingItemDialogFragment : DialogFragment() {
     companion object {
         const val TAG = "NewShoppingItemDialogFragment"
     }
@@ -616,7 +649,7 @@ class NewShoppingItemDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val activity: FragmentActivity = getActivity()!!
+        val activity: FragmentActivity = requireActivity()!!
         listener = if (activity is NewShoppingItemDialogListener) {
             activity
         } else {
@@ -662,7 +695,7 @@ A *ViewBinding*gal létrehoztuk és felfújtuk a felületet, ami felkerül a ké
 override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     _binding = DialogNewShoppingItemBinding.inflate(LayoutInflater.from(context))
     binding.spCategory.adapter = ArrayAdapter(
-        context!!,
+        requireContext()!!,
         android.R.layout.simple_spinner_dropdown_item,
         resources.getStringArray(R.array.category_items)
     )
@@ -782,7 +815,7 @@ Teremtsük meg a lista elemek szerkesztésének lehetőségét. A lista elemre h
 
 A labor értékeléséhez **két külön** fájlt kell feltölteni:
 
-1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Manage IDE Settings` > `Export to Zip File...` menüponttal.
+1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Export` > `Export to Zip File...` menüponttal.
 
 <p align="center"> 
 <img src="./assets/export.png" width="320">
@@ -808,26 +841,25 @@ Az alábbiakban megadjuk az *app* szintű `build.gradle` fájl teljes tartalmát
 ```gradle
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
-
-    buildFeatures {
-        viewBinding = true
-    }
+    compileSdk 32
 
     defaultConfig {
         applicationId "hu.bme.aut.android.shoppinglist"
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdk 21
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     buildTypes {
@@ -846,18 +878,21 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.room:room-runtime:2.3.0'
-    implementation 'androidx.room:room-ktx:2.3.0'
-    kapt 'androidx.room:room-compiler:2.3.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    //room database
+    def room_version = "2.4.2"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    //room coroutines
+    implementation "androidx.room:room-ktx:$room_version"
 }
 ```
 
