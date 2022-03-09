@@ -411,7 +411,7 @@ A RecyclerView megírásánál figyeltek arra, hogy hatékony legyen, ezért az 
 
 > Látható, hogy a callback objektum csak és kizárólag indexekkel dolgozik. Ennek megfelelően a fejlesztő felelőssége a régi, illetve új lista és a benne található elemek tárolása. Emiatt javasolt erősen, hogy az adat elemeink _immutable_ adat osztályok legyenek: ha megváltoztatjuk az elem értékét, akkor nem fogjuk tudni összehasonlítani a régebbi adat példánnyal, mivel az nem létezik külön. Hasonló okokból ilyenkor ajánlott a listákat is _immutable_ módon létrehozni (pl. `listOf()` függvénnyel), így elkerülhető, hogy véletlenül a régi lista módosuljon.
 
->  A `DiffUtil`-ra építve egy másik hasznos osztály a `ListAdapter`, mely a `RecyclerView.Adapter` osztályból származik le. Ez magába foglalja a `DiffUtil` osztályt, a `submitList()` függvényt meghívva automatikusan elindul az összehasonlítás egy háttérszálon, és miután ezzel végzett, frissíti a megjelenített listát. 
+>  A `DiffUtil`-ra építve egy másik hasznos osztály a [`ListAdapter`](https://developer.android.com/reference/androidx/recyclerview/widget/ListAdapter), mely a `RecyclerView.Adapter` osztályból származik le. Ez magába foglalja a `DiffUtil` osztályt, a `submitList()` függvényt meghívva automatikusan elindul az összehasonlítás egy háttérszálon, és miután ezzel végzett, frissíti a megjelenített listát. 
 > A függvény paramétere egy referencia az elemek listájára, melyet az osztály el is tárol magában. Emiatt ebben az esetben ezt a listát semmiképp sem módosíthatjuk később, ekkor ugyanis rosszul működne az összehasonlító algoritmus.
 
 > Mivel a `ListAdapter` osztály ismeri a konkrét listákat, ez esetben egy másik típusú [callback objektumra](https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil.ItemCallback) van szükség, mely már a konkrét adat elemekkel operál a paraméterekben az indexek helyett. 
@@ -501,20 +501,20 @@ A `MainActivity` öröklését egészítsük ki, valamint adjuk hozzá a  `Recyc
 class MainActivity :
     AppCompatActivity(), CoroutineScope by MainScope() {
 	//...
-
-private fun initRecyclerView() {
-    adapter = ShoppingAdapter(this)
-    binding.rvMain.layoutManager = LinearLayoutManager(this)
-    binding.rvMain.adapter = adapter
-    loadItemsInBackground()
-}
-
-private fun loadItemsInBackground() = launch {
-    val items = withContext(Dispatchers.IO) {
-        database.shoppingItemDao().getAll()
-    }
-    adapter.update(items)
-}
+	
+	private fun initRecyclerView() {
+	    adapter = ShoppingAdapter(this)
+	    binding.rvMain.layoutManager = LinearLayoutManager(this)
+	    binding.rvMain.adapter = adapter
+	    loadItemsInBackground()
+	}
+	
+	private fun loadItemsInBackground() = launch {
+	    val items = withContext(Dispatchers.IO) {
+	        database.shoppingItemDao().getAll()
+	    }
+	    adapter.update(items)
+	}
 }
 ```
 
@@ -637,7 +637,7 @@ Hozzuk létre a dialógushoz tartozó *layoutot*, (`dialog_new_shopping_item`) m
 A `hu.bme.aut.android.shoppinglist` package-ben hozzunk létre egy új package-et `fragments` néven. A `fragments` package-ben hozzunk létre egy új Kotlin osztályt, aminek a neve legyen `NewShoppingItemDialogFragment`:
 
 ```kotlin
-lass NewShoppingItemDialogFragment : DialogFragment() {
+class NewShoppingItemDialogFragment : DialogFragment() {
     companion object {
         const val TAG = "NewShoppingItemDialogFragment"
     }
