@@ -659,7 +659,7 @@ A labor értékeléséhez **két külön** fájlt kell feltölteni:
 1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Export` > `Export to Zip File...` menüponttal.
 
 <p align="center"> 
-<img src="./assets/export.png" width="320">
+<img src="../assets/export.png" width="320">
 </p>
 
 2. Egy pdf-et, amiben a név, neptun kód és az alábbi képernyőképek szerepelnek (az emulátor, és egy lényegesebb kódrészlet is):
@@ -671,5 +671,5 @@ A labor értékeléséhez **két külön** fájlt kell feltölteni:
 	5. DatePickerDialogFragment (ha kész az önálló rész, az is szerepeljen)
 
 <p align="center"> 
-<img src="./assets/hw.png" width="640">
+<img src="../assets/hw.png" width="640">
 </p>
