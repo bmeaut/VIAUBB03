@@ -763,26 +763,17 @@ class MainActivity :
     }
 
     private fun addItemInBackgound(item: ShoppingItem) = launch {
+    	var id: Long = 0
         withContext(Dispatchers.IO) {
-            database.shoppingItemDao().insert(item)
+            id = database.shoppingItemDao().insert(item)
         }
+	item.id = id
         adapter.addItem(item)
     }
 }
 ```
 > Figyeljük meg, hogy ebben az esetben is háttérszálon futtatjuk az adatbázis műveletet. A `Room` tiltja a UI szálon történő adatbázis műveletek futtatását. Emellett a *user experience (UX)* is romlik, ha az esetlegesen lassú műveletek megakasztják a UI szálat.
 
-Frissítsük az `activity_main.xml` layout fájlban a `FloatingActionButton` ikonját:
-
-```xml
-<com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/fab"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom|end"
-    android:layout_margin="24dp"
-    app:srcCompat="@drawable/ic_add_white_36dp" />
-```
 Próbáljuk ki az alkalmazást!
 
 ## Önálló feladat
