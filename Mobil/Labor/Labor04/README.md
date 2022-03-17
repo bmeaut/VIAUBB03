@@ -61,7 +61,7 @@ Első lépésként indítsuk el az Android Studio-t, majd:
 
 A létrejött projekt felépítése teljesen más, mint ha `Empty Activity`-t generálnánk:
 
-1. Egy *Activity* és két *Fragment* generálódott.
+1. Egy `Activity` és két `Fragment` generálódott.
 2. Kaptunk egy `Navigation Graph`-ot a *res/navigation* mappába.
 3. Felvételre kerültek a `Navigation Components`-hez szükséges függőségek.
 4. Alapból bekapcsolásra került a *ViewBinding*.
@@ -71,7 +71,7 @@ Töröljük ki a `MainActivity`-ből a *FloatingActionButton*t valamint nevezzü
 - `SecondFragment`  -> `DetailsFragment`
 - `fragment_first`  -> `fragment_city`
 - `fragment_second` -> `fragment_details`
-- 
+
 Töltsük le és tömörítsük ki [az alkalmazáshoz szükséges erőforrásokat](./downloads/drawables.zip) , majd másoljuk be őket a projekt *app/src/main/res* mappájába (Studio-ban a *res* mappa kijelölése után *Ctrl+V*)!
 
 Az alkalmazásban szükségünk lesz internet elérésre. Vegyük fel az `AndroidManifest.xml` állományban az *Internet permission*-t az `application` tagen *kívülre*:
@@ -123,69 +123,9 @@ Regisztráljunk saját felhasználót az [OpenWeatherMap](https://openweathermap
 A kapott API kulcsra később szükségünk lesz az időjárás adatokat lekérő API hívásnál.
 
 
-
-### A navigáció alapjai
-
-> Korábban a navigációt körülményesebben kellett megoldanunk. Ha új Activity komponensre szerettünk volna
-navigálni, akkor egy Intentet kellett létrehozni, és elküldeni. Ha viszont Fragmenteket használtunk,
-azokat kellett az Activity-n belül lecserélni. A navigáció tehát nem volt túl egységes, ráadásul a
-navigáció nem volt egységes helyre kiszervezve, nem tudtuk könnyen átlátni az appon belüli navigációs
-folyamatot, csak ha kikerestük a kódban ezeket a részeket. A Jetpack Navigation Component egy egységes
-navigációs megoldást nyújt az app számára. Bevezette a navigációs gráfot, mint új erőforrás-típust.
-Ebben deklaratívan írhatjuk le az egyes navigációs célpontokat, ezek lehetnek Activity-k és
-Fragmentek is. A célpontok közé akciókat vehetünk fel, ezek képezik az átmenetet két célpont között.
-A célpontok pedig paramétereket is kaphatnak, pl. egy részletező nézet megkaphatja annak az entitásnak
-a kulcsát, amelynek a részleteit meg kell mutatnia.
-
-> A Navigation component jól támogatja a "Single Activity" architekturális elvet is. Eredetileg csak az
-Activity volt a felhasználói felülettel rendelkező komponens, de a Fragmentek megjelenése óta
-feleslegessé vált minden felületnek külön Activity-t létrehoznunk. Ráadásul az Activity-váltás a
-rendszeren keresztül történik, ezért lassú, és az Activity-k általában véve több is több erőforrást
-igényelnek az operációs rendszertől. Az Activity-n belüli Fragmentek lecserélése nem ilyen lassú
-és költséges. Ráadásul a modern alkalmazásokban több képernyőn keresztül is azonos menürendszer, pl.
-Navigation Drawer jelenik meg a felületen, ez is a Fragmentek használatát indokolja. A
-Navigation Component célpontjai Fragmentek is lehetnek, ezért az alkalmazást könnyen meg tudjuk
-valósítani akár egy Activity-vel is.
-
-> Ahhoz, hogy az új navigációt az alkalmazásban használjuk, először néhány függőséget kell felvennünk a projektszintű `build.gradle` fájl elejére:
-
-```gradle
-buildscript {
-    dependencies {
-        def nav_version = "2.4.1"
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
-    }
-}
-```
-
-> Ezzel egy új gradle plugint veszünk fel, ez azért szükséges, mert a Navigation component
-kódgenerálást is használ, és az alkalmazás buildelése során a generált kódnak is létre kell jönnie.
-> Ezután a modulszintű `build.gradle` fájlban kell alkalmazni az imént felvett safe-args plugint:
-
-```gradle
-plugins {
-    ...
-    id 'androidx.navigation.safeargs.kotlin'
-}
-```
-
-> Majd a dependencies részben kell felvenni a további szükséges függőségeket:
-
-```gradle
-
-    def nav_version = "2.4.1"
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
-```
-
-Szükségünk van még egy navigációs erőforrásra is: `res/nav_graph.xml`. Ebben kell leírni a felületek közötti vanigágációt.
-
-
-
 ### Városlista megvalósítása
 
-Valósítsuk meg az egy `RecyclerView`-ból álló, városok listáját megjelenítő `CityFragment`et! 
+Valósítsuk meg az egy `RecyclerView`-ból álló, városok listáját megjelenítő `CityFragment`-et! 
 
 A város nevére kattintva jelenik majd meg egy részletező nézet (`DetailsFragment`), ahol az időjárás információk letöltése fog történni. Új város felvételére egy `FloatingActionButton` fog szolgálni.
 
@@ -199,6 +139,7 @@ Egészítsük ki a `fragment_city.xml` tartalmát egy `RecyclerView`-val és egy
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".feature.city.CityFragment">
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mainRecyclerView"
         android:layout_width="0dp"
@@ -207,7 +148,7 @@ Egészítsük ki a `fragment_city.xml` tartalmát egy `RecyclerView`-val és egy
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" 
+        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_city" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -222,7 +163,7 @@ Egészítsük ki a `fragment_city.xml` tartalmát egy `RecyclerView`-val és egy
 </androidx.constraintlayout.widget.ConstraintLayout>
 ```
 
-Az egyes funkciókhoz tartozó osztályokat külön package-ekbe fogjuk szervezni. Előfordulhat, hogy a másolások miatt az Android Studio nem ismeri fel egyből a package szerkezetet, így ha ilyen problémánk lenne, az osztály néven állva Alt+Enter után állítassuk be a megfelelő package nevet.
+Az egyes funkciókhoz tartozó osztályokat külön *package*-ekbe fogjuk szervezni. Előfordulhat, hogy a másolások miatt az Android Studio nem ismeri fel egyből a package szerkezetet, így ha ilyen problémánk lenne, az osztály néven állva Alt+Enter után állítassuk be a megfelelő package nevet.
 
 A `hu.bme.aut.android.weatherinfo` package-ben hozzunk létre egy `feature` nevű package-et. A `feature` package-ben hozzunk létre egy `city` nevű package-et. *Drag and drop* módszerrel helyezzük át a `CityFragment`-et a `city` *package*-be, a felugró dialógusban pedig kattintsunk a *Refactor* gombra.
 
@@ -244,16 +185,15 @@ class CityFragment : Fragment(), CityAdapter.OnCitySelectedListener,
 
         _binding = FragmentCityBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        
         initRecyclerView()
         initFab()
-
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -273,12 +213,16 @@ class CityFragment : Fragment(), CityAdapter.OnCitySelectedListener,
 
     private fun initFab() {
         binding.fab.setOnClickListener {
-            ///TODO Show new city dialog
+            ///TODO show AddNewCityDialogFragment
         }
     }
 
     override fun onCitySelected(city: String?) {
-        ///TODO
+        ///TODO navigate to DetailsFragment
+    }
+
+    override fun onCityAdded(city: String?) {
+        adapter.addCity(city!!)
     }
 }
 ```
@@ -397,6 +341,10 @@ class AddCityDialogFragment(
     var listener: AddCityDialogListener
 ) : AppCompatDialogFragment() {
 
+    companion object {
+        const val TAG = "AddCityDialogFragment"
+    }
+
     private var _binding: FragmentNewCityBinding? = null
     private val binding get() = _binding!!
 
@@ -426,7 +374,7 @@ Végül egészítsük ki a `CityFragment` `initFab()` függvényét úgy, hogy a
 private fun initFab() {
     binding.fab.setOnClickListener{
         AddCityDialogFragment(this)
-            .show(parentFragmentManager, AddCityDialogFragment::class.java.simpleName)
+            .show(parentFragmentManager, AddCityDialogFragment.TAG)
     }
 }
 ```
@@ -472,7 +420,7 @@ Hozzunk létre a hiányzó *dimen* erőforrásokat (*Alt+Enter* -> *Create dimen
 
 A felület gyakorlatilag egy `ViewPager`-t tartalmaz, melyben két `Fragment`-et fogunk megjeleníteni. A `PagerTabStrip` biztosítja a *Tab* jellegű fejlécet.
 
-A `DetailsFragment.kt`  kódja legyen a következő:
+A `DetailsFragment.kt`-t helyezzük át a `feature.details` *package*-be, és a kódja legyen a következő:
 
 ```kotlin
 class DetailsFragment : Fragment() {
@@ -480,8 +428,6 @@ class DetailsFragment : Fragment() {
     companion object {
         private const val TAG = "DetailsFragment"
     }
-
-    private var weatherData: WeatherData? = null
 
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
@@ -498,6 +444,16 @@ class DetailsFragment : Fragment() {
 
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        city = DetailsFragmentArgs.fromBundle(requireArguments()).city
+
+        (activity as MainActivity).supportActionBar!!.title = getString(R.string.weather, city)
+        (activity as MainActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -513,8 +469,64 @@ Cseréljük le a `strings.xml`-ben a *weather* szöveges erőforrást:
 
 A string erőforrásba írt *%s* jelölő használatával lehetővé válik egy *String argumentum* beillesztése a stringbe, ahogy a fenti kódrészletben láthatjuk.
 
-Valósítsuk meg azt, hogy egy városnév kiválasztásakor megfelelően átnavigáljunk a `DetailsFragment`re. A Fragmentek közötti navigációt a *Navigation Components* segítségével fogjuk megoldani. Nyissuk meg a `nav_graph.xml`-t, és töröljük ki a tartalmát.
-Ez után vagyük fel a `cityFragment`et és a `detailsFragmentet` majd adjunk egy *actiont* a `cityFragment` és a `detailsFragment` közé. A város neve attribótumként fog átadásra kerülni a két *Fragment* között, így ezt is vegyük fel. Az előálló `nav_graph.xml`:
+### A navigáció alapjai
+
+> Korábban a navigációt körülményesebben kellett megoldanunk. Ha új Activity komponensre szerettünk volna
+navigálni, akkor egy Intentet kellett létrehozni, és elküldeni. Ha viszont Fragmenteket használtunk,
+azokat kellett az Activity-n belül lecserélni. A navigáció tehát nem volt túl egységes, ráadásul a
+navigáció nem volt egységes helyre kiszervezve, nem tudtuk könnyen átlátni az appon belüli navigációs
+folyamatot, csak ha kikerestük a kódban ezeket a részeket. A Jetpack Navigation Component egy egységes
+navigációs megoldást nyújt az app számára. Bevezette a navigációs gráfot, mint új erőforrás-típust.
+Ebben deklaratívan írhatjuk le az egyes navigációs célpontokat, ezek lehetnek Activity-k és
+Fragmentek is. A célpontok közé akciókat vehetünk fel, ezek képezik az átmenetet két célpont között.
+A célpontok pedig paramétereket is kaphatnak, pl. egy részletező nézet megkaphatja annak az entitásnak
+a kulcsát, amelynek a részleteit meg kell mutatnia.
+
+> A Navigation component jól támogatja a "Single Activity" architekturális elvet is. Eredetileg csak az
+Activity volt a felhasználói felülettel rendelkező komponens, de a Fragmentek megjelenése óta
+feleslegessé vált minden felületnek külön Activity-t létrehoznunk. Ráadásul az Activity-váltás a
+rendszeren keresztül történik, ezért lassú, és az Activity-k általában véve több is több erőforrást
+igényelnek az operációs rendszertől. Az Activity-n belüli Fragmentek lecserélése nem ilyen lassú
+és költséges. Ráadásul a modern alkalmazásokban több képernyőn keresztül is azonos menürendszer, pl.
+Navigation Drawer jelenik meg a felületen, ez is a Fragmentek használatát indokolja. A
+Navigation Component célpontjai Fragmentek is lehetnek, ezért az alkalmazást könnyen meg tudjuk
+valósítani akár egy Activity-vel is.
+
+> Ahhoz, hogy az új navigációt az alkalmazásban használjuk, először néhány függőséget kell felvennünk a projektszintű `build.gradle` fájl elejére:
+
+```gradle
+buildscript {
+    dependencies {
+        def nav_version = "2.4.1"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
+    }
+}
+```
+
+> Ezzel egy új gradle plugint veszünk fel, ez azért szükséges, mert a Navigation component
+kódgenerálást is használ, és az alkalmazás buildelése során a generált kódnak is létre kell jönnie.
+> Ezután a modulszintű `build.gradle` fájlban kell alkalmazni az imént felvett safe-args plugint:
+
+```gradle
+plugins {
+    ...
+    id 'androidx.navigation.safeargs.kotlin'
+}
+```
+
+> Majd a dependencies részben kell felvenni a további szükséges függőségeket:
+
+```gradle
+    def nav_version = "2.4.1"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+```
+
+> Szükségünk van még egy navigációs erőforrásra is: `res/nav_graph.xml`. Ebben kell leírni a felületek közötti navigációt.
+
+Valósítsuk meg azt, hogy egy városnév kiválasztásakor megfelelően átnavigáljunk a `DetailsFragment`-re. A Fragmentek közötti navigációt a *Navigation Components* segítségével fogjuk megoldani. Nyissuk meg a `nav_graph.xml`-t, és töröljük ki a tartalmát.
+Ez után vagyük fel a `cityFragment`-et és a `detailsFragment`-et majd adjunk egy *actiont* a `cityFragment` és a `detailsFragment` közé. A város neve attribútumként fog átadásra kerülni a két *Fragment* között, így ezt is vegyük fel. Az előálló `nav_graph.xml`:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -581,7 +593,7 @@ Ezután kattintsunk a jobb felső sarokban megjelenő **Sync now** gombra.
 > A `Glide`  egy hatékny képbetöltést és -cahce-elést megvalósító library Androidra. Egyszerű interfésze és hatékonysága miatt használjuk.
 
 
-####Modell osztályok létrehozása 
+Modell osztályok létrehozása 
 
 A modell osztályok számára a `hu.bme.aut.android.weatherinfo` package-ben hozzunk létre új package-et `model` néven. 
 
@@ -637,15 +649,15 @@ interface WeatherDataHolder {
 } 
 ```
 
- A `WeatherDataHolder` -en keresztül fogják lekérni a `Fragment`-ek a tartalmazó `Fragment`től az időjárás adatokat.
+ A `WeatherDataHolder`-en keresztül fogják lekérni a `Fragment`-ek a tartalmazó `Fragment`-től az időjárás adatokat.
 
-Vegyünk fel egy `WeatherData` típusú tagváltozót a `DetailsFragment`be:
+Vegyünk fel egy `WeatherData` típusú tagváltozót a `DetailsFragment`-be:
 
 ```kotlin
 private var weatherData: WeatherData? = null 
 ```
 
-Módosítsuk úgy a `DetailsFragment`et, hogy implementálja a `WeatherDataHolder` interfészt:
+Módosítsuk úgy a `DetailsFragment`-et, hogy implementálja a `WeatherDataHolder` interfészt:
 
 ```kotlin
 class DetailsFragment : Fragment(), WeatherDataHolder {
@@ -657,9 +669,9 @@ Implementáljuk a szükséges függvényt:
 override fun getWeatherData(): WeatherData? = weatherData 
 ```
 
-A használt `weatherData` változónak fogunk később értéket adni, amikor visszaérkezett az értéke a hálózati hívás eredményeként. A `ViewPager` két lapján levő `Fragment`-ek a `WeatherDataHolder` interfészen keresztül fogják lekérni az `DetailsFragment`től a `weatherData` objekutmot a megjelenítéshez.
+A használt `weatherData` változónak fogunk később értéket adni, amikor visszaérkezett az értéke a hálózati hívás eredményeként. A `ViewPager` két lapján levő `Fragment`-ek a `WeatherDataHolder` interfészen keresztül fogják lekérni az `DetailsFragment`-től a `weatherData` objekutmot a megjelenítéshez.
 
-####A hálózati réteg megvalósítása
+A hálózati réteg megvalósítása
 
 A `hu.bme.aut.android.weatherinfo` package-ben hozzuk létre egy `network` nevű package-et, amely a hálózati kommunikációhoz kapcsolódó osztályokat fogja tartalmazni. 
 
@@ -730,7 +742,7 @@ A modell elemek és a hálózati réteg megvalósítása után a részletező n�
 
 A részletező nézetek továbbfejlesztése
 
-A `ViewPager` megfelelő működéséhez létre kell hoznunk egy `FragmentStateAdapter`-ből származó osztályt a `details.adapter` package-ben (hozzunk létre egy `adapter` package-et), ami az eddig látott adapterekhez hasonlóan azt határozza meg, hogy milyen elemek jelenjenek meg a hozzájuk tartozó nézeten (jelen esetben az elemek `Fragment`-ek lesznek):
+A `ViewPager` megfelelő működéséhez létre kell hoznunk egy `FragmentStateAdapter`-ből származó osztályt a `details.adapter` *package*-ben (hozzunk létre egy `adapter` package-et), ami az eddig látott adapterekhez hasonlóan azt határozza meg, hogy milyen elemek jelenjenek meg a hozzájuk tartozó nézeten (jelen esetben az elemek `Fragment`-ek lesznek):
 
 ```kotlin
 class DetailsPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
@@ -793,7 +805,7 @@ A `details.fragments` package-ben a `DetailsMainFragment`:
 ```kotlin
 class DetailsMainFragment : Fragment() {
 
-    private var _binding: FragmentDetailsMainBinding? = null
+    private var _binding: FragmentMainDetailsBinding? = null
     private val binding get() = _binding!!
 
     private var weatherDataHolder: WeatherDataHolder? = null
@@ -804,7 +816,7 @@ class DetailsMainFragment : Fragment() {
             parentFragment as WeatherDataHolder?
         } else {
             throw RuntimeException(
-                    "Activity must implement WeatherDataHolder interface!"
+                "Activity must implement WeatherDataHolder interface!"
             )
         }
     }
@@ -813,7 +825,7 @@ class DetailsMainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDetailsMainBinding.inflate(LayoutInflater.from(context))
+        _binding = FragmentMainDetailsBinding.inflate(LayoutInflater.from(context))
         return binding.root
     }
 
@@ -830,9 +842,9 @@ class DetailsMainFragment : Fragment() {
         binding.tvMain!!.text = weather.main
         binding.tvDescription!!.text = weather.description
         Glide.with(this)
-                .load("https://openweathermap.org/img/w/" + weather.icon + ".png")
-                .transition(DrawableTransitionOptions().crossFade())
-                .into(binding.ivIcon)
+            .load("https://openweathermap.org/img/w/" + weather.icon + ".png")
+            .transition(DrawableTransitionOptions().crossFade())
+            .into(binding.ivIcon)
     }
 }
 ```
@@ -917,7 +929,7 @@ A `details.fragment` package-ben a `DetailsMoreFragment`:
 ```kotlin
 class DetailsMoreFragment : Fragment() {
 
-    private var _binding: FragmentDetailsMnBinding? = null
+    private var _binding: FragmentMoreDetailsBinding? = null
     private val binding get() = _binding!!
 
     private var weatherDataHolder: WeatherDataHolder? = null
@@ -936,7 +948,7 @@ class DetailsMoreFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentDetailsMnBinding.inflate(LayoutInflater.from(context))
+        _binding = FragmentMoreDetailsBinding.inflate(LayoutInflater.from(context))
         return binding.root
     }
 
@@ -958,7 +970,7 @@ class DetailsMoreFragment : Fragment() {
 }
 ```
 
-Figyeljük meg, hogyan ellenőrzi a `DetailsMainFragment` és a `DetailsMoreFragment` azt, hogy a tartalmazó `Fragment` implementálja-e a `WeatherDataHolder` interfészt. Fontos, hogy ezt a két `Fragment` majd csak azután kerül a `DetailsActivity`-re a `ViewPager`-en keresztül, amikor az adatokat lekérő hálózati kérés már adott vissza eredményt.
+Figyeljük meg, hogyan ellenőrzi a `DetailsMainFragment` és a `DetailsMoreFragment` azt, hogy a tartalmazó `Fragment` implementálja-e a `WeatherDataHolder` interfészt. Fontos, hogy ezt a két `Fragment` majd csak azután kerül a `DetailsFragment`-re a `ViewPager`-en keresztül, amikor az adatokat lekérő hálózati kérés már adott vissza eredményt.
 
 Ideiglenesen a `DetailsFragment` `onResume()` függvénye legyen az alábbi:
 
@@ -984,43 +996,43 @@ Próbáljuk ki az alkalmazást, kattintsunk egy városra! jelenleg még nem jele
 
 ### Hálózati hívás bekötése
 
-Az időjárás adatok lekérdezésének bekötéséhez implementáljunk egy `loadWeatherData()` nevű függvényt a `DetailsFragment`ben:
+Az időjárás adatok lekérdezésének bekötéséhez implementáljunk egy `loadWeatherData()` nevű függvényt a `DetailsFragment`-ben:
 
 `(amennyiben a Callback-et nem ismerné fel a studio, Alt+Enter után importáljuk a retrofit2-es megoldást)`
 
 ```kotlin
 private fun loadWeatherData(){
-        NetworkManager.getWeather(city)!!.enqueue(object : Callback<WeatherData?> {
+    NetworkManager.getWeather(city)!!.enqueue(object : Callback<WeatherData?> {
 
-            override fun onResponse(
-                call: Call<WeatherData?>,
-                response: Response<WeatherData?>
-            ) {
-                Log.d(TAG, "onResponse: " + response.code())
-                if (response.isSuccessful) {
-                    displayWeatherData(response.body())
-                } else {
-                    Toast.makeText(
-                        activity,
-                        "Error: " + response.message(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
-            override fun onFailure(
-                call: Call<WeatherData?>,
-                throwable: Throwable
-            ) {
-                throwable.printStackTrace()
+        override fun onResponse(
+            call: Call<WeatherData?>,
+            response: Response<WeatherData?>
+        ) {
+            Log.d(TAG, "onResponse: " + response.code())
+            if (response.isSuccessful) {
+                displayWeatherData(response.body())
+            } else {
                 Toast.makeText(
                     activity,
-                    "Network request error occurred, check LOG",
+                    "Error: " + response.message(),
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        })
-    }
+        }
+
+        override fun onFailure(
+            call: Call<WeatherData?>,
+            throwable: Throwable
+        ) {
+            throwable.printStackTrace()
+            Toast.makeText(
+                activity,
+                "Network request error occurred, check LOG",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    })
+}
 ```
 
 Implementáljuk a hiányzó `displayWeatherData(...)` függvényt, ami sikeres API hívás esetén megjeleníti az eredményt:
