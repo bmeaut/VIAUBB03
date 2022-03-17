@@ -2,7 +2,7 @@
 
 ## Bevezető
 
-A labor során egy időjárás információkat megjelenítő alkalmazás elkészítése a feladat. A korábban látott UI elemek használata mellett láthatunk majd példát hálózati kommunkáció hatékony megvalósítására is a [`Retrofit`](https://square.github.io/retrofit/) library felhasználásával.
+A labor során egy időjárás információkat megjelenítő alkalmazás elkészítése a feladat. A korábban látott UI elemek használata mellett láthatunk majd példát hálózati kommunkáció hatékony megvalósítására is a [`Retrofit`](https://square.github.io/retrofit/) library felhasználásával. A felületek közötti navigációt pedig ezúttal a [`Navigation Component`](https://developer.android.com/guide/navigation/navigation-getting-started) segítségével fugjuk megoldani.
 
 Az alkalmazás városok listáját jeleníti meg egy [`RecyclerView`](https://developer.android.com/guide/topics/ui/layout/recyclerview)-ban, egy kiválasztott város részletes időjárás adatait pedig az [OpenWeatherMap](https://openweathermap.org/) REST API-jának segítségével kérdezi le. A részetező nézeten egy [`ViewPager`](https://developer.android.com/training/animation/screen-slide)-ben két [`Fragment`](https://developer.android.com/guide/components/fragments)-en lehet megtekinteni a részleteket. Új város hozzáadására egy  [`FloatingActionButton`](https://developer.android.com/guide/topics/ui/floating-action-button) megnyomásával van lehetőség. 
 
@@ -20,76 +20,59 @@ Felhasznált technológiák:
 - [`Fragment`](https://developer.android.com/guide/components/fragments)
 - [`RecyclerView`](https://developer.android.com/guide/topics/ui/layout/recyclerview)
 - [`ViewPager`](https://developer.android.com/training/animation/screen-slide)
+- [`Navigation Component`](https://developer.android.com/guide/navigation/navigation-getting-started)
 - [`Retrofit`](https://square.github.io/retrofit/)
 - [`Gson`](https://github.com/google/gson)
 - [`Glide`](https://github.com/bumptech/glide)
 
 ## Az alkalmazás specifikációja
 
-Az alkalmazás két`Activity`-ből áll. 
+Az alkalmazás mindössze egy `Activity`-ből fog állni, amin majd cserélgetjük a `Fragment`eket. 
 
-Az alkalmazás indulásakor megjelenő `Activity` a felhasználó által felvett városok listáját jeleníti meg. Minden lista elemhez tartozik egy *Remove* gomb, aminek a megnyomására az adott város törlődik a listából. Új várost a nézet jobb alsó sarkában található `FloatingActionButton` megnyomásával lehet felvenni.
+Az alkalmazás indulásakor megjelenő `Fragment` a felhasználó által felvett városok listáját jeleníti meg. Minden lista elemhez tartozik egy *Remove* gomb, aminek a megnyomására az adott város törlődik a listából. Új várost a nézet jobb alsó sarkában található `FloatingActionButton` megnyomásával lehet felvenni.
 
-Egy városra való kattintás hatására megnyílik egy új `Activity` két `Fragment`-tel, amik között `ViewPager`-rel lehet váltani. Az első `Fragment` a kiválasztott város időjárásának leírását és az ahhoz tartozó ikont jeleníti meg. A második `Fragment`-en a városban mért átlagos, minimum és maximum hőmérséklet, a légnyomás és a páratartalom értéke látható.
+Egy városra való kattintás hatására megnyílik egy új `Fragment` két beágyazott`Fragment`-tel, amik között `ViewPager`-rel lehet váltani. Az első `Fragment` a kiválasztott város időjárásának leírását és az ahhoz tartozó ikont jeleníti meg. A második `Fragment`-en a városban mért átlagos, minimum és maximum hőmérséklet, a légnyomás és a páratartalom értéke látható.
 
 ## Értékelés
 
-Vezetett rész (1 pont)
+Vezetett rész (0,5 pont)
 - [Projekt létrehozása](#projekt-létrehozása)
 - [Városlista megvalósítása](#városlista-megvalósítása)
 - [Részletező nézet létrehozása és bekötése a navigációba](#részletező-nézet-létrehozása-és-bekötése-a-navigációba)
 - [Hálózati kommunikáció megvalósítása](#hálózati-kommunikáció-megvalósítása)
 - [A hálózati réteg bekötése a részletező nézetbe](#a-hálózati-réteg-bekötése-a-részletező-nézetbe)
 
-Önálló feladat (1 pont)
+Önálló feladat (0,5 pont)
 - [Város listából törlés megvalósítása](#város-listából-törlés-megvalósítása)
 
+
 ## Vezetett rész
+
 
 ### Projekt létrehozása
 
 Első lépésként indítsuk el az Android Studio-t, majd:
 
-1. Hozzunk létre egy új projektet, válasszuk az `Empty activity` lehetőséget.
+1. Hozzunk létre egy új projektet, válasszuk az `Basic Activity` lehetőséget.
 2. A projekt neve legyen `WeatherInfo`, a kezdő package pedig `hu.bme.aut.android.weatherinfo`
 3. Nyelvnek válasszuk a *Kotlin*-t.
 4. A minimum API szint legyen API21: Android 5.0.
 5. Az instant app támogatást, valamint a *Use legacy android.support libraries* pontot **ne** pipáljuk be.
 
-A létrejött *Activity*-t nevezzük át `CityActivity`re, a hozzá tartozó layout fájlt `activity_city`-re. 
+A létrejött projekt felépítése teljesen más, mint ha `Empty Activity`-t generálnánk:
 
-Kapcsoljuk be a `ViewBinding`-ot. Az `app` modulhoz tartozó `build.gradle` fájlban az `android` tagen belülre illesszük be az engedélyezést (Ezek után kattintsunk jobb felül a `Sync Now` gombra.):
+1. Egy *Activity* és két *Fragment* generálódott.
+2. Kaptunk egy `Navigation Graph`-ot a *res/navigation* mappába.
+3. Felvételre kerültek a `Navigation Components`-hez szükséges függőségek.
+4. Alapból bekapcsolásra került a *ViewBinding*.
 
-```kotlin
-android {
-    ...
-    buildFeatures {
-        viewBinding true
-    }
-}
-
-```
-
+Töröljük ki a `MainActivity`-ből a *FloatingActionButton*t valamint nevezzük át a létrejött fragmentjeinket `CityFragment`re és `DetailsFragment`re:
+- `FirstFragment`   -> `CityFragment`
+- `SecondFragment`  -> `DetailsFragment`
+- `fragment_first`  -> `fragment_city`
+- `fragment_second` -> `fragment_details`
+- 
 Töltsük le és tömörítsük ki [az alkalmazáshoz szükséges erőforrásokat](./downloads/drawables.zip) , majd másoljuk be őket a projekt *app/src/main/res* mappájába (Studio-ban a *res* mappa kijelölése után *Ctrl+V*)!
-
-Az *app* modulhoz tartozó `build.gradle` fájlban a `dependencies` blokkhoz adjuk hozzá a `Retrofit` és `Glide` libraryket:
-
-```groovy
-dependencies{
-    //...
-    def retrofit_version = "2.9.0"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-}
-```
-
-Ezután kattintsunk a jobb felső sarokban megjelenő **Sync now** gombra.
-
->  A `Retrofit` a fejlesztő által leírt egyszerű, megfelelően annotált interfészek alapján kódgenerálással állít elő HTTP hívásokat lebonyolító implementációt. Kezeli az URL-ben inline módon adott paramétereket, az URL queryket, stb. Támogatja a legnépszerűbb szerializáló/deszerializáló megoldásokat is (pl.: [`Gson`](https://github.com/google/gson), [`Moshi`](https://github.com/square/moshi), [`Simple XML`](simple.sourceforge.net), stb.), amikkel Java objektumok, és JSON vagy XML formátumú adatok közötti kétirányú átalakítás valósítható meg. A laboron ezek közül a Gsont fogjuk használni a JSON-ban érkező időjárás adatok konvertálására.
-
-> A `Glide`  egy hatékny képbetöltést és -cahce-elést megvalósító library Androidra. Egyszerű interfésze és hatékonysága miatt használjuk.
 
 Az alkalmazásban szükségünk lesz internet elérésre. Vegyük fel az `AndroidManifest.xml` állományban az *Internet permission*-t az `application` tagen *kívülre*:
 
@@ -139,13 +122,74 @@ Regisztráljunk saját felhasználót az [OpenWeatherMap](https://openweathermap
 
 A kapott API kulcsra később szükségünk lesz az időjárás adatokat lekérő API hívásnál.
 
+
+
+### A navigáció alapjai
+
+> Korábban a navigációt körülményesebben kellett megoldanunk. Ha új Activity komponensre szerettünk volna
+navigálni, akkor egy Intentet kellett létrehozni, és elküldeni. Ha viszont Fragmenteket használtunk,
+azokat kellett az Activity-n belül lecserélni. A navigáció tehát nem volt túl egységes, ráadásul a
+navigáció nem volt egységes helyre kiszervezve, nem tudtuk könnyen átlátni az appon belüli navigációs
+folyamatot, csak ha kikerestük a kódban ezeket a részeket. A Jetpack Navigation Component egy egységes
+navigációs megoldást nyújt az app számára. Bevezette a navigációs gráfot, mint új erőforrás-típust.
+Ebben deklaratívan írhatjuk le az egyes navigációs célpontokat, ezek lehetnek Activity-k és
+Fragmentek is. A célpontok közé akciókat vehetünk fel, ezek képezik az átmenetet két célpont között.
+A célpontok pedig paramétereket is kaphatnak, pl. egy részletező nézet megkaphatja annak az entitásnak
+a kulcsát, amelynek a részleteit meg kell mutatnia.
+
+> A Navigation component jól támogatja a "Single Activity" architekturális elvet is. Eredetileg csak az
+Activity volt a felhasználói felülettel rendelkező komponens, de a Fragmentek megjelenése óta
+feleslegessé vált minden felületnek külön Activity-t létrehoznunk. Ráadásul az Activity-váltás a
+rendszeren keresztül történik, ezért lassú, és az Activity-k általában véve több is több erőforrást
+igényelnek az operációs rendszertől. Az Activity-n belüli Fragmentek lecserélése nem ilyen lassú
+és költséges. Ráadásul a modern alkalmazásokban több képernyőn keresztül is azonos menürendszer, pl.
+Navigation Drawer jelenik meg a felületen, ez is a Fragmentek használatát indokolja. A
+Navigation Component célpontjai Fragmentek is lehetnek, ezért az alkalmazást könnyen meg tudjuk
+valósítani akár egy Activity-vel is.
+
+> Ahhoz, hogy az új navigációt az alkalmazásban használjuk, először néhány függőséget kell felvennünk a projektszintű `build.gradle` fájl elejére:
+
+```gradle
+buildscript {
+    dependencies {
+        def nav_version = "2.4.1"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
+    }
+}
+```
+
+> Ezzel egy új gradle plugint veszünk fel, ez azért szükséges, mert a Navigation component
+kódgenerálást is használ, és az alkalmazás buildelése során a generált kódnak is létre kell jönnie.
+> Ezután a modulszintű `build.gradle` fájlban kell alkalmazni az imént felvett safe-args plugint:
+
+```gradle
+plugins {
+    ...
+    id 'androidx.navigation.safeargs.kotlin'
+}
+```
+
+> Majd a dependencies részben kell felvenni a további szükséges függőségeket:
+
+```gradle
+
+    def nav_version = "2.4.1"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+```
+
+Szükségünk van még egy navigációs erőforrásra is: `res/nav_graph.xml`. Ebben kell leírni a felületek közötti vanigágációt.
+
+
+
 ### Városlista megvalósítása
 
-Valósítsuk meg az egy `RecyclerView`-ból álló, városok listáját megjelenítő `CityAcitivity`-t! 
+Valósítsuk meg az egy `RecyclerView`-ból álló, városok listáját megjelenítő `CityFragment`et! 
 
-A város nevére kattintva jelenik majd meg egy részletező nézet (`DetailsAcitivity`), ahol az időjárás információk letöltése fog történni. Új város felvételére egy `FloatingActionButton` fog szolgálni.
+A város nevére kattintva jelenik majd meg egy részletező nézet (`DetailsFragment`), ahol az időjárás információk letöltése fog történni. Új város felvételére egy `FloatingActionButton` fog szolgálni.
 
-Egészítsük ki a `activity_city.xml` tartalmát egy `RecyclerView`-val és egy `FloatingActionButton`nel:
+Egészítsük ki a `fragment_city.xml` tartalmát egy `RecyclerView`-val és egy `FloatingActionButton`nel:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -154,7 +198,7 @@ Egészítsük ki a `activity_city.xml` tartalmát egy `RecyclerView`-val és egy
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CityActivity">
+    tools:context=".feature.city.CityFragment">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mainRecyclerView"
         android:layout_width="0dp"
@@ -163,7 +207,8 @@ Egészítsük ki a `activity_city.xml` tartalmát egy `RecyclerView`-val és egy
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" 
+        tools:listitem="@layout/item_city" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -179,47 +224,61 @@ Egészítsük ki a `activity_city.xml` tartalmát egy `RecyclerView`-val és egy
 
 Az egyes funkciókhoz tartozó osztályokat külön package-ekbe fogjuk szervezni. Előfordulhat, hogy a másolások miatt az Android Studio nem ismeri fel egyből a package szerkezetet, így ha ilyen problémánk lenne, az osztály néven állva Alt+Enter után állítassuk be a megfelelő package nevet.
 
-A `hu.bme.aut.android.weatherinfo` package-ben hozzunk létre egy `feature` nevű package-et. A `feature` package-ben hozzunk létre egy `city` nevű package-et. *Drag and drop* módszerrel helyezzük át a `CityActivity`-t a `city` *package*-be, a felugró dialógusban pedig kattintsunk a *Refactor* gombra.
+A `hu.bme.aut.android.weatherinfo` package-ben hozzunk létre egy `feature` nevű package-et. A `feature` package-ben hozzunk létre egy `city` nevű package-et. *Drag and drop* módszerrel helyezzük át a `CityFragment`-et a `city` *package*-be, a felugró dialógusban pedig kattintsunk a *Refactor* gombra.
 
-A `CityActivity` kódját cseréljük le a következőre:
+A `CityFragment` kódját cseréljük le a következőre:
 
 ```kotlin
-class CityActivity : AppCompatActivity(), CityAdapter.OnCitySelectedListener,
-        AddCityDialogFragment.AddCityDialogListener {
+class CityFragment : Fragment(), CityAdapter.OnCitySelectedListener,
+    AddCityDialogFragment.AddCityDialogListener {
 
-    private lateinit var binding: ActivityCityBinding
+    private var _binding: FragmentCityBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var adapter: CityAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityCityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        initFab()
-        initRecyclerView()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        _binding = FragmentCityBinding.inflate(inflater, container, false)
+        return binding.root
+
     }
 
-    private fun initFab() {
-        binding.fab.setOnClickListener {
-            //TODO Show new city dialog
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initRecyclerView()
+        initFab()
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initRecyclerView() {
-        binding.mainRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter = CityAdapter(this)
         adapter.addCity("Budapest")
         adapter.addCity("Debrecen")
         adapter.addCity("Sopron")
         adapter.addCity("Szeged")
+
+        binding.mainRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.mainRecyclerView.adapter = adapter
     }
 
-    override fun onCitySelected(city: String?) {
-        //TODO Start DetailsActivity with the selected city
+    private fun initFab() {
+        binding.fab.setOnClickListener {
+            ///TODO Show new city dialog
+        }
     }
 
-    override fun onCityAdded(city: String?) {
-        adapter.addCity(city!!)
+    override fun onCitySelected(city: String?) {
+        ///TODO
     }
 }
 ```
@@ -309,9 +368,9 @@ Hozzuk létre a `res/layout` mappában az  `item_city.xml` layoutot:
 </LinearLayout>
 ```
 
-A `CityActivity`-vel kapcsolatos következő lépés az új város nevét bekérő dialógus (`DialogFragment`) megvalósítása és bekötése.
+A `CityFragment`tel kapcsolatos következő lépés az új város nevét bekérő dialógus (`DialogFragment`) megvalósítása és bekötése.
 
-Hozzunk létre egy `dialog_new_city.xml` nevű layout fájlt a `res/layout` mappában a következő tartalommal:
+Hozzunk létre egy `fragment_new_city.xml` nevű layout fájlt a `res/layout` mappában a következő tartalommal:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -331,43 +390,28 @@ Hozzunk létre egy `dialog_new_city.xml` nevű layout fájlt a `res/layout` mapp
 </LinearLayout>
 ```
 
-A `city` package-ben hozzuk létre a `fragment` packkage-et, ebben pedig az `AddCityDialogFragment` osztályt:
+A `feature.city` package-ben hozzuk létre az `AddCityDialogFragment` osztályt:
 
 ```kotlin
-class AddCityDialogFragment : AppCompatDialogFragment() {
+class AddCityDialogFragment(
+    var listener: AddCityDialogListener
+) : AppCompatDialogFragment() {
 
-    private var _binding: DialogNewCityBinding? = null
+    private var _binding: FragmentNewCityBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var listener: AddCityDialogListener
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            listener = if (targetFragment != null) {
-                targetFragment as AddCityDialogListener
-            } else {
-                activity as AddCityDialogListener
-            }
-        } catch (e: ClassCastException) {
-            throw RuntimeException(e)
-        }
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = DialogNewCityBinding.inflate(LayoutInflater.from(context))
+        _binding = FragmentNewCityBinding.inflate(LayoutInflater.from(context))
         return AlertDialog.Builder(requireContext())
-                .setTitle(R.string.new_city)
-                .setView(binding.root)
-                .setPositiveButton(R.string.ok) { dialogInterface, i ->
-                    listener!!.onCityAdded(binding.newCityDialogEditText!!.text.toString())
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .create()
-    }
-
-    private fun getContentView(): View {
-        return LayoutInflater.from(context).inflate(R.layout.dialog_new_city, null)
+            .setTitle(R.string.new_city)
+            .setView(binding.root)
+            .setPositiveButton(R.string.ok) { dialogInterface, i ->
+                listener.onCityAdded(
+                    binding.newCityDialogEditText.text.toString()
+                )
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .create()
     }
 
     interface AddCityDialogListener {
@@ -376,26 +420,27 @@ class AddCityDialogFragment : AppCompatDialogFragment() {
 }
 ```
 
-Végül egészítsük ki a `CityActivity` `initFab(…)` függvényét úgy, hogy a gombra kattintva jelenjen meg az új dialógus:
+Végül egészítsük ki a `CityFragment` `initFab()` függvényét úgy, hogy a gombra kattintva jelenjen meg az új dialógus:
 
 ```kotlin
 private fun initFab() {
     binding.fab.setOnClickListener{
-        AddCityDialogFragment()
-                .show(supportFragmentManager, AddCityDialogFragment::class.java.simpleName)
+        AddCityDialogFragment(this)
+            .show(parentFragmentManager, AddCityDialogFragment::class.java.simpleName)
     }
 }
 ```
 
 Indítsuk el az alkalmazást, amely már képes városnevek bekérésére és megjelenítésére.
 
+
 ### Részletező nézet létrehozása és bekötése a navigációba
 
 A következő lépésben a `hu.bme.aut.android.weatherinfo.feature`  package-en belül hozzunk létre egy `details` nevű packaget.
 
-A `details` package-ben hozzunk létre egy *Empty Activity* típusú `Activity`-t  `DetailsActivity` néven.
+Mozgassuk át ide a `DetailsFragmentet`.
 
-A hozzá tartozó `activity_details.xml` layout kódja:
+A hozzá tartozó `fragment_details.xml` layout kódja:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -427,41 +472,35 @@ Hozzunk létre a hiányzó *dimen* erőforrásokat (*Alt+Enter* -> *Create dimen
 
 A felület gyakorlatilag egy `ViewPager`-t tartalmaz, melyben két `Fragment`-et fogunk megjeleníteni. A `PagerTabStrip` biztosítja a *Tab* jellegű fejlécet.
 
-A `DetailsActivity.kt`  kódja legyen a következő:
+A `DetailsFragment.kt`  kódja legyen a következő:
 
 ```kotlin
-class DetailsActivity : AppCompatActivity() {
-
-    lateinit var binding:ActivityDetailsBinding
+class DetailsFragment : Fragment() {
 
     companion object {
-        private const val TAG = "DetailsActivity"
-        const val EXTRA_CITY_NAME = "extra.city_name"
+        private const val TAG = "DetailsFragment"
     }
 
-    private var city: String? = null
+    private var weatherData: WeatherData? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityDetailsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    private var _binding: FragmentDetailsBinding? = null
+    private val binding get() = _binding!!
 
-        city = intent.getStringExtra(EXTRA_CITY_NAME)
+    private var city :String? = null
 
-        supportActionBar!!.title = getString(R.string.weather, city)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 ```
@@ -474,24 +513,75 @@ Cseréljük le a `strings.xml`-ben a *weather* szöveges erőforrást:
 
 A string erőforrásba írt *%s* jelölő használatával lehetővé válik egy *String argumentum* beillesztése a stringbe, ahogy a fenti kódrészletben láthatjuk.
 
-> Figyeljük meg, hogy a `DetailsActivity` hogyan állítja be az `ActionBar` címét a paraméterül kapott város nevével, illetve és azt, hogy az `ActionBar` bal felső sarkában a *vissza gomb* kezelése hogyan került megvalósításra.
+Valósítsuk meg azt, hogy egy városnév kiválasztásakor megfelelően átnavigáljunk a `DetailsFragment`re. A Fragmentek közötti navigációt a *Navigation Components* segítségével fogjuk megoldani. Nyissuk meg a `nav_graph.xml`-t, és töröljük ki a tartalmát.
+Ez után vagyük fel a `cityFragment`et és a `detailsFragmentet` majd adjunk egy *actiont* a `cityFragment` és a `detailsFragment` közé. A város neve attribótumként fog átadásra kerülni a két *Fragment* között, így ezt is vegyük fel. Az előálló `nav_graph.xml`:
 
-Valósítsuk meg a `CityActivity` `onCitySelected(…)` függvényében azt, hogy egy városnév kiválasztásakor a `DetailsActivity` megfelelően felparaméterezve induljon el:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/cityFragment">
+    <fragment
+        android:id="@+id/cityFragment"
+        android:name="hu.bme.aut.android.weatherinfo.feature.city.CityFragment"
+        android:label="fragment_city"
+        tools:layout="@layout/fragment_city">
+        <action
+            android:id="@+id/action_cityFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="hu.bme.aut.android.weatherinfo.feature.details.DetailsFragment"
+        android:label="DetailsFragment"
+        tools:layout="@layout/fragment_details">
+        <argument
+            android:name="city"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+</navigation>
+```
+
+Ezek után a `CityFragment` `onCitySelected()` függvényében át kell navigálni a `DetailsFragment`re a megfelelő argumentummal:
 
 ```kotlin
 override fun onCitySelected(city: String?) {
-        val showDetailsIntent = Intent()
-        showDetailsIntent.setClass(this@CityActivity, DetailsActivity::class.java)
-        showDetailsIntent.putExtra(DetailsActivity.EXTRA_CITY_NAME, city)
-        startActivity(showDetailsIntent)
-    }
-```
+    findNavController().navigate(
+        CityFragmentDirections.actionCityFragmentToDetailsFragment(city!!)
+    )
+}
+``` 
 
 Próbáljuk ki az alkalmazást, kattintsunk egy város nevére!
 
 ### Hálózati kommunikáció megvalósítása
 
-Modell osztályok létrehozása 
+Az *app* modulhoz tartozó `build.gradle` fájlban a `dependencies` blokkhoz adjuk hozzá a `Retrofit` és `Glide` libraryket:
+
+```groovy
+dependencies{
+    //...
+    def retrofit_version = "2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    def glide_version = "4.13.0"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+}
+```
+
+Ezután kattintsunk a jobb felső sarokban megjelenő **Sync now** gombra.
+
+>  A `Retrofit` a fejlesztő által leírt egyszerű, megfelelően annotált interfészek alapján kódgenerálással állít elő HTTP hívásokat lebonyolító implementációt. Kezeli az URL-ben inline módon adott paramétereket, az URL queryket, stb. Támogatja a legnépszerűbb szerializáló/deszerializáló megoldásokat is (pl.: [`Gson`](https://github.com/google/gson), [`Moshi`](https://github.com/square/moshi), [`Simple XML`](simple.sourceforge.net), stb.), amikkel Java objektumok, és JSON vagy XML formátumú adatok közötti kétirányú átalakítás valósítható meg. A laboron ezek közül a Gsont fogjuk használni a JSON-ban érkező időjárás adatok konvertálására.
+
+> A `Glide`  egy hatékny képbetöltést és -cahce-elést megvalósító library Androidra. Egyszerű interfésze és hatékonysága miatt használjuk.
+
+
+####Modell osztályok létrehozása 
 
 A modell osztályok számára a `hu.bme.aut.android.weatherinfo` package-ben hozzunk létre új package-et `model` néven. 
 
@@ -547,18 +637,18 @@ interface WeatherDataHolder {
 } 
 ```
 
- A `WeatherDataHolder` -en keresztül fogják lekérni a `Fragment`-ek az `Activity`-től az időjárás adatokat.
+ A `WeatherDataHolder` -en keresztül fogják lekérni a `Fragment`-ek a tartalmazó `Fragment`től az időjárás adatokat.
 
-Vegyünk fel egy `WeatherData` típusú tagváltozót a `DetailsActiviy`-be:
+Vegyünk fel egy `WeatherData` típusú tagváltozót a `DetailsFragment`be:
 
 ```kotlin
 private var weatherData: WeatherData? = null 
 ```
 
-Módosítsuk úgy a `DetailsActivity` -t, hogy implementálja a `WeatherDataHolder` interfészt:
+Módosítsuk úgy a `DetailsFragment`et, hogy implementálja a `WeatherDataHolder` interfészt:
 
 ```kotlin
-class DetailsActivity : AppCompatActivity(), WeatherDataHolder {
+class DetailsFragment : Fragment(), WeatherDataHolder {
 ```
 
 Implementáljuk a szükséges függvényt:
@@ -567,9 +657,9 @@ Implementáljuk a szükséges függvényt:
 override fun getWeatherData(): WeatherData? = weatherData 
 ```
 
-A használt `weatherData` változónak fogunk később értéket adni, amikor visszaérkezett az értéke a hálózati hívás eredményeként. A `ViewPager` két lapján levő `Fragment`-ek a `WeatherDataHolder` interfészen keresztül fogják lekérni az `Activity`-től a `weatherData` objekutmot a megjelenítéshez.
+A használt `weatherData` változónak fogunk később értéket adni, amikor visszaérkezett az értéke a hálózati hívás eredményeként. A `ViewPager` két lapján levő `Fragment`-ek a `WeatherDataHolder` interfészen keresztül fogják lekérni az `DetailsFragment`től a `weatherData` objekutmot a megjelenítéshez.
 
-A hálózati réteg megvalósítása
+####A hálózati réteg megvalósítása
 
 A `hu.bme.aut.android.weatherinfo` package-ben hozzuk létre egy `network` nevű package-et, amely a hálózati kommunikációhoz kapcsolódó osztályokat fogja tartalmazni. 
 
@@ -643,7 +733,7 @@ A részletező nézetek továbbfejlesztése
 A `ViewPager` megfelelő működéséhez létre kell hoznunk egy `FragmentStateAdapter`-ből származó osztályt a `details.adapter` package-ben (hozzunk létre egy `adapter` package-et), ami az eddig látott adapterekhez hasonlóan azt határozza meg, hogy milyen elemek jelenjenek meg a hozzájuk tartozó nézeten (jelen esetben az elemek `Fragment`-ek lesznek):
 
 ```kotlin
-class DetailsPagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
+class DetailsPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
 
     companion object{
         private const val NUM_PAGES: Int = 2
@@ -663,10 +753,8 @@ class DetailsPagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
 
 Implementáljuk a hiányzó `Fragment`-eket a hozzájuk tartozó néztekkel együtt:
 
-DetailsMainFragment.kt
 
-
-`res/layout/fragment_details_main.xml`:
+`res/layout/fragment_main_details.xml`:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -712,8 +800,8 @@ class DetailsMainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        weatherDataHolder = if (activity is WeatherDataHolder) {
-            activity as WeatherDataHolder?
+        weatherDataHolder = if (parentFragment is WeatherDataHolder) {
+            parentFragment as WeatherDataHolder?
         } else {
             throw RuntimeException(
                     "Activity must implement WeatherDataHolder interface!"
@@ -722,8 +810,8 @@ class DetailsMainFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDetailsMainBinding.inflate(LayoutInflater.from(context))
         return binding.root
@@ -753,9 +841,9 @@ Figyeljük meg, hogy hogy használjuk a kódban a `Glide` libraryt!
 
 > Az *OpenWeatherMap* API-tól a képek lekérhetők a visszakapott adatok alapján, pl: [https://openweathermap.org/img/w/10d.png](http://openweathermap.org/img/w/10d.png) 
 
-DetailsMoreFragment.kt
+`DetailsMoreFragment.kt`
 
-`res/layout/fragment_details_more.xml`:
+`res/layout/fragment_more_details.xml`:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -829,26 +917,26 @@ A `details.fragment` package-ben a `DetailsMoreFragment`:
 ```kotlin
 class DetailsMoreFragment : Fragment() {
 
-    private var _binding: FragmentDetailsMoreBinding? = null
+    private var _binding: FragmentDetailsMnBinding? = null
     private val binding get() = _binding!!
 
     private var weatherDataHolder: WeatherDataHolder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        weatherDataHolder = if (activity is WeatherDataHolder) {
-            activity as WeatherDataHolder?
+        weatherDataHolder = if (parentFragment is WeatherDataHolder) {
+            parentFragment as WeatherDataHolder?
         } else {
             throw RuntimeException("Activity must implement WeatherDataHolder interface!")
         }
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentDetailsMoreBinding.inflate(LayoutInflater.from(context))
+        _binding = FragmentDetailsMnBinding.inflate(LayoutInflater.from(context))
         return binding.root
     }
 
@@ -870,68 +958,68 @@ class DetailsMoreFragment : Fragment() {
 }
 ```
 
-Figyeljük meg, hogyan ellenőrzi a `DetailsMainFragment` és a `DetailsMoreFragment` azt, hogy az `Activity` implementálja-e a `WeatherDataHolder` interfészt. Fontos, hogy ezt a két `Fragment` majd csak azután kerül a `DetailsActivity`-re a `ViewPager`-en keresztül, amikor az adatokat lekérő hálózati kérés már adott vissza eredményt.
+Figyeljük meg, hogyan ellenőrzi a `DetailsMainFragment` és a `DetailsMoreFragment` azt, hogy a tartalmazó `Fragment` implementálja-e a `WeatherDataHolder` interfészt. Fontos, hogy ezt a két `Fragment` majd csak azután kerül a `DetailsActivity`-re a `ViewPager`-en keresztül, amikor az adatokat lekérő hálózati kérés már adott vissza eredményt.
 
-Ideiglenesen a `DetailsActivity` `onResume()` függvénye legyen az alábbi:
+Ideiglenesen a `DetailsFragment` `onResume()` függvénye legyen az alábbi:
 
 ```kotlin
 override fun onResume() {
-        super.onResume()
+    super.onResume()
 
-        val detailsPagerAdapter =
-                DetailsPagerAdapter(this)
-        binding.mainViewPager.adapter = detailsPagerAdapter
+    val detailsPagerAdapter =
+            DetailsPagerAdapter(this)
+    binding.mainViewPager.adapter = detailsPagerAdapter
 
-        TabLayoutMediator(binding.tabLayout, binding.mainViewPager) { tab, position ->
-            tab.text = when(position) {
-                0 -> getString(R.string.main)
-                1 -> getString(R.string.details)
-                else -> ""
-            }
-        }.attach()
-    }
+    TabLayoutMediator(binding.tabLayout, binding.mainViewPager) { tab, position ->
+        tab.text = when(position) {
+            0 -> getString(R.string.main)
+            1 -> getString(R.string.details)
+            else -> ""
+        }
+    }.attach()
+}
 ```
 
 Próbáljuk ki az alkalmazást, kattintsunk egy városra! jelenleg még nem jelennek meg valós adatok, mivel még nem kötöttük be a az adatok lekéréséért felelős hívást.
 
 ### Hálózati hívás bekötése
 
-Az időjárás adatok lekérdezésének bekötéséhez implementáljunk egy `loadWeatherData()` nevű függvényt a `DetailsActivity`-ben:
+Az időjárás adatok lekérdezésének bekötéséhez implementáljunk egy `loadWeatherData()` nevű függvényt a `DetailsFragment`ben:
 
 `(amennyiben a Callback-et nem ismerné fel a studio, Alt+Enter után importáljuk a retrofit2-es megoldást)`
 
 ```kotlin
 private fun loadWeatherData(){
         NetworkManager.getWeather(city)!!.enqueue(object : Callback<WeatherData?> {
-	
-                override fun onResponse(
-                    call: Call<WeatherData?>,
-                    response: Response<WeatherData?>
-                ) {
-                    Log.d(TAG, "onResponse: " + response.code())
-                    if (response.isSuccessful) {
-                        displayWeatherData(response.body())
-                    } else {
-                        Toast.makeText(
-                            this@DetailsActivity,
-                            "Error: " + response.message(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
 
-                override fun onFailure(
-                    call: Call<WeatherData?>,
-                    throwable: Throwable
-                ) {
-                    throwable.printStackTrace()
+            override fun onResponse(
+                call: Call<WeatherData?>,
+                response: Response<WeatherData?>
+            ) {
+                Log.d(TAG, "onResponse: " + response.code())
+                if (response.isSuccessful) {
+                    displayWeatherData(response.body())
+                } else {
                     Toast.makeText(
-                        this@DetailsActivity,
-                        "Network request error occurred, check LOG",
+                        activity,
+                        "Error: " + response.message(),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            })
+            }
+
+            override fun onFailure(
+                call: Call<WeatherData?>,
+                throwable: Throwable
+            ) {
+                throwable.printStackTrace()
+                Toast.makeText(
+                    activity,
+                    "Network request error occurred, check LOG",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
 ```
 
@@ -940,26 +1028,27 @@ Implementáljuk a hiányzó `displayWeatherData(...)` függvényt, ami sikeres A
 ```kotlin
 private fun displayWeatherData(receivedWeatherData: WeatherData?) {
 
-        weatherData = receivedWeatherData
-        
-	val detailsPagerAdapter = DetailsPagerAdapter(this)
-        binding.mainViewPager.adapter = detailsPagerAdapter
-    } 
+    weatherData = receivedWeatherData
+
+    val detailsPagerAdapter = DetailsPagerAdapter(this)
+    binding.mainViewPager.adapter = detailsPagerAdapter
+}
 ```
 
 A `DetailsActivity` `onResume()` függvényében hívjuk meg a `loadWeatherData()` függvényt:
 
 ```kotlin
 override fun onResume() {
-        super.onResume() 
+    super.onResume() 
 	... 
 	loadWeatherData()
-	}
+}
 ```
 
 Futtassuk az alkalmazást és figyeljük meg a működését! Próbáljuk ki azt is, hogy mi történik akkor, ha megszakítjuk a futtató eszköz internet kapcsolatát és megpróbáljuk megnyitni a részletező nézetet!
 
 ## Önálló feladat
+
 ### Város listából törlés megvalósítása
 
 Valósítsuk meg a városok törlését a *Remove* gomb megnyomásának hatására.
@@ -968,7 +1057,7 @@ Valósítsuk meg a városok törlését a *Remove* gomb megnyomásának hatásá
 
 A labor értékeléséhez **két külön** fájlt kell feltölteni:
 
-1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Manage IDE Settings` > `Export to Zip File...` menüponttal.
+1. Az elkészült forráskódot egy .zip-ben. Ez generálható az Android Studioval a `File` > `Export` > `Export to Zip File...` menüponttal.
 
 <p align="center"> 
 <img src="../assets/export.png" width="320">
@@ -976,11 +1065,27 @@ A labor értékeléséhez **két külön** fájlt kell feltölteni:
 
 2. Egy pdf-et, amiben a név, neptun kód és az alábbi képernyőképek szerepelnek (az emulátor, és egy lényegesebb kódrészlet is):
 
-	1. CityActivity (ha kész az önálló rész, a háttérben a CityAdapter megfelelő részével)
+	1. CityFragment (ha kész az önálló rész, a háttérben a CityAdapter megfelelő részével)
 	2. AddCityDialogFragment
 	3. DetailsMainFragment (egy újonnan felvett város adataival)
-	3. DetailsMoreFragment (egy újonnan felvett város adataival)
+	4. DetailsMoreFragment (egy újonnan felvett város adataival)
 
 <p align="center"> 
 <img src="../assets/hw.png" width="640">
 </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
