@@ -198,7 +198,7 @@ A kiinduló projekt önmagában eléggé interaktív. Vizsgáljuk meg a létrej�
   - **assets**: ebben a mappában tárolhatjuk a statikus tartalmainkat (pl. képek)
   - **environments**: különböző környezeteinknek (pl. dev, teszt, prod) hozhatunk létre egyedi konfigurációkat
   - **app**: az alkalmazásunk lényegi forráskódja
-    - **app-routing.module.ts**: az alkalmazás útvonalválasztási logikáját írja le (milyen URL-re milyen komponens töltődjön be), jelenleg üres (bármilyen URL-re a root URL, így az app-root töltődik csak be)
+    - **app-routing.module.ts**: az alkalmazás útvonalválasztási logikáját írja le (milyen URL-re milyen komponens töltődjön be), jelenleg üres (bármilyen URL-re a root URL, így az app-root töltődik csak be) vagy nem létezik
     - **app.module.ts**: az alkalmazásunk modulja, ami összefogja a teljes alkalmazásban definiált elemeinket (komponensek, direktívák, szolgáltatások)
     - **app.component**
       - **.ts**: a komponensünk TypeScript forrása, egy egyszerű TypeScript osztály, ami dekorálva van az Angular `@Component()` dekorátorával, így tudatjuk az Angular-rel, hogy az osztályunk egy komponens
@@ -322,10 +322,10 @@ export type PegType = 'code' | 'key';
 export class PegComponent implements OnInit {
 
   @Input() // Az Input dekorátort importálnunk kell a jelenlegi scope-ba. Ehhez használhatjuk a VS Code segítségét (Ctrl+. a kurzort a hibára helyezve) vagy fentre beírhatjuk: import { Input } from '@angular/core';
-  color: PegColor; // Hasonlóképp a PegColor-ra is, csak itt a lokális '../models/peg-color'-ból importálunk.
+  color?: PegColor; // Hasonlóképp a PegColor-ra is, csak itt a lokális '../models/peg-color'-ból importálunk.
 
   @Input()
-  type: PegType;
+  type?: PegType;
 
   get colorChar() {
     return (this.color ?? "X")[0].toUpperCase();
@@ -342,6 +342,8 @@ export class PegComponent implements OnInit {
 
 A ?? operátor C#-ból ismerős lehet, TypeScriptben is használatos. A ?? a bal oldalt adja vissza, ha az nem `undefined` vagy `null`, a jobb oldalt, ha igen. Ehelyett használatos a normál `||` operátor is, viszont az minden `falsey` értékre vizsgálna.
 
+A ? a változó neve után jelzi, hogy a az adott változó lehet `undefined`. Máskülönben a fordító hibát dobna, mert nincs inicializálva a változó. Alternatívaként használható a ! (ez kizárja az `undefined`-ot), vagy a konstruktorban is inicializálhatunk értékeket. Ezekre az intézkedésekre a [strict-mode] miatt van szükség.
+
 </details>
 
 <br/>
@@ -354,7 +356,7 @@ Módosítsuk a `peg.component.html` tartalmát az alábbira:
 <div class="{{colorLower}}">{{colorChar}}</div>
 ```
 
-A fenti szintaxis az egyirányú adatkötést jelenti. A `color` és `colorChar` a komponensük scope-jában (`this`-én) elérhető változók (tulajdonságok), amiket a felület irányába továbbítunk. Amikor ezek az értékek változnak, az Angular megfelelően újrarendereli nekünk az elemeket! Szintén kapunk IntelliSense-t itt is, ha telepítettük az Angular Language Service-t, és kapunk fordítási hibát, ha hibás TypeScript kódot írunk az adatkötések helyére.
+A fenti szintaxis az egyirányú adatkötést jelenti. A `colorLower` és `colorChar` a komponensük scope-jában (`this`-én) elérhető változók (tulajdonságok), amiket a felület irányába továbbítunk. Amikor ezek az értékek változnak, az Angular megfelelően újrarendereli nekünk az elemeket! Szintén kapunk IntelliSense-t itt is, ha telepítettük az Angular Language Service-t, és kapunk fordítási hibát, ha hibás TypeScript kódot írunk az adatkötések helyére.
 
 A fentivel teljes mértékben ekvivalens az alábbi szintaxis is, amit később fogunk használni:
 
@@ -456,7 +458,7 @@ Alakul, most már látjuk, mit szeretnénk elérni. Néhány apróságot tegyün
 .peg {
     // ...
     box-shadow: 2px 2px;
-    display: inline-block; // <<< +++
+    display: inline-block; // <<< Ezt adjuk hozzá
 }
 
 // ...
@@ -509,15 +511,15 @@ import { PegColor } from './models/peg-color';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  guesses: Guess[];
+  guesses: Guess[] = [];	// ! helyett most inicializálunk
 
   constructor() {
     this.initGame();
   }
 
   initGame() {
-    this.guesses = [];
-    for (let _ of Array(10).keys())
+	this.guesses = [];
+    for (let i = 1; i <= 10; i++)
       this.guesses.push(new Guess(['unset', 'unset','unset','unset'], ['unset', 'unset','unset','unset']));
 
     console.log(this.guesses);
@@ -588,7 +590,7 @@ A sorok fölött a jelenlegi tippünk összeállítása fog látszani. Ez alatt 
 ```TS
 export class AppComponent {
   guesses: Guess[];
-  currentGuess: PegColor[];
+  currentGuess: PegColor[] = [];
   possibleValues: PegColor[] = ['red', 'purple', 'blue', 'green', 'yellow', 'orange'];
 
   constructor() {
@@ -598,9 +600,9 @@ export class AppComponent {
   initGame() {
     this.guesses = [];
     this.currentGuess = [];
-    for (let _ of Array(4).keys())
+    for (let i = 1; i <= 4; i++)
       this.currentGuess.push('unset');
-    for (let _ of Array(10).keys())
+    for (let i = 1; i <= 10; i++)
       this.guesses.push(new Guess(['unset', 'unset','unset','unset'], ['unset', 'unset','unset','unset']));
     console.log(this.guesses);
   }

@@ -277,10 +277,11 @@ Láthatjuk, hogy a gomb `hover`-re továbbra is a `pointer`-t mutatja. Használh
 ```SCSS
 button:disabled, .btn:disabled {
   cursor: not-allowed !important;
+  pointer-events: all !important;
 }
 ```
 
-Láthatjuk, hogy itt használjuk az `!important` kulcsszót. Ez azért van, mert szeretnénk, ha minden esetben, ha az elemen definiált `style` esetleg másképp definiálná is, az összes HTML5 `<button>` és Bootstrap `.btn` gomb letiltott állapotban letiltott kurzorral rendelkezzen.
+Láthatjuk, hogy itt használjuk az `!important` kulcsszót. Ez azért van, mert szeretnénk, ha minden esetben, ha az elemen definiált `style` esetleg másképp definiálná is, az összes HTML5 `<button>` és Bootstrap `.btn` gomb letiltott állapotban letiltott kurzorral rendelkezzen. A `pointer-events` felüldefiniálására azért van szükség, mert a Bootstrap (`_buttons.scss`) `none`-ra állítja az értékét, amitől a `cursor` beállításunknak nem lesz hatása.
 </details>
 
 A tippünk összeállítását követően el is küldhetjük azt.
@@ -289,12 +290,12 @@ Ehhez kezelnünk kell a játék indulásakor, hogy sorsoljon ki nekünk a gép 4
 
 <details open>
 
-<summary>Egészítsük ki az AppComponent kódját egy új tulajdonsággal, ami a tippet fogja tartalmazni, valamint az initGame() függvényét, ami véletlenszerűen fog sorsolni a lehetséges értékek közül 4-et!</summary>
+<summary>Egészítsük ki az AppComponent kódját egy új tulajdonsággal, ami a kisorsolt színeket fogja tartalmazni, valamint az initGame() függvényét, ami véletlenszerűen fog sorsolni a lehetséges értékek közül 4-et!</summary>
 
 `src\app\app.component.ts`:
 
 ```TS
-private secretColors: PegColor[];
+private secretColors: PegColor[] = [];
 
 initGame() {
   // ...
@@ -410,16 +411,16 @@ A fent felsorolt két lehetőség közül az elsőt valósítjuk meg. Ehhez lét
 export class GameOverComponent implements OnInit {
 
   @Input()
-  won: boolean;
+  won!: boolean;
 
   @Input()
-  numberOfGuesses: number;
+  numberOfGuesses!: number;
 
   @Input()
-  lastGuess: PegColor[];
+  lastGuess!: PegColor[];
 
   @Input()
-  secretColors: PegColor[];
+  secretColors!: PegColor[];
 
   @Output()
   restart = new EventEmitter<void>();
@@ -430,10 +431,18 @@ export class GameOverComponent implements OnInit {
   }
 
   initParameters(inputs: { won: boolean, numberOfGuesses: number, lastGuess: PegColor[], secretColors: PegColor[] }, outputs: { restart: (...args: any[]) => any }) {
-    for (let prop in inputs)
-      this[prop] = inputs[prop];
-    for (let prop in outputs)
-      (this[prop] as EventEmitter<any>).subscribe(outputs[prop]);
+    this.won = inputs["won"];
+	this.numberOfGuesses = inputs["numberOfGuesses"];
+	this.lastGuess = inputs["lastGuess"];
+	this.secretColors = inputs["secretColors"];
+
+	this.restart.subscribe(outputs["restart"]);
+
+	//for (let prop in inputs)
+	  //this[prop] = inputs[prop];
+
+	//for (let prop in outputs)
+	  //(this[prop] as EventEmitter<any>).subscribe(outputs[prop]);
   }
 }
 ```
@@ -450,6 +459,8 @@ A második lépés ezzel majdnem megegyezik, itt viszont nem adhatjuk a paramét
 
 > A fenti konstrukció a konkrét típusok ismeretének hiányában alkalmazható például (*reflection*-höz hasonló elvet követve). Önállóan ilyen kódot ritkán szükséges írni, a legtöbb fejlesztőnek nincsen szüksége a keretrendszer-jellegű funkciók megírására, csak felhasználására.
 
+> Az Angular 12-ben bevezetett [strict mode] miatt a kikommentezett for ciklusok már nem működnek (így a fenti magyarázat sem aktuális), ezért egy butább megoldást alkalmazunk. Ugyanezért kellett az inicializálatlan változóinkat ?-el vagy !-el deklarálni, vagy pedig kezdőértéket adni nekik. Megjegyzés: ha muszáj, a strict mode kikapcsolható a `tsconfig.json` fájlban néhány beállítás módosításával, de ezzel nem foglalkozunk.
+
 `src\app\game-over\game-over.component.html`:
 
 ```HTML
@@ -465,7 +476,7 @@ A második lépés ezzel majdnem megegyezik, itt viszont nem adhatjuk a paramét
     <h3>The secret was:</h3>
     <mm-peg *ngFor="let color of secretColors" [type]="'code'" [color]="color"></mm-peg>
 
-    <button class="btn btn-success btn-block" (click)="restart.emit()">Start new game</button>
+    <button class="btn btn-success btn-block" style="width: 100%" (click)="restart.emit()">Start new game</button>
 </div>
 ```
 

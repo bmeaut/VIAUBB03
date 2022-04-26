@@ -78,12 +78,16 @@ Az alkalmazásunk mostantól routing-ot fog használni (alapértelmezetten a CLI
 `app.module.ts`:
 
 ``` TS
-RouterModule.forRoot([ // import { RouterModule } from '@angular/router';
-  { path: 'game', component: GameComponent } // import { GameComponent } from './game/game.component';
-])
+imports: [
+  BrowserModule,
+  NgbModule,
+  RouterModule.forRoot([ // import { RouterModule } from '@angular/router';
+	{ path: 'game', component: GameComponent } // import { GameComponent } from './game/game.component';
+  ])
+],
 ```
 
-Ez az útvonal a `/game` URL-re a `GameComponent`-et fogja betölteni arra a helyre, ahol az alkalmazásunk template-jében a `<router-outlet>` nevű elem szerepel. Ha visszaemlékszünk, ezt töröltük az első alkalommal, így most az `app.component.html` kódja legyen ismét az alábbi:
+Ez az útvonal a `/game` URL-re a `GameComponent`-et fogja betölteni arra a helyre, ahol az alkalmazásunk template-jében a `<router-outlet>` nevű elem szerepel. Az `app.component.html` kódja legyen az alábbi:
 
 ``` HTML
 <router-outlet>

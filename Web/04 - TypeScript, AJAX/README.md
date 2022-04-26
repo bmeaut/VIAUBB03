@@ -34,7 +34,7 @@ Terminálból (Ctrl+ö) adjuk ki az alábbi parancsot a munkamappában:
 
 Ezzel a paranccsal a package.json fájlban található függőségeket telepítjük a Node.js Package Manager (`npm`) segítségével. Itt a Bootstrap, a JQuery és Popper osztálykönyvtárak találhatók (utóbbi kettő a Bootstrap függősége).
 
-Indítsuk el Terminálból a TypeScript compilert `watch` módban, ami figyelni fogja az összes hivatkozott TypeScript fájl módosítását, és újragenerálja szükség esetén a kimenetet:
+Indítsuk el Terminálból (célszerű Ctrl+Shift+ö billentyűkombinációval egy új terminált indítani a szokásos `live-server` parancsnak) a TypeScript compilert `watch` módban, ami figyelni fogja az összes hivatkozott TypeScript fájl módosítását, és újragenerálja szükség esetén a kimenetet:
 > `node_modules\.bin\tsc -w`
 
 Indítást követően a következő képernyő fogad minket:
@@ -79,7 +79,7 @@ class Game {
 }
 ```
 
-- Ez az osztály a <a href="https://deckofcardsapi.com/api/" target="_blank">Deck of Cards API</a> klienseként szolgál.
+- Ez az osztály a <a href="https://deckofcardsapi.com/" target="_blank">Deck of Cards API</a> klienseként szolgál.
 - Konstruktora privát, példányosítani egy `Game` objektumot a statikus, aszinkron `NewGame` függvény meghívásával lehetséges.
 - A konstruktorban jelzett `public` módosítószóval az objektumon automatikusan létrejön a konstruktorparaméter nevével és értékével egy egyszer beállítható, csak olvasható `deck_id` mező.
 - Minden távoli HTTP hívás a `Call` függvényen megy keresztül, ahol egy relatív útvonalat kell megadnunk, ami a `https://deckofcardsapi.com/api/`-hoz képesti relatív útvonalra indít egy aszinkron AJAX kérést a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch" target="_blank">fetch</a> API használatával.
@@ -107,37 +107,39 @@ Láthatjuk, hogy az így kapott válasz az alábbihoz hasonló lesz:
 ``` JSON
 
 {
+	"success": true,
+	"deck_id": "g7ldwoe33ss4", 
     "cards": 
     [
         {
+			"code": "JC",
+			"image": "https://deckofcardsapi.com/static/img/JC.png", 
             "images": 
             {
-                "svg": "https://deckofcardsapi.com/static/img/3D.svg",
-                "png": "https://deckofcardsapi.com/static/img/3D.png"
+                "svg": "https://deckofcardsapi.com/static/img/JC.svg",
+                "png": "https://deckofcardsapi.com/static/img/JC.png"
             }, 
-            "image": "https://deckofcardsapi.com/static/img/3D.png", 
-            "value": "3", 
-            "code": "3D", 
-            "suit": "DIAMONDS"
+            "value": "JACK", 
+            "suit": "CLUBS"
         }, 
         {
+			"code": "AD",
+			"image": "https://deckofcardsapi.com/static/img/aceDiamonds.png", 
             "images": 
             {
-                "svg": "https://deckofcardsapi.com/static/img/2S.svg", 
-                "png": "https://deckofcardsapi.com/static/img/2S.png"
+                "svg": "https://deckofcardsapi.com/static/img/aceDiamonds.svg",
+                "png": "https://deckofcardsapi.com/static/img/aceDiamonds.png"
             }, 
-            "image": "https://deckofcardsapi.com/static/img/2S.png",
-            "value": "2", 
-            "code": "2S",
-            "suit": "SPADES"
+            "value": "ACE", 
+            "suit": "DIAMONDS"
         }
     ], 
-    "remaining": 310, 
-    "deck_id": "g7ldwoe33ss4", 
-    "success": true
+    "remaining": 310
 }
 
 ```
+
+{"success": true, "deck_id": "9f29nckueaq4", "cards": [{"code": "JC", "image": "https://deckofcardsapi.com/static/img/JC.png", "images": {"svg": "https://deckofcardsapi.com/static/img/JC.svg", "png": "https://deckofcardsapi.com/static/img/JC.png"}, "value": "JACK", "suit": "CLUBS"}, {"code": "AD", "image": "https://deckofcardsapi.com/static/img/aceDiamonds.png", "images": {"svg": "https://deckofcardsapi.com/static/img/aceDiamonds.svg", "png": "https://deckofcardsapi.com/static/img/aceDiamonds.png"}, "value": "ACE", "suit": "DIAMONDS"}], "remaining": 310}
 
 Ezt a fenti választ modellezendő, vegyük észre, hogy a típus leírója interfész formájában szerepel a `draw-card-response.ts` fájlban:
 
@@ -329,7 +331,7 @@ A TypeScript, a DOM és a kliensalkalmazások fejlesztésének gyakorlásaképp 
 - Az osztó első lapja ne legyen látható! Helyette használd a `back.png` fájlt! Ne legyen látható a `title` szöveg sem, ha az egeret a kártya fölé visszük!
 - Kezeld az ászok értékét: az ász 11-et ér, ha nem lépnénk túl vele a 21-et, egyébként 1-et.
 - Ha a játékos túllépi a 21-et: ebben az esetben jeleníts meg egy megfelelő üzenetet, és legyen lehetőség új játék indítására!
-- Ha a játékos megnyomja a Stand gombot: a játékos nem kér több lapot, ekkor viszont az osztó nem látható lapja felfedésre kerül, majd az osztó addig húz automatikusan, amíg el nem éri a játékos pontszámát vagy túllépi a 21-et (előbbi esetben az osztó nyer, utóbbiban veszít). A feszültség fokozása érdekében használhatod a `setTimeout(2000, () => { /* ... */})` hívást, amivel várakoztathatod a futást, mintha az osztó gondolkodna 2 másodpercig.
+- Ha a játékos megnyomja a Stand gombot: a játékos nem kér több lapot, ekkor viszont az osztó nem látható lapja felfedésre kerül, majd az osztó addig húz automatikusan, amíg el nem éri a játékos pontszámát vagy túllépi a 21-et (előbbi esetben az osztó nyer, utóbbiban veszít). A feszültség fokozása érdekében használhatod a `setTimeout(() => { /* ... */}, 2000)` hívást, amivel várakoztathatod a futást, mintha az osztó gondolkodna 2 másodpercig.
 - Kezeld, ha a játékos győz!
 - Kezeld a játékos pénzét! A játékos 1000$-ról indít, minden játék 100$-ba kerül, amit győzelem esetén a játékos duplán elnyer.
-- Kezeld a *split* szabályt: a játékos, ha két ugyanolyan értékű lapja van, választhat egy új lehetőséget: *split*. Ekkor az egy-egy ugyanolyan értékű lap két külön kezébe kerül, a tét duplázódik, és mindkét új kezébe 1-1 új lapot kap. Mindkét kezéhez külön kéthet új lapot, vagy megállhat. A két keze külön-külön értékelődik ki az osztó lapjaival, tehát 0, 1 vagy 2 kezével nyerhet, ennek megfelelően részesül jutalomban.
+- Kezeld a *split* szabályt: a játékos, ha a játék elején két ugyanolyan értékű lapja van, választhat egy új lehetőséget: *split*. Ekkor az egy-egy ugyanolyan értékű lap két külön kezébe kerül, a tét duplázódik, és mindkét új kezébe 1-1 új lapot kap. Mindkét kezéhez külön kéthet új lapot, vagy megállhat. A két keze külön-külön értékelődik ki az osztó lapjaival, tehát 0, 1 vagy 2 kezével nyerhet, ennek megfelelően részesül jutalomban.
