@@ -37,6 +37,9 @@ Ezzel a paranccsal a package.json fájlban található függőségeket telepítj
 Indítsuk el Terminálból (célszerű Ctrl+Shift+ö billentyűkombinációval egy új terminált indítani a szokásos `live-server` parancsnak) a TypeScript compilert `watch` módban, ami figyelni fogja az összes hivatkozott TypeScript fájl módosítását, és újragenerálja szükség esetén a kimenetet:
 > `node_modules\.bin\tsc -w`
 
+Ha MAC-en lennénk és a fenti nem működik, a következő paranccsal próbálkozhatunk:
+> `tsc --watch`
+
 Indítást követően a következő képernyő fogad minket:
 
 ![BlackJack kezdőképernyő](blackjack-start.png)
@@ -138,8 +141,6 @@ Láthatjuk, hogy az így kapott válasz az alábbihoz hasonló lesz:
 }
 
 ```
-
-{"success": true, "deck_id": "9f29nckueaq4", "cards": [{"code": "JC", "image": "https://deckofcardsapi.com/static/img/JC.png", "images": {"svg": "https://deckofcardsapi.com/static/img/JC.svg", "png": "https://deckofcardsapi.com/static/img/JC.png"}, "value": "JACK", "suit": "CLUBS"}, {"code": "AD", "image": "https://deckofcardsapi.com/static/img/aceDiamonds.png", "images": {"svg": "https://deckofcardsapi.com/static/img/aceDiamonds.svg", "png": "https://deckofcardsapi.com/static/img/aceDiamonds.png"}, "value": "ACE", "suit": "DIAMONDS"}], "remaining": 310}
 
 Ezt a fenti választ modellezendő, vegyük észre, hogy a típus leírója interfész formájában szerepel a `draw-card-response.ts` fájlban:
 
@@ -261,7 +262,7 @@ function renderHands(game: Game) {
     $(".hand-title").show();
     $(".hand-container").text("");
     // TODO: csak akkor mutatjuk meg az osztó első lapját, ha a játékos végzett ("stand").
-    // Ha nem látszik az első lap, helyette mutassunk Jokert.
+    // Ha nem látszik az első lap, helyette mutassunk hátlapot.
     for (let card of game.dealersHand.cards) {
         addCardToContainer("dealer", card);
     }
