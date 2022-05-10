@@ -229,6 +229,8 @@ Adjuk hozzá a Bootstrap-et az alkalmazásunkhoz, hogy könnyen stílusozható l
 
 Ez a parancs néhány dolgot megcsinál helyettünk, pl. letölti és behivatkozza a `bootstrap` és `ng-bootstrap` csomagokat függőségként, importálja a modult az alkalmazásunkba (az `src\app\app.module.ts`-t érdemes megvizsgálni), alkalmazza a lokalizációs polyfillt stb. Ezzel meg is volnánk, az alkalmazásunkban használhatjuk a szokásos Bootstrap elemeket, de fontos megjegyezni, hogy ez nem feltétlenül (/kizárólag) a szokásos Bootstrap osztályok elemekre aggatásával történik. A [hivatalos dokumentáció](https://ng-bootstrap.github.io/#/getting-started) az irányadó.
 
+Abban a ritka esetben, amennyiben nem sikerülne hozzáadni a Bootstrapet, próbáljuk meg a `package.json` fájlban az összes "~X.Y.Z" stílusú verziószámot "^X.Y.Z" stílusúra lecserélni. Ezután futtassuk az `npm update` parancsot, majd próbáljuk megint hozzáadni a Bootstrapet.
+
 ## Peg komponens
 
 Az oldalunkon tehát meg kell jelennie 10 sornak, benne 4 nagyobb és 4 kisebb "golyóval".
